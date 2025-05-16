@@ -6,31 +6,71 @@
 /*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:59 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/13 11:20:00 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/16 05:38:58 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include "../libft/libft.h"
 # include <readline/readline.h>
+# include <readline/history.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include <fcntl.h>
+# include <signal.h>
 # include <sys/wait.h>
 
+# define PROMPT "minishell$~> "
+
+/*enum _____ types for lexer\*/
+typedef struct s_token_type
+{
+	TOKEN_WORD, //cmds
+	TOKEN_PIPE, //|
+	TOKEN_REDIR_IN, //<
+	TOKEN_REDIR_OUT, //>
+	TOKEN_REDIR_APPEND, //>>
+	TOKEN_HEREDOC, //<<
+	TOKEN_END_OF_INPUT //end of input (heredoc)
+}	t_token_type;
+
+//token struct
+typedef struct s_token
+{
+	char			*value;
+	t_token_type	type;
+	struct s_token	*next;
+}	t_token;
+
+//struct for commands
+typedef struct  s_cmds
+{
+	char			**args; //cmd with the argument
+	char			*input_file; //input for redir. file
+	char			*output_file; //output for redir. file
+	int				append_node;	//?
+	char			*heredoc_delimeter; //heredoc delimeter
+	struct s_cmds	*next; //next cmd in the pipeline |
+}	t_cmds;
+
+//mini_shell Data_Structure
+typedef struct s_shell
+{
+	char			**env; //ENVIRONMENT
+	t_token			*tokens; //INPUT AFTER IT HAS BEEN TOKENISED
+	t_cmds			*commands; //COMMANDS AFTER PARSING
+	int				exit_status; //EXIT STATUS OF LAST COMMAND
+	int				working; //SHELL IS RUNNING
+}	t_shell;
 
 
 
 
 
-
-
-
-
-
-
+void	cleanup(t_shell *shell);
 
 
 

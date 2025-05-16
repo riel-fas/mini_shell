@@ -69,16 +69,14 @@
 
 
 # Colors
-GREEN = \033[0;32m
-YELLOW = \033[0;33m
-CYAN = \033[0;36m
-NC = \033[0m # No Color
+RED		= \033[0;31m
+GREEN	= \033[0;32m
+YELLOW	= \033[0;33m
+CYAN	= \033[0;36m
+NC		= \033[0m # No Color
 
 NAME			=	minishell
-
 CC				=	cc
-
-# Flags
 CFLAGS			=	-Wall -Wextra -Werror
 
 # Libft
@@ -102,55 +100,49 @@ ALL_INCLUDES	=	$(CFLAGS) $(READLINE_FLAGS) $(LIBFT_INC)
 all	:	banner $(NAME)
 
 banner:
-	@echo "\033[0;31m███╗   ███╗██╗███╗   ██╗██╗▄▄███▄▄·██╗  ██╗███████╗██╗     ██╗     \033[0m"
-	@echo "\033[0;31m████╗ ████║██║████╗  ██║██║██╔════╝██║  ██║██╔════╝██║     ██║     \033[0m"
-	@echo "\033[0;31m██╔████╔██║██║██╔██╗ ██║██║███████╗███████║█████╗  ██║     ██║     \033[0m"
-	@echo "\033[0;31m██║╚██╔╝██║██║██║╚██╗██║██║╚════██║██╔══██║██╔══╝  ██║     ██║     \033[0m"
-	@echo "\033[0;31m██║ ╚═╝ ██║██║██║ ╚████║██║███████║██║  ██║███████╗███████╗███████╗\033[0m"
-	@echo "\033[0;31m╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝╚═▀▀▀══╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝\033[0m"
-	@echo "\033[0;31m▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄\033[0m"
-	@echo "\033[0;31m█                                                               █\033[0m"
-	@echo "\033[0;31m█        🩸  WELCOME TO THE CURSED MINISHELL  🩸                █\033[0m"
-	@echo "\033[0;31m█                                                               █\033[0m"
-	@echo "\033[0;31m█    \"Every command you type echoes in the void...\"             █\033[0m"
-	@echo "\033[0;31m█    \"Segfaults... are not bugs — they're warnings...\"          █\033[0m"
-	@echo "\033[0;31m█    \"Fork, and you may awaken what sleeps in the pipe...\"      █\033[0m"
-	@echo "\033[0;31m█                                                               █\033[0m"
-	@echo "\033[0;31m▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀\033[0m"
-	@echo ""
-	@echo "$(YELLOW)Date: $(shell date '+%Y-%m-%d %H:%M:%S') UTC$(NC)"
-	@echo "$(YELLOW)Haunted by: $(USER), roubelka 👻$(NC)"
-	@echo ""
+	@printf "${RED}███╗   ███╗██╗███╗   ██╗██╗▄▄███▄▄·██╗  ██╗███████╗██╗     ██╗     ${NC}\n"
+	@printf "${RED}████╗ ████║██║████╗  ██║██║██╔════╝██║  ██║██╔════╝██║     ██║     ${NC}\n"
+	@printf "${RED}██╔████╔██║██║██╔██╗ ██║██║███████╗███████║█████╗  ██║     ██║     ${NC}\n"
+	@printf "${RED}██║╚██╔╝██║██║██║╚██╗██║██║╚════██║██╔══██║██╔══╝  ██║     ██║     ${NC}\n"
+	@printf "${RED}██║ ╚═╝ ██║██║██║ �█████║██║███████║██║  ██║███████╗███████╗███████╗${NC}\n"
+	@printf "${RED}╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝╚═▀▀▀══╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝${NC}\n"
+	@printf "${RED}▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄${NC}\n"
+	@printf "${RED}█                                                               █${NC}\n"
+	@printf "${RED}█        🩸  WELCOME TO THE CURSED MINISHELL  🩸                █${NC}\n"
+	@printf "${RED}█                                                               █${NC}\n"
+	@printf "${RED}█    \"Every command you type echoes in the void...\"             █${NC}\n"
+	@printf "${RED}█    \"Segfaults... are not bugs — they're warnings...\"          █${NC}\n"
+	@printf "${RED}█    \"Fork, and you may awaken what sleeps in the pipe...\"      █${NC}\n"
+	@printf "${RED}█                                                               █${NC}\n"
+	@printf "${RED}▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀${NC}\n"
+	@printf "\n"
+	@printf "${YELLOW}Date: $(shell date '+%Y-%m-%d %H:%M:%S') UTC${NC}\n"
+	@printf "${YELLOW}Haunted by: $(USER), roubelka 👻${NC}\n"
+	@printf "\n"
 
 $(NAME)	:	$(LIBFT_A) $(OBJS)
-	@echo "$(GREEN)Linking objects to create $(NAME)...$(NC)"
+	@printf "${GREEN}Linking objects to create $(NAME)...${NC}\n"
 	@$(CC) $(ALL_INCLUDES) $(OBJS) $(LIBFT_A) -o $(NAME) $(READLINE_LIBS)
-	@echo "$(GREEN)$(NAME) successfully compiled!$(NC)"
+	@printf "${GREEN}$(NAME) successfully compiled!${NC}\n"
 
 %.o : %.c $(HEADER)
-	@echo "$(GREEN)Compiling $<...$(NC)"
+	@printf "${GREEN}Compiling $<...${NC}\n"
 	@$(CC) $(ALL_INCLUDES) -c $< -o $@
 
 $(LIBFT_A):
-	@echo "$(CYAN)Compiling libft...$(NC)"
+	@printf "${CYAN}Compiling libft...${NC}\n"
 	@$(MAKE) -C $(LIBFT_DIR) bonus --no-print-directory > /dev/null
 
 clean	:
-	@echo "$(YELLOW)Removing object files...$(NC)"
+	@printf "${YELLOW}Removing object files...${NC}\n"
 	@rm -rf $(OBJS)
 	@$(MAKE) -C $(LIBFT_DIR) clean
 
-# fclean	:	clean
-# 	@echo "$(YELLOW)Removing executable...$(NC)"
-# 	@rm -rf $(NAME)
-# 	@$(MAKE) -C $(LIBFT_DIR) fclean
-
 fclean: clean
-	@echo "$(YELLOW)Removing executable...$(NC)"
+	@printf "${YELLOW}Removing executable...${NC}\n"
 	@rm -rf $(NAME)
-	@echo "$(YELLOW)Cleaning Libft (bonus)...$(NC)"
+	@printf "${YELLOW}Cleaning Libft (bonus)...${NC}\n"
 	@$(MAKE) -s -C libft fclean
-
 
 re	:	fclean all
 
