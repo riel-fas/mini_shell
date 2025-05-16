@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: roubelka <roubelka@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:54 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/16 05:29:44 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/16 18:44:10 by roubelka         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,19 @@
 
 int	main(int ac, char **av, char **envp)
 {
-	t_shell		shell;
+	// t_shell		shell;
 	char		*user_input;
 	(void)ac;
 	(void)av;
-	// (void)envp;
+	(void)envp;
 
-	while (shell.working)
+	while (1)
 	{
 
-		user_input = readline(PROMPT); //prompt
+		user_input = readline("minishell$~> "); //prompt
 		if (!user_input)
 		{
-			//the program keeps running until a Ctrl+C or Ctrl+D
+			//the program keeps running until a  Ctrl+D
 			printf("exit\n");
 			break ;
 		}
@@ -38,7 +38,7 @@ int	main(int ac, char **av, char **envp)
 			//we need to free cause the readline allocate memory so we need to free it so we dont get leaks mem
 			free(user_input);
 	}
-	cleanup(&shell);
+	// cleanup(&shell);
 	// return ();// ?EXIT STATUS
 
 }

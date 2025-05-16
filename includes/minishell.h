@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: roubelka <roubelka@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:59 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/16 05:38:58 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/16 18:35:46 by roubelka         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,10 @@
 # include <signal.h>
 # include <sys/wait.h>
 
-# define PROMPT "minishell$~> "
+// # define PROMPT "minishell$~> "
 
 /*enum _____ types for lexer\*/
-typedef struct s_token_type
+typedef enum s_token_type
 {
 	TOKEN_WORD, //cmds
 	TOKEN_PIPE, //|
@@ -70,7 +70,7 @@ typedef struct s_shell
 
 
 
-void	cleanup(t_shell *shell);
+// void	cleanup(t_shell *shell);
 
 
 
