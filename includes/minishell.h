@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roubelka <roubelka@student.42.fr>          +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:59 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/16 18:35:46 by roubelka         ###   ########.fr       */
+/*   Updated: 2025/05/17 12:57:48 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 // # define PROMPT "minishell$~> "
 
 /*enum _____ types for lexer\*/
-typedef enum s_token_type
+typedef enum e_token_type
 {
 	TOKEN_WORD, //cmds
 	TOKEN_PIPE, //|
@@ -59,18 +59,20 @@ typedef struct  s_cmds
 //mini_shell Data_Structure
 typedef struct s_shell
 {
-	char			**env; //ENVIRONMENT
+	char			**env; //ENVIRONMENT // AR: env li khadi ndirolo copy 3endna f lprojet
+	char			*username; //USR ENV \\AR: USERNAME li katel9ah f path USR f west l ENV
+	char			**path; //stores the paths in env   // AR: fiha dok path men ba3d ma splitinahom  ":"
 	t_token			*tokens; //INPUT AFTER IT HAS BEEN TOKENISED
 	t_cmds			*commands; //COMMANDS AFTER PARSING
 	int				exit_status; //EXIT STATUS OF LAST COMMAND
-	int				working; //SHELL IS RUNNING
+	// int				working; //SHELL IS RUNNING
 }	t_shell;
 
 
 
 
 
-// void	cleanup(t_shell *shell);
+void	cleanup(t_shell *shell);
 
 
 

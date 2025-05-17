@@ -3,31 +3,38 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roubelka <roubelka@student.42.fr>          +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:54 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/16 18:44:10 by roubelka         ###   ########.fr       */
+/*   Updated: 2025/05/17 13:09:54 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include <string.h>
 
-int	main(int ac, char **av, char **envp)
+int	main(int ac, char **av, char **env)
 {
-	// t_shell		shell;
+	t_shell		*shell;
 	char		*user_input;
 	(void)ac;
 	(void)av;
-	(void)envp;
+	// (void)env;
 
+	// Initialize the shell
+	shell = shell_init(env);
+	if (!shell)
+	{
+		printf("Error: Failed to initialize shell\n");
+		return (1);
+	}
 	while (1)
 	{
 
-		user_input = readline("minishell$~> "); //prompt
+		user_input = readline("minishell$~>"); //prompt
 		if (!user_input)
 		{
-			//the program keeps running until a  Ctrl+D
+			//the program keeps running until a Ctrl+C or Ctrl+D
 			printf("exit\n");
 			break ;
 		}
@@ -36,7 +43,7 @@ int	main(int ac, char **av, char **envp)
 
 
 			//we need to free cause the readline allocate memory so we need to free it so we dont get leaks mem
-			free(user_input);
+			// free(user_input);
 	}
 	// cleanup(&shell);
 	// return ();// ?EXIT STATUS
@@ -77,3 +84,34 @@ int	main(int ac, char **av, char **envp)
 //
 // }
 
+
+// // main.c
+
+// int main(int argc, char **argv, char **envp)
+// {
+//     t_shell *shell;
+
+//     // ARGC CHECK - Check if there are any arguments
+//     // Typically a shell doesn't need arguments to start
+//     // but you might want to handle flags like -c for commands
+
+
+    // // Initialize the shell
+    // shell = init_shell(envp);
+    // if (!shell)
+    // {
+    //     printf("Error: Failed to initialize shell\n");
+    //     return (1);
+    // }
+
+//     // Print initialization info (can be removed later)
+//     printf("Shell initialized successfully!\n");
+//     printf("Username: %s\n", shell->username);
+
+//     // Here you would start the MINISHELL LOOP
+//     // But we'll implement that in the next step
+
+//     // Clean up and exit
+//     free_shell(shell);
+//     return (0);
+// }
