@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: roubelka <roubelka@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:59 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/18 13:24:50 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/18 23:06:30 by roubelka         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 # include <signal.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include </Users/roubelka/.brew/opt/readline/include/readline/rlconf.h>
 # include "../libft/libft.h"
 
 # define READ_END 0

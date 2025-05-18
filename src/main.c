@@ -3,31 +3,44 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: roubelka <roubelka@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:54 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/18 13:56:23 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/19 00:46:46 by roubelka         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include <string.h>
 
+extern int rl_catch_signals; // kat9olo ana variable ja mn library 3la bara
+void    handler(int sig)
+{
+    (void)sig;
+    write(1, "\n", 1);
+    rl_on_new_line();  // hadi opchn fi readline kat3lmo anaho bdasatr jdid
+    rl_replace_line("", 0); // kadir satr jdid okatmsah command lktbti 9bl
+    rl_redisplay(); // kat3awd t3rad (prompt) mn jdid
+}
 int	main(int ac, char **av, char **env)
 {
-	t_shell		*shell;
+	// t_shell		*shell;
+	(void)env;  // hanaya kastita b (void) hitach (env) mast3mltachi
 	char		*user_input;
 	(void)ac;
 	(void)av;
 	// (void)env;
 
 	// Initialize the shell
-	shell = shell_init(env);
-	if (!shell)
-	{
-		printf("Error: Failed to initialize shell\n");
-		return (1);
-	}
+	// shell = shell_init(env);
+	// if (!shell)
+	// {
+	// 	printf("Error: Failed to initialize shell\n");
+	// 	return (1);
+	// }	
+	signal(SIGQUIT, SIG_IGN); // katgahl ichar ila drti ( Ctrl + \ ) omakypranti walo
+    signal(SIGINT, handler);
+    rl_catch_signals = 0; // makatkhalich readline ithakm f signal (otkhali tahakom lina)
 	while (1)
 	{
 
