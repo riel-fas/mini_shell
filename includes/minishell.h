@@ -6,23 +6,38 @@
 /*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:59 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/17 12:57:48 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/18 13:24:50 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include "../libft/libft.h"
-# include <readline/readline.h>
-# include <readline/history.h>
+// # include "../libft/libft.h"
+// # include <readline/readline.h>
+// # include <readline/history.h>
+// # include <stdio.h>
+// # include <stdlib.h>
+// # include <unistd.h>
+// # include <fcntl.h>
+// # include <signal.h>
+// # include <sys/wait.h>
+
+
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <string.h>
 # include <fcntl.h>
-# include <signal.h>
 # include <sys/wait.h>
+# include <errno.h>
+# include <signal.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include "../libft/libft.h"
 
+# define READ_END 0
+# define WRITE_END 1
 // # define PROMPT "minishell$~> "
 
 /*enum _____ types for lexer\*/
@@ -73,6 +88,10 @@ typedef struct s_shell
 
 
 void	cleanup(t_shell *shell);
+t_shell	*shell_init(char **env);
+char	*get_username(char **env);
+char	**split_paths(char **env);
+char	**copy_env(char **env);
 
 
 

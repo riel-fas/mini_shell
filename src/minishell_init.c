@@ -6,17 +6,17 @@
 /*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 04:10:39 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/16 04:11:48 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/18 12:39:58 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../includes/minishell.h"
+// # include "../includes/minishell.h"
 
-void	shell_init(t_shell *shell, char **envp)
-{
-	
-
+// void	shell_init(t_shell *shell, char **envp)
+// {
 
 
 
-}
+
+
+// }

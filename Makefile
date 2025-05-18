@@ -68,6 +68,180 @@
 
 
 
+# # Colors
+# RED		= \033[0;31m
+# GREEN	= \033[0;32m
+# YELLOW	= \033[0;33m
+# CYAN	= \033[0;36m
+# NC		= \033[0m # No Color
+
+# NAME			=	minishell
+# CC				=	cc
+# CFLAGS			=	-Wall -Wextra -Werror
+
+# # Libft
+# LIBFT_DIR		=	./libft
+# LIBFT_A			=	$(LIBFT_DIR)/libft.a
+# LIBFT_INC		=	-I$(LIBFT_DIR)
+
+# # Readline support
+# READLINE_PATH	=	/Users/riel-fas/.brew/opt/readline
+# READLINE_FLAGS	=	-I$(READLINE_PATH)/include
+# READLINE_LIBS	=	-L$(READLINE_PATH)/lib -lreadline
+
+# # Files
+# SRCS			=	src/main.c src/env/copy_env.c
+# OBJS			=	${SRCS:.c=.o}
+# HEADER			=	minishell.h
+
+# # Final compile flags
+# ALL_INCLUDES	=	$(CFLAGS) $(READLINE_FLAGS) $(LIBFT_INC)
+
+# all	:	banner $(NAME)
+
+# banner:
+# 	@printf "${RED}███╗   ███╗██╗███╗   ██╗██╗▄▄███▄▄·██╗  ██╗███████╗██╗     ██╗     ${NC}\n"
+# 	@printf "${RED}████╗ ████║██║████╗  ██║██║██╔════╝██║  ██║██╔════╝██║     ██║     ${NC}\n"
+# 	@printf "${RED}██╔████╔██║██║██╔██╗ ██║██║███████╗███████║█████╗  ██║     ██║     ${NC}\n"
+# 	@printf "${RED}██║╚██╔╝██║██║██║╚██╗██║██║╚════██║██╔══██║██╔══╝  ██║     ██║     ${NC}\n"
+# 	@printf "${RED}██║ ╚═╝ ██║██║██║ �█████║██║███████║██║  ██║███████╗███████╗███████╗${NC}\n"
+# 	@printf "${RED}╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝╚═▀▀▀══╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝${NC}\n"
+# 	@printf "${RED}▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄${NC}\n"
+# 	@printf "${RED}█                                                               █${NC}\n"
+# 	@printf "${RED}█        🩸  WELCOME TO THE CURSED MINISHELL  🩸                █${NC}\n"
+# 	@printf "${RED}█                                                               █${NC}\n"
+# 	@printf "${RED}█    \"Every command you type echoes in the void...\"             █${NC}\n"
+# 	@printf "${RED}█    \"Segfaults... are not bugs — they're warnings...\"          █${NC}\n"
+# 	@printf "${RED}█    \"Fork, and you may awaken what sleeps in the pipe...\"      █${NC}\n"
+# 	@printf "${RED}█                                                               █${NC}\n"
+# 	@printf "${RED}▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀${NC}\n"
+# 	@printf "\n"
+# 	@printf "${YELLOW}Date: $(shell date '+%Y-%m-%d %H:%M:%S') UTC${NC}\n"
+# 	@printf "${YELLOW}Haunted by: $(USER), roubelka 👻${NC}\n"
+# 	@printf "\n"
+
+# $(NAME)	:	$(LIBFT_A) $(OBJS)
+# 	@printf "${GREEN}Linking objects to create $(NAME)...${NC}\n"
+# 	@$(CC) $(ALL_INCLUDES) $(OBJS) $(LIBFT_A) -o $(NAME) $(READLINE_LIBS)
+# 	@printf "${GREEN}$(NAME) successfully compiled!${NC}\n"
+
+# %.o : %.c $(HEADER)
+# 	@printf "${GREEN}Compiling $<...${NC}\n"
+# 	@$(CC) $(ALL_INCLUDES) -c $< -o $@
+
+# $(LIBFT_A):
+# 	@printf "${CYAN}Compiling libft...${NC}\n"
+# 	@$(MAKE) -C $(LIBFT_DIR) bonus --no-print-directory > /dev/null
+
+# clean	:
+# 	@printf "${YELLOW}Removing object files...${NC}\n"
+# 	@rm -rf $(OBJS)
+# 	@$(MAKE) -C $(LIBFT_DIR) clean
+
+# fclean: clean
+# 	@printf "${YELLOW}Removing executable...${NC}\n"
+# 	@rm -rf $(NAME)
+# 	@printf "${YELLOW}Cleaning Libft (bonus)...${NC}\n"
+# 	@$(MAKE) -s -C libft fclean
+
+# re	:	fclean all
+
+# .PHONY	:	all clean fclean re banner
+
+
+#########################################################################
+
+# # Colors
+# RED		= \033[0;31m
+# GREEN	= \033[0;32m
+# YELLOW	= \033[0;33m
+# CYAN	= \033[0;36m
+# NC		= \033[0m # No Color
+
+# NAME			=	minishell
+# CC				=	cc
+# CFLAGS			=	-Wall -Wextra -Werror
+
+# # Libft
+# LIBFT_DIR		=	./libft
+# LIBFT_A			=	$(LIBFT_DIR)/libft.a
+# LIBFT_INC		=	-I$(LIBFT_DIR)
+# LIBFT_LIB		=	-L$(LIBFT_DIR) -lft
+
+# # Readline support
+# READLINE_PATH	=	/Users/riel-fas/.brew/opt/readline
+# READLINE_FLAGS	=	-I$(READLINE_PATH)/include
+# READLINE_LIBS	=	-L$(READLINE_PATH)/lib -lreadline
+
+# # Directories
+# SRC_DIR			=	src
+# INC_DIR			=	includes
+
+# # Source files
+# SRCS			=	$(SRC_DIR)/main.c \
+# 					$(SRC_DIR)/env/copy_env.c \
+# 					$(SRC_DIR)/clean_mini_shell.c \
+# 					$(SRC_DIR)/minishell_init.c
+
+# OBJS			=	$(SRCS:.c=.o)
+# HEADER			=	$(INC_DIR)/minishell.h
+
+# # Final compile flags
+# ALL_INCLUDES	=	$(CFLAGS) $(READLINE_FLAGS) $(LIBFT_INC) -I$(INC_DIR)
+
+# all	:	banner $(NAME)
+
+# banner:
+# 	@printf "${RED}███╗   ███╗██╗███╗   ██╗██╗▄▄███▄▄·██╗  ██╗███████╗██╗     ██╗     ${NC}\n"
+# 	@printf "${RED}████╗ ████║██║████╗  ██║██║██╔════╝██║  ██║██╔════╝██║     ██║     ${NC}\n"
+# 	@printf "${RED}██╔████╔██║██║██╔██╗ ██║██║███████╗███████║█████╗  ██║     ██║     ${NC}\n"
+# 	@printf "${RED}██║╚██╔╝██║██║██║╚██╗██║██║╚════██║██╔══██║██╔══╝  ██║     ██║     ${NC}\n"
+# 	@printf "${RED}██║ ╚═╝ ██║██║██║ ╚████║██║███████║██║  ██║███████╗███████╗███████╗${NC}\n"
+# 	@printf "${RED}╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝╚═▀▀▀══╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝${NC}\n"
+# 	@printf "${RED}▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄${NC}\n"
+# 	@printf "${RED}█                                                               █${NC}\n"
+# 	@printf "${RED}█        🩸  WELCOME TO THE CURSED MINISHELL  🩸                █${NC}\n"
+# 	@printf "${RED}█                                                               █${NC}\n"
+# 	@printf "${RED}█    \"Every command you type echoes in the void...\"             █${NC}\n"
+# 	@printf "${RED}█    \"Segfaults... are not bugs — they're warnings...\"          █${NC}\n"
+# 	@printf "${RED}█    \"Fork, and you may awaken what sleeps in the pipe...\"      █${NC}\n"
+# 	@printf "${RED}█                                                               █${NC}\n"
+# 	@printf "${RED}▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀${NC}\n"
+# 	@printf "\n"
+# 	@printf "${YELLOW}Date: $(shell date '+%Y-%m-%d %H:%M:%S') UTC${NC}\n"
+# 	@printf "${YELLOW}Haunted by: $(USER), roubelka 👻${NC}\n"
+# 	@printf "\n"
+
+# $(NAME)	:	$(LIBFT_A) $(OBJS)
+# 	@printf "${GREEN}Linking objects to create $(NAME)...${NC}\n"
+# 	@$(CC) $(ALL_INCLUDES) $(OBJS) -o $(NAME) $(LIBFT_LIB) $(READLINE_LIBS)
+# 	@printf "${GREEN}$(NAME) successfully compiled!${NC}\n"
+
+# %.o : %.c $(HEADER)
+# 	@printf "${GREEN}Compiling $<...${NC}\n"
+# 	@$(CC) $(ALL_INCLUDES) -c $< -o $@
+
+# $(LIBFT_A):
+# 	@printf "${CYAN}Compiling libft...${NC}\n"
+# 	@$(MAKE) -C $(LIBFT_DIR) all bonus --no-print-directory
+
+# clean	:
+# 	@printf "${YELLOW}Removing object files...${NC}\n"
+# 	@rm -rf $(OBJS)
+# 	@printf "${YELLOW}Cleaning Libft...${NC}\n"
+# 	@$(MAKE) -C $(LIBFT_DIR) clean --no-print-directory
+
+# fclean: clean
+# 	@printf "${YELLOW}Removing executable...${NC}\n"
+# 	@rm -rf $(NAME)
+# 	@printf "${YELLOW}Cleaning Libft completely...${NC}\n"
+# 	@$(MAKE) -C $(LIBFT_DIR) fclean --no-print-directory
+
+# re	:	fclean all
+
+# .PHONY	:	all clean fclean re banner
+
+
 # Colors
 RED		= \033[0;31m
 GREEN	= \033[0;32m
@@ -83,19 +257,28 @@ CFLAGS			=	-Wall -Wextra -Werror
 LIBFT_DIR		=	./libft
 LIBFT_A			=	$(LIBFT_DIR)/libft.a
 LIBFT_INC		=	-I$(LIBFT_DIR)
+LIBFT_LIB		=	-L$(LIBFT_DIR) -lft
 
 # Readline support
 READLINE_PATH	=	/Users/riel-fas/.brew/opt/readline
 READLINE_FLAGS	=	-I$(READLINE_PATH)/include
 READLINE_LIBS	=	-L$(READLINE_PATH)/lib -lreadline
 
-# Files
-SRCS			=	src/main.c
-OBJS			=	${SRCS:.c=.o}
-HEADER			=	minishell.h
+# Directories
+SRC_DIR			=	src
+INC_DIR			=	includes
+
+# Source files
+SRCS			=	$(SRC_DIR)/main.c \
+					$(SRC_DIR)/env/copy_env.c \
+					$(SRC_DIR)/clean_mini_shell.c \
+					$(SRC_DIR)/minishell_init.c
+
+OBJS			=	$(SRCS:.c=.o)
+HEADER			=	$(INC_DIR)/minishell.h
 
 # Final compile flags
-ALL_INCLUDES	=	$(CFLAGS) $(READLINE_FLAGS) $(LIBFT_INC)
+ALL_INCLUDES	=	$(CFLAGS) $(READLINE_FLAGS) $(LIBFT_INC) -I$(INC_DIR)
 
 all	:	banner $(NAME)
 
@@ -104,7 +287,7 @@ banner:
 	@printf "${RED}████╗ ████║██║████╗  ██║██║██╔════╝██║  ██║██╔════╝██║     ██║     ${NC}\n"
 	@printf "${RED}██╔████╔██║██║██╔██╗ ██║██║███████╗███████║█████╗  ██║     ██║     ${NC}\n"
 	@printf "${RED}██║╚██╔╝██║██║██║╚██╗██║██║╚════██║██╔══██║██╔══╝  ██║     ██║     ${NC}\n"
-	@printf "${RED}██║ ╚═╝ ██║██║██║ �█████║██║███████║██║  ██║███████╗███████╗███████╗${NC}\n"
+	@printf "${RED}██║ ╚═╝ ██║██║██║ ╚████║██║███████║██║  ██║███████╗███████╗███████╗${NC}\n"
 	@printf "${RED}╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝╚═▀▀▀══╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝${NC}\n"
 	@printf "${RED}▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄${NC}\n"
 	@printf "${RED}█                                                               █${NC}\n"
@@ -122,7 +305,7 @@ banner:
 
 $(NAME)	:	$(LIBFT_A) $(OBJS)
 	@printf "${GREEN}Linking objects to create $(NAME)...${NC}\n"
-	@$(CC) $(ALL_INCLUDES) $(OBJS) $(LIBFT_A) -o $(NAME) $(READLINE_LIBS)
+	@$(CC) $(ALL_INCLUDES) $(OBJS) -o $(NAME) $(LIBFT_LIB) $(READLINE_LIBS)
 	@printf "${GREEN}$(NAME) successfully compiled!${NC}\n"
 
 %.o : %.c $(HEADER)
@@ -131,18 +314,19 @@ $(NAME)	:	$(LIBFT_A) $(OBJS)
 
 $(LIBFT_A):
 	@printf "${CYAN}Compiling libft...${NC}\n"
-	@$(MAKE) -C $(LIBFT_DIR) bonus --no-print-directory > /dev/null
+	@$(MAKE) -C $(LIBFT_DIR) all bonus --no-print-directory > /dev/null
 
 clean	:
 	@printf "${YELLOW}Removing object files...${NC}\n"
 	@rm -rf $(OBJS)
-	@$(MAKE) -C $(LIBFT_DIR) clean
+	@printf "${YELLOW}Cleaning Libft...${NC}\n"
+	@$(MAKE) -C $(LIBFT_DIR) clean --no-print-directory > /dev/null
 
 fclean: clean
 	@printf "${YELLOW}Removing executable...${NC}\n"
 	@rm -rf $(NAME)
-	@printf "${YELLOW}Cleaning Libft (bonus)...${NC}\n"
-	@$(MAKE) -s -C libft fclean
+	@printf "${YELLOW}Cleaning Libft completely...${NC}\n"
+	@$(MAKE) -C $(LIBFT_DIR) fclean --no-print-directory > /dev/null
 
 re	:	fclean all
 

@@ -6,7 +6,7 @@
 /*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:54 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/17 13:09:54 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/18 13:56:23 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,15 +38,16 @@ int	main(int ac, char **av, char **env)
 			printf("exit\n");
 			break ;
 		}
-		if (strlen(user_input) > 0) //only if there is something in the cmdline
+		if (ft_strlen(user_input) > 0) //only if there is something in the cmdline
 			add_history(user_input);	//return back to used cmds
 
 
 			//we need to free cause the readline allocate memory so we need to free it so we dont get leaks mem
-			// free(user_input);
+			free(user_input);
 	}
-	// cleanup(&shell);
+	// cleanup(shell);
 	// return ();// ?EXIT STATUS
+	return (0);
 
 }
 
