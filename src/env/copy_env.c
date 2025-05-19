@@ -6,11 +6,11 @@
 /*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:50:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/19 18:58:36 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/19 19:24:44 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+# include "../includes/minishell.h"
 
 /* Parse a single environment variable into key and value */
 static void    parse_env_var(char *env_str, char **key, char **value)

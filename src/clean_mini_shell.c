@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   clean_mini_shell.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 18:00:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/19 19:08:27 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/19 19:24:23 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+# include "../includes/minishell.h"
 
 /* Free the environment linked list */
 static void    free_env_list(t_env *env)
