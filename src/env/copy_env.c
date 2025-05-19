@@ -3,82 +3,87 @@
 /*                                                        :::      ::::::::   */
 /*   copy_env.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/17 11:16:46 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/17 13:00:13 by riel-fas         ###   ########.fr       */
+/*   Created: 2025/05/19 17:50:00 by riel-fas          #+#    #+#             */
+/*   Updated: 2025/05/19 18:58:36 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
-//storina env f struct dyal shell **env
-//jbedna username men env o storinah *username
-//jbedna men env PATHS bach khadi nehtajohom f execution
-//kandiro copy l env fwest l minishell dyalna
-char	**copy_env(char **env)
-{
-	int		x;
-	int		y;
-	char	**env_copy;
+#include "minishell.h"
 
-	x = 0;
-	while (env[x]) // we count the elements in the env
-		x++;
-	env_copy = malloc(sizeof(char *) * (x + 1));
-	if (!env_copy)  // UNCOMMENTED: Important error check
-		return (NULL);
-	y = 0;
-	while (y < x)
-	{
-		env_copy[y] = ft_strdup(env[y]);
-		y++;
-	}
-	env_copy[y] = NULL;  // FIXED: Use NULL not '\0'
-	return (env_copy);
+/* Parse a single environment variable into key and value */
+static void    parse_env_var(char *env_str, char **key, char **value)
+{
+    int     i;
+
+    i = 0;
+    while (env_str[i] && env_str[i] != '=')
+        i++;
+
+    *key = ft_substr(env_str, 0, i);
+
+    if (env_str[i] == '=')
+        *value = ft_strdup(env_str + i + 1);
+    else
+        *value = ft_strdup("");
 }
 
-//kan splitiw l path 3la 7ssab execution
-char	**split_paths(char **env)  // FIXED: Return type changed to char**
+/* Create a linked list from the environment array */
+t_env    *create_env_list(char **env)
 {
-	char	**paths;
+    t_env   *env_list;
+    t_env   *new_node;
+    int     i;
+    char    *key;
+    char    *value;
 
-	while (*env && ft_strncmp(*env, "PATH=", 5) != 0)
-		env++;
-	if (!*env)
-		return (NULL);
-	paths = ft_split(*env + 5, ':');
-	return (paths);
+    env_list = NULL;
+    i = 0;
+
+    while (env[i])
+    {
+        parse_env_var(env[i], &key, &value);
+        new_node = new_env_node(key, value);
+
+        if (!new_node)
+        {
+            // Handle error - cleanup and return
+            // You might need to implement a function to free the env_list
+            return (NULL);
+        }
+
+        add_env_node(&env_list, new_node);
+        free(key);
+        free(value);
+        i++;
+    }
+
+    return (env_list);
 }
 
-//kanjebdo username men env
-char	*get_username(char **env)
+char    *get_username(t_env *env)
 {
-	int	i;
+    char    *username;
 
-	i = 0;  // FIXED: Initialized i
-    // First try USER environment variable
-	while (env[i])
-	{
-		if (ft_strncmp(env[i], "USER=", 5) == 0)
-			return ft_strdup(env[i] + 5);
-		i++;
-	}
-    // Default fallback
-	return (ft_strdup("user"));
+    username = get_env_value(env, "USER");
+    if (!username)
+        username = ft_strdup("user");
+    else
+        username = ft_strdup(username);
+    return (username);
 }
 
-t_shell	*shell_init(char **env)
+char    **split_paths(t_env *env)
 {
-	t_shell *shell;
+    char    *path_str;
+    char    **paths;
 
-	shell = malloc(sizeof(t_shell));
-	if (!shell)  // UNCOMMENTED: Important error check
-		return (NULL);
-	//function to copy the env into a double pointer
-	shell->env = copy_env(env);
-    //extract the username from the env
-	shell->username = get_username(env);
-    //split PATH in env by ":" for CMDS execution
-	shell->path = split_paths(env);
-    return (shell);
+    path_str = get_env_value(env, "PATH");
+    if (!path_str)
+        return (NULL);
+    paths = ft_split(path_str, ':');
+    return (paths);
 }
+
+

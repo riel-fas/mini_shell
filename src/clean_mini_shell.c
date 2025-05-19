@@ -3,29 +3,56 @@
 /*                                                        :::      ::::::::   */
 /*   clean_mini_shell.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/16 03:56:58 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/16 04:06:39 by riel-fas         ###   ########.fr       */
+/*   Created: 2025/05/19 18:00:00 by riel-fas          #+#    #+#             */
+/*   Updated: 2025/05/19 18:59:23 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "minishell.h"
 
-// free allocated memory in shell
-void	cleanup(t_shell *shell)
+/* Free the environment linked list */
+static void    free_env_list(t_env *env)
 {
-	int	x;
+    t_env    *temp;
 
-	if (shell->env)
-	{
-		x= 0;
-		while (shell->env)
-		{
-			free(shell->env[x]);
-			x++;
-		}
-		free(shell->env);
-	}
-	
+    while (env)
+    {
+        temp = env;
+        env = env->next;
+        free(temp->key);
+        free(temp->value);
+        free(temp);
+    }
+}
+
+/* Free the path array */
+static void    free_path(char **path)
+{
+    int    i;
+
+    if (!path)
+        return;
+    i = 0;
+    while (path[i])
+    {
+        free(path[i]);
+        i++;
+    }
+    free(path);
+}
+
+void    cleanup(t_shell *shell)
+{
+    if (!shell)
+        return;
+
+    free_env_list(shell->env);
+    free(shell->username);
+    free_path(shell->path);
+
+    // Free tokens and commands when you implement them
+
+    free(shell);
 }

@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_init.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 04:10:39 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/18 12:39:58 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/19 18:58:48 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// # include "../includes/minishell.h"
+# include "../includes/minishell.h"
 
 // void	shell_init(t_shell *shell, char **envp)
 // {
@@ -20,3 +20,21 @@
 
 
 // }
+
+/* Update the shell_init function to use the new env_list */
+t_shell    *shell_init(char **env)
+{
+    t_shell *shell;
+
+    shell = (t_shell *)malloc(sizeof(t_shell));
+    if (!shell)
+        return (NULL);
+
+    ft_memset(shell, 0, sizeof(t_shell));
+    shell->env = create_env_list(env);
+    shell->username = get_username(shell->env);
+    shell->path = split_paths(shell->env);
+    shell->exit_status = 0;
+
+    return (shell);
+}

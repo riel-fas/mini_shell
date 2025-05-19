@@ -6,7 +6,7 @@
 /*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:59 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/19 17:06:59 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/19 18:51:43 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ typedef struct  s_cmds
 //mini_shell Data_Structure
 typedef struct s_shell
 {
-	char			**env; //ENVIRONMENT // AR: env li khadi ndirolo copy 3endna f lprojet
+	t_env			**env; //ENVIRONMENT // AR: env li khadi ndirolo copy 3endna f lprojet
 	char			*username; //USR ENV \\AR: USERNAME li katel9ah f path USR f west l ENV
 	char			**path; //stores the paths in env   // AR: fiha dok path men ba3d ma splitinahom  ":"
 	t_token			*tokens; //INPUT AFTER IT HAS BEEN TOKENISED
@@ -86,6 +86,12 @@ typedef struct s_shell
 	// int				working; //SHELL IS RUNNING
 }	t_shell;
 
+typedef struct s_env
+{
+	char		*key;
+	char		*value;
+	struct s_env	*next;
+}	t_env;
 
 
 
