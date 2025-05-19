@@ -3,25 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roubelka <roubelka@student.42.fr>          +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:54 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/19 00:46:46 by roubelka         ###   ########.fr       */
+/*   Updated: 2025/05/19 16:35:27 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include <string.h>
 
+
 extern int rl_catch_signals; // kat9olo ana variable ja mn library 3la bara
-void    handler(int sig)
-{
-    (void)sig;
-    write(1, "\n", 1);
-    rl_on_new_line();  // hadi opchn fi readline kat3lmo anaho bdasatr jdid
-    rl_replace_line("", 0); // kadir satr jdid okatmsah command lktbti 9bl
-    rl_redisplay(); // kat3awd t3rad (prompt) mn jdid
-}
+
 int	main(int ac, char **av, char **env)
 {
 	// t_shell		*shell;
@@ -37,7 +31,7 @@ int	main(int ac, char **av, char **env)
 	// {
 	// 	printf("Error: Failed to initialize shell\n");
 	// 	return (1);
-	// }	
+	// }
 	signal(SIGQUIT, SIG_IGN); // katgahl ichar ila drti ( Ctrl + \ ) omakypranti walo
     signal(SIGINT, handler);
     rl_catch_signals = 0; // makatkhalich readline ithakm f signal (otkhali tahakom lina)
@@ -47,7 +41,7 @@ int	main(int ac, char **av, char **env)
 		user_input = readline("minishell$~>"); //prompt
 		if (!user_input)
 		{
-			//the program keeps running until a Ctrl+C or Ctrl+D
+			//the program keeps running until a Ctrl+D
 			printf("exit\n");
 			break ;
 		}

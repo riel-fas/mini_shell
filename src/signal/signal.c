@@ -6,16 +6,17 @@
 /*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 05:33:05 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/16 05:53:04 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/19 16:34:28 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-// void	handle_ctr_c(int sig)
-// {
-// 	(void)sig;
-// 	g_sig = 1;
-
-
-// }
+void    handler(int sig)
+{
+    (void)sig;
+    write(1, "\n", 1);
+    rl_on_new_line();  // hadi opchn fi readline kat3lmo anaho bdasatr jdid
+    rl_replace_line("", 0); // kadir satr jdid okatmsah command lktbti 9bl
+    rl_redisplay(); // kat3awd t3rad (prompt) mn jdid
+}
