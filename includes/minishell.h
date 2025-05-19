@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:59 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/19 16:32:26 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/19 17:06:59 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 // # include </Users/roubelka/.brew/opt/readline/include/readline/rlconf.h> //rachid
-# include </Users/riel-fas/.brew/opt/readline/include/readline/rlconf.h> //riad
+// # include </Users/riel-fas/.brew/opt/readline/include/readline/rlconf.h> //riad
+# include "/home/linuxbrew/.linuxbrew/opt/readline/include/readline/rlconf.h" //linux riad
 # include "../libft/libft.h"
 
 # define READ_END 0
@@ -95,7 +96,7 @@ char	*get_username(char **env);
 char	**split_paths(char **env);
 char	**copy_env(char **env);
 
-void    handler(int sig);
+void	handler(int sig);
 
 
 #endif

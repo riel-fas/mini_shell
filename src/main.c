@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:54 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/19 16:35:27 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/19 17:15:26 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	main(int ac, char **av, char **env)
 
 
 			//we need to free cause the readline allocate memory so we need to free it so we dont get leaks mem
-			free(user_input);
+		free(user_input);
 	}
 	// cleanup(shell);
 	// return ();// ?EXIT STATUS
