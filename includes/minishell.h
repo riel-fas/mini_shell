@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:59 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/19 18:51:43 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/19 19:16:07 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 // # include </Users/roubelka/.brew/opt/readline/include/readline/rlconf.h> //rachid
-// # include </Users/riel-fas/.brew/opt/readline/include/readline/rlconf.h> //riad
-# include "/home/linuxbrew/.linuxbrew/opt/readline/include/readline/rlconf.h" //linux riad
+# include </Users/riel-fas/.brew/opt/readline/include/readline/rlconf.h> //riad
+// # include "/home/linuxbrew/.linuxbrew/opt/readline/include/readline/rlconf.h" //linux riad
 # include "../libft/libft.h"
 
 # define READ_END 0
@@ -74,10 +74,17 @@ typedef struct  s_cmds
 	struct s_cmds	*next; //next cmd in the pipeline |
 }	t_cmds;
 
+typedef struct s_env
+{
+	char		*key;
+	char		*value;
+	struct s_env	*next;
+}	t_env;
+
 //mini_shell Data_Structure
 typedef struct s_shell
 {
-	t_env			**env; //ENVIRONMENT // AR: env li khadi ndirolo copy 3endna f lprojet
+	t_env			*env; //ENVIRONMENT // AR: env li khadi ndirolo copy 3endna f lprojet
 	char			*username; //USR ENV \\AR: USERNAME li katel9ah f path USR f west l ENV
 	char			**path; //stores the paths in env   // AR: fiha dok path men ba3d ma splitinahom  ":"
 	t_token			*tokens; //INPUT AFTER IT HAS BEEN TOKENISED
@@ -86,23 +93,38 @@ typedef struct s_shell
 	// int				working; //SHELL IS RUNNING
 }	t_shell;
 
-typedef struct s_env
-{
-	char		*key;
-	char		*value;
-	struct s_env	*next;
-}	t_env;
+//mini_shell_utils.c
+int ft_strcmp(char *s1, char *s2);
 
 
 
 
-void	cleanup(t_shell *shell);
-t_shell	*shell_init(char **env);
-char	*get_username(char **env);
-char	**split_paths(char **env);
-char	**copy_env(char **env);
 
-void	handler(int sig);
+//copy_env.c
+// static void    parse_env_var(char *env_str, char **key, char **value);
+t_env    *create_env_list(char **env);
+char    *get_username(t_env *env);
+char    **split_paths(t_env *env);
+
+//env_list.c
+t_env   *new_env_node(char *name, char *value);
+void    add_env_node(t_env **env_list, t_env *new_node);
+t_env   *find_env_var(t_env *env, char *key);
+char    *get_env_value(t_env *env, char *key);
+char    **env_list_to_array(t_env *env);
+
+//signal.c
+void    handler(int sig);
+
+//clean_mini_shell.c
+// static void    free_env_list(t_env *env);
+// static void    free_path(char **path);
+void    cleanup(t_shell *shell);
+
+//minishell_init.c
+t_shell    *shell_init(char **env);
+
+
 
 
 #endif
