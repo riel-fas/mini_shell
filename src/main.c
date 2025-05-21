@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:54 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/21 12:11:57 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/21 13:01:32 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,3 +118,39 @@ int	main(int ac, char **av, char **env)
 // 	cleanup(shell);
 // 	return (0);
 // }
+
+
+
+
+
+/////////////////////////
+
+
+
+int	main(int argc, char **argv, char **env)
+{
+	t_shell	*shell;
+	int		exit_status;
+
+	(void)argc;
+	(void)argv;
+
+	// Set up signal handling
+	signal(SIGINT, handler);  // CTRL+C
+	signal(SIGQUIT, SIG_IGN); // CTRL+\
+
+	// Initialize the shell
+	shell = shell_init(env);
+	if (!shell)
+	{
+		printf("Error: Failed to initialize shell.\n");
+		return (1);
+	}
+
+	// Run the main shell loop
+	exit_status = minishell_loop(shell);
+
+	// Clean up and exit
+	cleanup(shell);
+	return (exit_status);
+}
