@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   clean_mini_shell.c                                 :+:      :+:    :+:   */
+/*   mini_shell_clean.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 18:00:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/19 19:24:23 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/21 18:32:55 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../includes/minishell.h"
+# include "../includes/mini_shell.h"
 
 /* Free the environment linked list */
 static void    free_env_list(t_env *env)

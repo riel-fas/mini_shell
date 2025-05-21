@@ -6,11 +6,11 @@
 /*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 05:33:05 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/21 13:02:23 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/21 18:32:27 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "../../includes/mini_shell.h"
 
 
 extern int rl_catch_signals; // kat9olo ana variable ja mn library 3la bara

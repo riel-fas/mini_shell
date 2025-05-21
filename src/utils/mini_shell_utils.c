@@ -6,14 +6,11 @@
 /*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 19:13:56 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/21 11:55:03 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/21 18:32:37 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
-#include <unistd.h>
-#include <string.h>
-#include <stdio.h>
+#include "../../includes/mini_shell.h"
 
 int ft_strcmp(char *s1, char *s2)
 {

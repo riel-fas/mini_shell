@@ -1,4 +1,8 @@
 //redit env men arraty l linked list
 //o zedt l ability bach y switchi men linked l array o l3eks
 //
+//bedelt chi l3aybat f l main
+//redit loop dyal minishell f function bouhdha
 //
+//
+

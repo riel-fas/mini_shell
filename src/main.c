@@ -6,11 +6,11 @@
 /*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:54 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/21 13:01:32 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/21 18:32:49 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../includes/mini_shell.h"
 #include <string.h>
 
 

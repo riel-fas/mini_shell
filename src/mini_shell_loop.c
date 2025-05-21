@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell_loop.c                                   :+:      :+:    :+:   */
+/*   mini_shell_loop.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 10:45:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/21 13:00:52 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/21 18:33:07 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../includes/mini_shell.h"
 
 /**
  * Generate the shell prompt

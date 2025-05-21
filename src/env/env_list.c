@@ -6,11 +6,11 @@
 /*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 18:53:58 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/21 11:53:47 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/21 18:32:16 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../includes/minishell.h"
+# include "../../includes/mini_shell.h"
 
 /* Create a new environment variable node */
 t_env   *new_env_node(char *name, char *value)
