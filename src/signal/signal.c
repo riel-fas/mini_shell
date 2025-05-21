@@ -6,11 +6,14 @@
 /*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 05:33:05 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/19 16:34:28 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/21 12:10:01 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+
+extern int rl_catch_signals; // kat9olo ana variable ja mn library 3la bara
 
 void    handler(int sig)
 {
