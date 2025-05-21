@@ -6,23 +6,12 @@
 /*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:59 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/21 18:24:50 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/21 20:17:05 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINI_SHELL_H
 # define MINI_SHELL_H
-
-// # include "../libft/libft.h"
-// # include <readline/readline.h>
-// # include <readline/history.h>
-// # include <stdio.h>
-// # include <stdlib.h>
-// # include <unistd.h>
-// # include <fcntl.h>
-// # include <signal.h>
-// # include <sys/wait.h>
-
 
 # include <stdio.h>
 # include <stdlib.h>
@@ -34,14 +23,13 @@
 # include <signal.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include "/home/linuxbrew/.linuxbrew/opt/readline/include/readline/rlconf.h" //linux riad
 // # include </Users/roubelka/.brew/opt/readline/include/readline/rlconf.h> //rachid
 // # include </Users/riel-fas/.brew/opt/readline/include/readline/rlconf.h> //riad
-# include "/home/linuxbrew/.linuxbrew/opt/readline/include/readline/rlconf.h" //linux riad
 # include "../libft/libft.h"
 
 # define READ_END 0
 # define WRITE_END 1
-// # define PROMPT "minishell$~> "
 
 /*enum _____ types for lexer\*/
 typedef enum e_token_type
@@ -52,7 +40,7 @@ typedef enum e_token_type
 	TOKEN_REDIR_OUT, //>
 	TOKEN_REDIR_APPEND, //>>
 	TOKEN_HEREDOC, //<<
-	TOKEN_END_OF_INPUT //end of input (heredoc)
+	// TOKEN_END_OF_INPUT //end of input (heredoc)
 }	t_token_type;
 
 //token struct
@@ -124,6 +112,7 @@ void    cleanup(t_shell *shell);
 //minishell_init.c
 t_shell    *shell_init(char **env);
 
+int	minishell_loop(t_shell *shell);
 
 
 

@@ -4,5 +4,4 @@
 //bedelt chi l3aybat f l main
 //redit loop dyal minishell f function bouhdha
 //
-//
-
+//9adit initialisation dyal shell, ba9i khadi nzid tokenisation 

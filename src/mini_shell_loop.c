@@ -6,7 +6,7 @@
 /*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 10:45:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/21 18:33:07 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/21 19:56:46 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,49 +14,15 @@
 
 /**
  * Generate the shell prompt
- * Creates a custom prompt with username and current directory
+ * Creates a simple prompt "minishell~> "
  *
- * @param shell The shell structure
+ * @param shell The shell structure (unused)
  * @return Dynamically allocated prompt string (must be freed)
  */
 static char	*generate_prompt(t_shell *shell)
 {
-	char	*prompt;
-	char	*cwd;
-	char	*dir_name;
-	char	*temp;
-
-	cwd = getcwd(NULL, 0);
-	if (!cwd)
-		return (ft_strdup("minishell$ "));
-
-	// Get the last component of the path
-	dir_name = ft_strrchr(cwd, '/');
-	if (!dir_name || *(dir_name + 1) == '\0')
-		dir_name = cwd;
-	else
-		dir_name++;
-
-	// Format: username@directory$
-	temp = ft_strjoin(shell->username, "@");
-	if (!temp)
-	{
-		free(cwd);
-		return (ft_strdup("minishell$ "));
-	}
-
-	prompt = ft_strjoin(temp, dir_name);
-	free(temp);
-	free(cwd);
-
-	if (!prompt)
-		return (ft_strdup("minishell$ "));
-
-	temp = prompt;
-	prompt = ft_strjoin(temp, "$ ");
-	free(temp);
-
-	return (prompt);
+	(void)shell; // Avoid unused parameter warning
+	return (ft_strdup("minishell~> "));
 }
 
 /**
@@ -69,6 +35,7 @@ static char	*generate_prompt(t_shell *shell)
  */
 static int	process_input(t_shell *shell, char *input)
 {
+	(void)shell;
 	if (!input || !*input)
 		return (1);
 

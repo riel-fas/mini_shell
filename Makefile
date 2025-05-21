@@ -29,9 +29,13 @@
 # SRCS			=	$(SRC_DIR)/main.c \
 # 					$(SRC_DIR)/env/copy_env.c \
 # 					$(SRC_DIR)/env/env_list.c \
-# 					$(SRC_DIR)/clean_mini_shell.c \
-# 					$(SRC_DIR)/minishell_init.c \
-# 					$(SRC_DIR)/signal/signal.c
+# 					$(SRC_DIR)/mini_shell_clean.c \
+# 					$(SRC_DIR)/mini_shell_init.c \
+# 					$(SRC_DIR)/signal/signal.c \
+# 					$(SRC_DIR)/mini_shell_loop \
+# 					$(SRC_DIR)/utils/mini_shell_utils
+
+
 
 # OBJS			=	$(SRCS:.c=.o)
 # HEADER			=	$(INC_DIR)/minishell.h
@@ -125,9 +129,10 @@ INC_DIR			=	includes
 SRCS			=	$(SRC_DIR)/main.c \
 					$(SRC_DIR)/env/copy_env.c \
 					$(SRC_DIR)/env/env_list.c \
+					$(SRC_DIR)/mini_shell_clean.c \
+					$(SRC_DIR)/mini_shell_init.c \
 					$(SRC_DIR)/signal/signal.c \
-					$(SRC_DIR)/clean_mini_shell.c \
-					$(SRC_DIR)/minishell_init.c \
+					$(SRC_DIR)/mini_shell_loop.c \
 					$(SRC_DIR)/utils/mini_shell_utils.c
 
 
@@ -165,9 +170,22 @@ $(NAME)	:	$(LIBFT_A) $(OBJS)
 	@$(CC) $(ALL_INCLUDES) $(OBJS) -o $(NAME) $(LIBFT_LIB) $(READLINE_LIBS)
 	@printf "${GREEN}$(NAME) successfully compiled!${NC}\n"
 
+# %.o : %.c $(HEADER)
+# 	@printf "${GREEN}Compiling $<...${NC}\n"
+# 	@$(CC) $(ALL_INCLUDES) -c $< -o $@
+
+# Replace this pattern rule:
 %.o : %.c $(HEADER)
 	@printf "${GREEN}Compiling $<...${NC}\n"
 	@$(CC) $(ALL_INCLUDES) -c $< -o $@
+
+# With this approach that builds all files with one message:
+$(OBJS): | compile_msg
+	@$(CC) $(ALL_INCLUDES) -c $(@:.o=.c) -o $@
+
+compile_msg:
+	@printf "${GREEN}Compiling source files...${NC}\n"
+
 
 $(LIBFT_A):
 	@printf "${CYAN}Compiling libft...${NC}\n"

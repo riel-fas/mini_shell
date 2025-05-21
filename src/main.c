@@ -6,7 +6,7 @@
 /*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:54 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/21 18:32:49 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/21 19:39:12 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,47 +16,47 @@
 
 extern int rl_catch_signals; // kat9olo ana variable ja mn library 3la bara
 
-int	main(int ac, char **av, char **env)
-{
-	// t_shell		*shell;
-	(void)env;  // hanaya kastita b (void) hitach (env) mast3mltachi
-	char		*user_input;
-	(void)ac;
-	(void)av;
-	// (void)env;
+// int	main(int ac, char **av, char **env)
+// {
+// 	// t_shell		*shell;
+// 	(void)env;  // hanaya kastita b (void) hitach (env) mast3mltachi
+// 	char		*user_input;
+// 	(void)ac;
+// 	(void)av;
+// 	// (void)env;
 
-	// Initialize the shell
-	// shell = shell_init(env);
-	// if (!shell)
-	// {
-	// 	printf("Error: Failed to initialize shell\n");
-	// 	return (1);
-	// }
-	signal(SIGQUIT, SIG_IGN); // katgahl ichar ila drti ( Ctrl + \ ) omakypranti walo
-    signal(SIGINT, handler);
-    rl_catch_signals = 0; // makatkhalich readline ithakm f signal (otkhali tahakom lina)
-	while (1)
-	{
+// 	// Initialize the shell
+// 	// shell = shell_init(env);
+// 	// if (!shell)
+// 	// {
+// 	// 	printf("Error: Failed to initialize shell\n");
+// 	// 	return (1);
+// 	// }
+// 	signal(SIGQUIT, SIG_IGN); // katgahl ichar ila drti ( Ctrl + \ ) omakypranti walo
+//     signal(SIGINT, handler);
+//     rl_catch_signals = 0; // makatkhalich readline ithakm f signal (otkhali tahakom lina)
+// 	while (1)
+// 	{
 
-		user_input = readline("minishell$~>"); //prompt
-		if (!user_input)
-		{
-			//the program keeps running until a Ctrl+D
-			printf("exit\n");
-			break ;
-		}
-		if (ft_strlen(user_input) > 0) //only if there is something in the cmdline
-			add_history(user_input);	//return back to used cmds
+// 		user_input = readline("minishell$~>"); //prompt
+// 		if (!user_input)
+// 		{
+// 			//the program keeps running until a Ctrl+D
+// 			printf("exit\n");
+// 			break ;
+// 		}
+// 		if (ft_strlen(user_input) > 0) //only if there is something in the cmdline
+// 			add_history(user_input);	//return back to used cmds
 
 
-			//we need to free cause the readline allocate memory so we need to free it so we dont get leaks mem
-		free(user_input);
-	}
-	// cleanup(shell);
-	// return ();// ?EXIT STATUS
-	return (0);
+// 			//we need to free cause the readline allocate memory so we need to free it so we dont get leaks mem
+// 		free(user_input);
+// 	}
+// 	// cleanup(shell);
+// 	// return ();// ?EXIT STATUS
+// 	return (0);
 
-}
+// }
 
 ////////////////////////////////////////test for env///////////////////////////////////////////////
 
@@ -137,8 +137,7 @@ int	main(int argc, char **argv, char **env)
 
 	// Set up signal handling
 	signal(SIGINT, handler);  // CTRL+C
-	signal(SIGQUIT, SIG_IGN); // CTRL+\
-
+	signal(SIGQUIT, SIG_IGN); 
 	// Initialize the shell
 	shell = shell_init(env);
 	if (!shell)
