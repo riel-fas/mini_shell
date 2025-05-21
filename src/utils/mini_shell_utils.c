@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   mini_shell_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 19:13:56 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/19 19:14:16 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/21 11:55:03 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../includes/minishell.h"
 #include <unistd.h>
 #include <string.h>
 #include <stdio.h>

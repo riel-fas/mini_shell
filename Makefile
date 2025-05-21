@@ -28,6 +28,7 @@ INC_DIR			=	includes
 # Source files
 SRCS			=	$(SRC_DIR)/main.c \
 					$(SRC_DIR)/env/copy_env.c \
+					$(SRC_DIR)/env/env_list.c \
 					$(SRC_DIR)/clean_mini_shell.c \
 					$(SRC_DIR)/minishell_init.c \
 					$(SRC_DIR)/signal/signal.c

@@ -6,7 +6,7 @@
 /*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:59 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/19 19:39:04 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/21 11:49:14 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 // # include </Users/roubelka/.brew/opt/readline/include/readline/rlconf.h> //rachid
-# include </Users/riel-fas/.brew/opt/readline/include/readline/rlconf.h> //riad
-// # include "/home/linuxbrew/.linuxbrew/opt/readline/include/readline/rlconf.h" //linux riad
+// # include </Users/riel-fas/.brew/opt/readline/include/readline/rlconf.h> //riad
+# include "/home/linuxbrew/.linuxbrew/opt/readline/include/readline/rlconf.h" //linux riad
 # include "../libft/libft.h"
 
 # define READ_END 0
