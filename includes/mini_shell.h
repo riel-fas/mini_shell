@@ -6,7 +6,7 @@
 /*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:59 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/21 20:17:05 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/22 12:10:13 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ typedef enum e_token_type
 	TOKEN_REDIR_OUT, //>
 	TOKEN_REDIR_APPEND, //>>
 	TOKEN_HEREDOC, //<<
-	// TOKEN_END_OF_INPUT //end of input (heredoc)
+	TOKEN_END_OF_INPUT, //end of input (heredoc)
 }	t_token_type;
 
 //token struct
@@ -84,12 +84,7 @@ typedef struct s_shell
 //mini_shell_utils.c
 int ft_strcmp(char *s1, char *s2);
 
-
-
-
-
 //copy_env.c
-// static void    parse_env_var(char *env_str, char **key, char **value);
 t_env    *create_env_list(char **env);
 char    *get_username(t_env *env);
 char    **split_paths(t_env *env);
@@ -105,15 +100,9 @@ char    **env_list_to_array(t_env *env);
 void    handler(int sig);
 
 //clean_mini_shell.c
-// static void    free_env_list(t_env *env);
-// static void    free_path(char **path);
 void    cleanup(t_shell *shell);
 
-//minishell_init.c
 t_shell    *shell_init(char **env);
-
 int	minishell_loop(t_shell *shell);
-
-
 
 #endif

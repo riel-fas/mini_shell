@@ -6,7 +6,7 @@
 /*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 10:45:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/21 19:56:46 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/22 13:08:01 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,32 +64,33 @@ static int	process_input(t_shell *shell, char *input)
  * @param shell The shell structure
  * @return The exit status
  */
-int	minishell_loop(t_shell *shell)
+/* Update the process_input function */
+
+static int	process_input(t_shell *shell, char *input)
 {
-	char	*input;
-	char	*prompt;
-	int		status;
+	if (!input || !*input)
+		return (1);
 
-	status = 1;
-	while (status)
-	{
-		// Generate and display prompt
-		prompt = generate_prompt(shell);
-		input = readline(prompt);
-		free(prompt);
+	// Add to history if not empty
+	if (*input)
+		add_history(input);
 
-		// Handle EOF (Ctrl+D)
-		if (!input)
-		{
-			printf("exit\n");
-			break;
-		}
+	// Simple exit command for testing
+	if (ft_strcmp(input, "exit") == 0)
+		return (0);
 
-		// Process the input
-		status = process_input(shell, input);
+	// Tokenize the input
+	shell->tokens = tokenize(input);
 
-		free(input);
-	}
+	// Debug: print tokens
+	print_tokens(shell->tokens);
 
-	return (shell->exit_status);
+	// TODO: Parse tokens into commands
+	// TODO: Execute commands
+
+	// Free tokens when done
+	free_tokens(shell->tokens);
+	shell->tokens = NULL;
+
+	return (1);
 }
