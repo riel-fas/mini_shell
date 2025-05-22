@@ -136,12 +136,13 @@ SRCS			=	$(SRC_DIR)/main.c \
 					$(SRC_DIR)/utils/mini_shell_utils.c \
 					$(SRC_DIR)/lexer/lexer.c \
 					$(SRC_DIR)/lexer/lexer_extraction.c \
-					$(SRC_DIR)/lexer/lexer_utils.c 
+					$(SRC_DIR)/lexer/lexer_utils.c \
+					$(SRC_DIR)/lexer/lexer_utils_2.c
 
 
 
 OBJS			=	$(SRCS:.c=.o)
-HEADER			=	$(INC_DIR)/minishell.h
+HEADER			=	$(INC_DIR)/minishell.h $(INC_DIR)/lexer.h
 
 # Final compile flags
 ALL_INCLUDES	=	$(CFLAGS) $(READLINE_FLAGS) $(LIBFT_INC) -I$(INC_DIR)

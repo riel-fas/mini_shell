@@ -3,29 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 19:15:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/22 12:05:14 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/22 17:51:55 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lexer.h"
-
-int	is_whitespace(char a)
-{
-	return (a == ' ' || a == '\t' || a == '\n' || a == '\r');
-}
-
-int	is_operator(char a)
-{
-	return (a == '|' || a == '<' || a == '>');
-}
-
-int	is_quote(char a)
-{
-	return (a == '\'' || a == '\"');
-}
 
 //Create a new token // kan creayiw token jdid
 t_token	*create_token(char *value, t_token_type type)

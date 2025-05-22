@@ -6,7 +6,7 @@
 /*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:26:09 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/22 16:47:21 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/22 18:12:43 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,14 @@
 //Tokenize input string into a list of tokens // kanredo input 3la chkel list dyal tokens
 t_token	*tokenize(char *input)
 {
-	t_token		*tokens;
-	t_token		*new_token;
-	int			i;
-	char		*value;
+	t_token			*tokens;
+	t_token			*new_token;
+	int				i;
+	char			*value;
 	t_token_type	type;
 
 	if (!input)
 		return (NULL);
-
 	tokens = NULL;
 	i = 0;
 	while (input[i])
