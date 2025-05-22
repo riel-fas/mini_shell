@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini_shell.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:59 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/22 12:10:13 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/22 16:59:02 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@
 # include <signal.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-# include "/home/linuxbrew/.linuxbrew/opt/readline/include/readline/rlconf.h" //linux riad
+// # include "/home/linuxbrew/.linuxbrew/opt/readline/include/readline/rlconf.h" //linux riad
 // # include </Users/roubelka/.brew/opt/readline/include/readline/rlconf.h> //rachid
-// # include </Users/riel-fas/.brew/opt/readline/include/readline/rlconf.h> //riad
+# include </Users/riel-fas/.brew/opt/readline/include/readline/rlconf.h> //riad
 # include "../libft/libft.h"
 
 # define READ_END 0
@@ -104,5 +104,29 @@ void    cleanup(t_shell *shell);
 
 t_shell    *shell_init(char **env);
 int	minishell_loop(t_shell *shell);
+
+
+//lexer_extraction.c
+char	*extract_word(char *input, int *i);
+char	*extract_operator(char *input, int *i, t_token_type *type);
+char	*extract_quoted_string(char *input, int *i, char quote);
+
+//leer_utils.c
+int	is_whitespace(char a);
+int	is_operator(char a);
+int	is_quote(char a);
+t_token	*create_token(char *value, t_token_type type);
+void	add_token(t_token **tokens, t_token *new_token);
+void	free_tokens(t_token *tokens);
+
+
+//lexer.c
+t_token	*tokenize(char *input);
+void	print_tokens(t_token *tokens);
+
+
+
+
+
 
 #endif

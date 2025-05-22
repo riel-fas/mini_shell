@@ -133,7 +133,11 @@ SRCS			=	$(SRC_DIR)/main.c \
 					$(SRC_DIR)/mini_shell_init.c \
 					$(SRC_DIR)/signal/signal.c \
 					$(SRC_DIR)/mini_shell_loop.c \
-					$(SRC_DIR)/utils/mini_shell_utils.c
+					$(SRC_DIR)/utils/mini_shell_utils.c \
+					$(SRC_DIR)/lexer/lexer.c \
+					$(SRC_DIR)/lexer/lexer_extraction.c \
+					$(SRC_DIR)/lexer/lexer_utils.c 
+
 
 
 OBJS			=	$(SRCS:.c=.o)
@@ -174,12 +178,10 @@ $(NAME)	:	$(LIBFT_A) $(OBJS)
 # 	@printf "${GREEN}Compiling $<...${NC}\n"
 # 	@$(CC) $(ALL_INCLUDES) -c $< -o $@
 
-# Replace this pattern rule:
 %.o : %.c $(HEADER)
 	@printf "${GREEN}Compiling $<...${NC}\n"
 	@$(CC) $(ALL_INCLUDES) -c $< -o $@
 
-# With this approach that builds all files with one message:
 $(OBJS): | compile_msg
 	@$(CC) $(ALL_INCLUDES) -c $(@:.o=.c) -o $@
 

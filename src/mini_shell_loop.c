@@ -3,68 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   mini_shell_loop.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 10:45:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/22 13:08:01 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/22 17:08:38 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/mini_shell.h"
 
-/**
- * Generate the shell prompt
- * Creates a simple prompt "minishell~> "
- *
- * @param shell The shell structure (unused)
- * @return Dynamically allocated prompt string (must be freed)
- */
 static char	*generate_prompt(t_shell *shell)
 {
-	(void)shell; // Avoid unused parameter warning
+	(void)shell; 
 	return (ft_strdup("minishell~> "));
 }
-
-/**
- * Process user input
- * This will be expanded as you implement lexer, parser, etc.
- *
- * @param shell The shell structure
- * @param input The user input string
- * @return 1 to continue the shell loop, 0 to exit
- */
-static int	process_input(t_shell *shell, char *input)
-{
-	(void)shell;
-	if (!input || !*input)
-		return (1);
-
-	// Add to history if not empty
-	if (*input)
-		add_history(input);
-
-	// Simple exit command for testing
-	if (ft_strcmp(input, "exit") == 0)
-		return (0);
-
-	// TODO: Lexical analysis (tokenize input)
-	// TODO: Parsing (create command structure)
-	// TODO: Execute commands
-
-	// For now just echo the command for testing
-	printf("Command entered: '%s'\n", input);
-
-	return (1);
-}
-
-/**
- * The main shell loop
- * Repeatedly displays prompt, reads input, and processes commands
- *
- * @param shell The shell structure
- * @return The exit status
- */
-/* Update the process_input function */
 
 static int	process_input(t_shell *shell, char *input)
 {
@@ -94,3 +46,36 @@ static int	process_input(t_shell *shell, char *input)
 
 	return (1);
 }
+
+//The main shell loop
+int	minishell_loop(t_shell *shell)
+{
+	char	*input;
+	char	*prompt;
+	int		status;
+
+	status = 1;
+	while (status)
+	{
+		// Generate and display prompt
+		prompt = generate_prompt(shell);
+		input = readline(prompt);
+		free(prompt);
+
+		// Handle EOF (Ctrl+D)
+		if (!input)
+		{
+			printf("exit\n");
+			break;
+		}
+
+		// Process the input
+		status = process_input(shell, input);
+
+		free(input);
+	}
+
+	return (shell->exit_status);
+}
+
+

@@ -3,21 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:26:09 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/22 12:42:26 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/22 16:47:21 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lexer.h"
 
-/**
- * Tokenize input string into a list of tokens
- *
- * @param input String to tokenize
- * @return Linked list of tokens or NULL on error
- */
+//Tokenize input string into a list of tokens // kanredo input 3la chkel list dyal tokens
 t_token	*tokenize(char *input)
 {
 	t_token		*tokens;
@@ -31,79 +26,57 @@ t_token	*tokenize(char *input)
 
 	tokens = NULL;
 	i = 0;
-
 	while (input[i])
 	{
-		// Skip whitespace
 		while (is_whitespace(input[i]))
 			i++;
-
-		// End of input
 		if (input[i] == '\0')
 			break;
-
-		// Handle operators (<, >, |, etc)
 		if (is_operator(input[i]))
 		{
 			value = extract_operator(input, &i, &type);
 			if (!value)
 			{
-				// Error handling - couldn't extract operator
 				free_tokens(tokens);
 				return (NULL);
 			}
-
 			new_token = create_token(value, type);
 			free(value);
 		}
-		// Handle quotes
 		else if (is_quote(input[i]))
 		{
 			char quote = input[i++]; // Save quote type and move past it
 			value = extract_quoted_string(input, &i, quote);
 			if (!value)
 			{
-				// Handle unclosed quote error
 				free_tokens(tokens);
 				return (NULL);
 			}
-
 			new_token = create_token(value, TOKEN_WORD);
 			free(value);
 		}
-		// Handle normal words
 		else
 		{
 			value = extract_word(input, &i);
 			if (!value)
 			{
-				// Error handling - couldn't extract word
 				free_tokens(tokens);
 				return (NULL);
 			}
-
 			new_token = create_token(value, TOKEN_WORD);
 			free(value);
 		}
-
-		// Add token to list
 		if (!new_token)
 		{
 			free_tokens(tokens);
 			return (NULL);
 		}
-
 		add_token(&tokens, new_token);
 	}
-
 	return (tokens);
 }
 
-/**
- * Debug function to print all tokens
- *
- * @param tokens Linked list of tokens to print
- */
+//Debug function to print all tokens // hadi function khir bach ndebugi biha
 void	print_tokens(t_token *tokens)
 {
 	t_token	*current;
