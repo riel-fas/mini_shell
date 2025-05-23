@@ -6,7 +6,7 @@
 /*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:59 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/22 18:09:38 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/23 21:39:13 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,6 @@
 # include "../libft/libft.h"
 // # include "lexer.h"
 
-# define READ_END 0
-# define WRITE_END 1
 
 /*enum _____ types for lexer\*/
 typedef enum e_token_type
@@ -106,9 +104,7 @@ void    cleanup(t_shell *shell);
 t_shell    *shell_init(char **env);
 int	minishell_loop(t_shell *shell);
 
-
-
-//leer_utils.c
+//lexer_utils.c
 int		is_whitespace(char c);
 int		is_operator(char c);
 int		is_quote(char c);
