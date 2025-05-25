@@ -6,13 +6,24 @@
 /*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 19:15:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/22 17:51:55 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/05/25 19:07:10 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lexer.h"
 
-//Create a new token // kan creayiw token jdid
+/**
+ * @brief Katkhle9 token jdid
+ *
+ * Had fonction katkhle9 t_token jdid o kat3mro b value o type li 3tinaha.
+ * Katdir malloc l structure o katdir strdup l value bash tkhebbi copy men value.
+ * Ila kan chi moshkil f malloc, katrejje3 NULL. Darouri tkhelli next = NULL
+ * bash nwejdo listi mezyana dyal tokens.
+ *
+ * @param value String dyal token (kelma, operator, etc.)
+ * @param type Type dyal token (TOKEN_WORD, TOKEN_PIPE, etc.)
+ * @return t_token* Token jdid, wla NULL ila kan moshkil f malloc
+ */
 t_token	*create_token(char *value, t_token_type type)
 {
 	t_token	*token;
@@ -31,8 +42,18 @@ t_token	*create_token(char *value, t_token_type type)
 	return (token);
 }
 
-//Add a token to the end of the list
-// kantzid lina token f lekher dyal list dyalna
+/**
+ * @brief Katzid token f lekher dyal list
+ *
+ * Had fonction katzid new_token f lekher dyal lista dyal tokens.
+ * Kat check 3la NULL pointers. Ila kanet lista khawya, kat7ett
+ * new_token howa l'awel. Sinon, katdour 3la lista 7ta tlqa lekher
+ * dyal tokens o katzid new_token f next dyalo.
+ *
+ * @param tokens Pointer l pointer dyal l'awel dyal lista (double pointer
+ *              bach n9edro nbedlo l'awel dyal lista ila khass l'amr)
+ * @param new_token Token jdid li bghina nzido f list
+ */
 void	add_token(t_token **tokens, t_token *new_token)
 {
 	t_token	*current;
@@ -50,7 +71,16 @@ void	add_token(t_token **tokens, t_token *new_token)
 	current->next = new_token;
 }
 
-//Free all tokens
+/**
+ * @brief Katkhwi o kat7err memory dyal tokens kolhom
+ *
+ * Had fonction katdour 3la lista dyal tokens o katmsseh kolchi.
+ * Kat7err l'memory dyal kola token (structure) o value dyalo.
+ * Darouri nste3mlo had fonction melli kansaliw m3a lista dyal tokens
+ * bach maykunch 3endna memory leak.
+ *
+ * @param tokens L'awel token f lista
+ */
 void	free_tokens(t_token *tokens)
 {
 	t_token	*current;
