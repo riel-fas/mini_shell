@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   mini_shell_loop.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: roubelka <roubelka@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 10:45:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/23 19:17:27 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/06/13 02:02:53 by roubelka         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/mini_shell.h"
+#include "../includes/parser.h"
 
 static char	*generate_prompt(t_shell *shell)
 {
@@ -31,15 +31,43 @@ static int	process_input(t_shell *shell, char *input)
 		return (0);
 	// Tokenize the input
 	shell->tokens = tokenize(input);
+
+	if (!check_pipe_syntax(shell->tokens))
+	{
+    	free_tokens(shell->tokens);
+    	shell->tokens = NULL;
+    	return (1);
+	}
+	if (!check_redirection_syntax(shell->tokens))
+	{
+		free_tokens(shell->tokens);
+		shell->tokens = NULL;
+		return (1);
+	}
+	// if (!check_quotes_closed(shell->tokens))
+	// {
+	// 	free_tokens(shell->tokens);
+	// 	shell->tokens = NULL;
+	// 	return (1);
+	// }
 	// Debug: print tokens
 	print_tokens(shell->tokens);
 /////////////////////////////
 	// TODO: Parse tokens into commands
 	// TODO: Execute commands
 ////////////////////////////
+	// Parse tokens into commands
+	shell->commands = parse_tokens(shell->tokens);
+	
+	// Debug: print parsed commands
+	print_commands(shell->commands);
+	// Free parsed commands
+	free_commands(shell->commands);
+	shell->commands = NULL;
 	// Free tokens when done
 	free_tokens(shell->tokens);
 	shell->tokens = NULL;
+	
 	return (1);
 }
 

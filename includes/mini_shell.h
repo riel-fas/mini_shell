@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini_shell.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: roubelka <roubelka@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:59 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/23 21:39:13 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/06/13 01:47:52 by roubelka         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 // # include "/home/linuxbrew/.linuxbrew/opt/readline/include/readline/rlconf.h" //linux riad
-// # include </Users/roubelka/.brew/opt/readline/include/readline/rlconf.h> //rachid
-# include </Users/riel-fas/.brew/opt/readline/include/readline/rlconf.h> //riad
+# include </Users/roubelka/.brew/opt/readline/include/readline/rlconf.h> //rachid
+// # include </Users/riel-fas/.brew/opt/readline/include/readline/rlconf.h> //riad
 # include "../libft/libft.h"
 // # include "lexer.h"
 
@@ -33,13 +33,15 @@
 /*enum _____ types for lexer\*/
 typedef enum e_token_type
 {
-	TOKEN_WORD, //cmds
+	TOKEN_WORD, //cmds ls or rm 
+	TOKEN_ARGUMENT, // -l or -rf
 	TOKEN_PIPE, //|
 	TOKEN_REDIR_IN, //<
 	TOKEN_REDIR_OUT, //>
-	TOKEN_REDIR_APPEND, //>>
-	TOKEN_HEREDOC, //<<
+	TOKEN_REDIR_APPEND, //<<
+	TOKEN_HEREDOC, //>>
 	TOKEN_END_OF_INPUT, //end of input (heredoc)
+	// TOKEN_UNCLOSED_QUOTE, // QUOTE MAMSDODACH
 }	t_token_type;
 
 //token struct

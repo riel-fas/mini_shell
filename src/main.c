@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: roubelka <roubelka@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:54 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/23 22:15:04 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/06/10 07:57:48 by roubelka         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ int	main(int argc, char **argv, char **env)
 	// Set up signal handling
 	signal(SIGINT, handler);  // CTRL+C
 	signal(SIGQUIT, SIG_IGN);
+	rl_catch_signals = 0;
 	// Initialize the shell
 	shell = shell_init(env);
 	if (!shell)

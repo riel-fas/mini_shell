@@ -117,7 +117,7 @@ LIBFT_INC		=	-I$(LIBFT_DIR)
 LIBFT_LIB		=	-L$(LIBFT_DIR) -lft
 
 # Readline support
-READLINE_PATH	=	/Users/riel-fas/.brew/opt/readline
+READLINE_PATH	=	/Users/roubelka/.brew/opt/readline
 READLINE_FLAGS	=	-I$(READLINE_PATH)/include
 READLINE_LIBS	=	-L$(READLINE_PATH)/lib -lreadline
 
@@ -137,7 +137,10 @@ SRCS			=	$(SRC_DIR)/main.c \
 					$(SRC_DIR)/lexer/lexer.c \
 					$(SRC_DIR)/lexer/lexer_extraction.c \
 					$(SRC_DIR)/lexer/lexer_utils.c \
-					$(SRC_DIR)/lexer/lexer_utils_2.c
+					$(SRC_DIR)/lexer/lexer_utils_2.c \
+					$(SRC_DIR)/parser/syntax_error.c \
+					$(SRC_DIR)/parser/print_command.c \
+					$(SRC_DIR)/parser/parser_token.c \
 
 
 
@@ -216,7 +219,18 @@ re	:	fclean all
 ######################################################RACHID\MAKEFILE#######################################################################
 
 
-# SRCS =  src/main.c
+# SRCS            =   src/main.c \
+#                     src/env/copy_env.c \
+#                     src/env/env_list.c \
+#                     src/mini_shell_clean.c \
+#                     src/mini_shell_init.c \
+#                     src/signal/signal.c \
+#                     src/mini_shell_loop.c \
+#                     src/utils/mini_shell_utils.c \
+#                     src/lexer/lexer.c \
+#                     src/lexer/lexer_extraction.c \
+#                     src/lexer/lexer_utils.c \
+#                     src/lexer/lexer_utils_2.c
 # CC = cc
 # CFLAGS = -Wall -Wextra -Werror
 # NAME = minishell
@@ -229,21 +243,21 @@ re	:	fclean all
 # all: $(NAME)
 
 # $(NAME): $(OBJS) $(LIBFT)
-# 	$(CC) $(CFLAGS) -L/Users/roubelka/.brew/opt/readline/lib -lreadline $(OBJS) $(LIBFT) -o $(NAME)
+#     $(CC) $(CFLAGS) -L/Users/roubelka/.brew/opt/readline/lib -lreadline $(OBJS) $(LIBFT) -o $(NAME)
 
 # $(LIBFT):
-# 	$(MAKE) -C $(LIBFT_DIR)
+#     $(MAKE) -C $(LIBFT_DIR)
 
 # %.o: %.c
-# 	$(CC) $(CFLAGS) -I/Users/roubelka/.brew/opt/readline/include -c $< -o $@
+#     $(CC) $(CFLAGS) -I/Users/roubelka/.brew/opt/readline/include -c $< -o $@
 
 # clean:
-# 	rm -f $(OBJS)
-# 	$(MAKE) clean -C $(LIBFT_DIR)
+#     rm -f $(OBJS)
+#     $(MAKE) clean -C $(LIBFT_DIR)
 
 # fclean: clean
-# 	rm -f $(NAME)
-# 	$(MAKE) fclean -C $(LIBFT_DIR)
+#     rm -f $(NAME)
+#     $(MAKE) fclean -C $(LIBFT_DIR)
 
 # re: fclean all
 
