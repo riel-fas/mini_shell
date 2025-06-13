@@ -3,20 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   syntax_error.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roubelka <roubelka@student.42.fr>          +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 05:35:11 by roubelka          #+#    #+#             */
-/*   Updated: 2025/06/02 06:56:13 by roubelka         ###   ########.fr       */
+/*   Updated: 2025/06/13 14:35:57 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser.h"
+/*
+** 1. Zedt TOKEN_HEREDOC l redirection syntax validation - heredoc syntax
+**    errors bhal "cat << |" aw "cat << >>" makanch kayetchk
+** 2. TOKEN_PIPE validation mn ba3d redirections - kaymen3 invalid
+**    syntax bhal "cat < |" mn validation
+*/
+
+#include "../../includes/parser.h"
 
 int check_redirection_syntax(t_token *tokens)
 {
     while (tokens)
     {
-        if (tokens->type == TOKEN_REDIR_OUT || tokens->type == TOKEN_REDIR_APPEND || tokens->type == TOKEN_REDIR_IN)
+        //TOKEN_HEREDOC l syntax checking - men qbel heredoc syntax
+        // errors makanch kayetchkap (mithal: "cat << |" kan kaydouz validation)
+        if (tokens->type == TOKEN_REDIR_OUT || tokens->type == TOKEN_REDIR_APPEND ||
+            tokens->type == TOKEN_REDIR_IN || tokens->type == TOKEN_HEREDOC)
         {
             if (!tokens->next)
             {
@@ -24,9 +34,13 @@ int check_redirection_syntax(t_token *tokens)
                 return 0;
             }
 
-            if (tokens->next->type == TOKEN_REDIR_OUT || 
-                tokens->next->type == TOKEN_REDIR_APPEND || 
-                tokens->next->type == TOKEN_REDIR_IN)
+            // TOKEN_HEREDOC w TOKEN_PIPE l invalid following tokens
+            // Hada kay errors bhal "cat < >" aw "cat < |" aw "cat << <<"
+            if (tokens->next->type == TOKEN_REDIR_OUT ||
+                tokens->next->type == TOKEN_REDIR_APPEND ||
+                tokens->next->type == TOKEN_REDIR_IN ||
+                tokens->next->type == TOKEN_HEREDOC ||
+                tokens->next->type == TOKEN_PIPE)
             {
                 printf("Syntax error near unexpected token `%s`\n", tokens->next->value);
                 return 0;

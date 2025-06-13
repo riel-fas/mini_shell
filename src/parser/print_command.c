@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   print_command.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roubelka <roubelka@student.42.fr>          +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 00:56:46 by roubelka          #+#    #+#             */
-/*   Updated: 2025/06/13 02:01:30 by roubelka         ###   ########.fr       */
+/*   Updated: 2025/06/13 13:01:53 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser.h"
+#include "../../includes/parser.h"
 
-void print_commands(t_cmds *cmds) 
+void print_commands(t_cmds *cmds)
 {
     int i;
     while (cmds) {
@@ -29,7 +29,7 @@ void print_commands(t_cmds *cmds)
     }
 }
 
-void free_commands(t_cmds *cmds) 
+void free_commands(t_cmds *cmds)
 {
     while (cmds) {
         t_cmds *next = cmds->next;

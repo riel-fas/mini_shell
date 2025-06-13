@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roubelka <roubelka@student.42.fr>          +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:26:09 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/02 06:53:50 by roubelka         ###   ########.fr       */
+/*   Updated: 2025/06/13 12:58:26 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "lexer.h"
+#include "../../includes/lexer.h"
 
 //Tokenize input string into a list of tokens // kanredo input 3la chkel list dyal tokens
 // t_token	*tokenize(char *input)
