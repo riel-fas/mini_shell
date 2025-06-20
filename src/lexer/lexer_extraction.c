@@ -6,7 +6,7 @@
 /*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 19:15:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/13 12:57:55 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/06/18 22:34:04 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,8 @@ char	*extract_operator(char *input, int *i, t_token_type *type)
 		return (set_operator(">>", TOKEN_REDIR_APPEND, i, 2, type));
 	else if (input[*i] == '<' && input[*i + 1] == '<')
 		return (set_operator("<<", TOKEN_HEREDOC, i, 2, type));
+	else if (input[*i] == '<' && input[*i + 1] == '>')
+		return (set_operator("<>", TOKEN_REDIR_READ_WRITE, i, 2, type));
 	else if (input[*i] == '>')
 		return (set_operator(">", TOKEN_REDIR_OUT, i, 1, type));
 	else if (input[*i] == '<')

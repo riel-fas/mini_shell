@@ -6,7 +6,7 @@
 /*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:26:09 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/13 12:58:26 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/06/20 18:38:04 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,10 @@ static char	*get_token_value(char *input, int *i, t_token_type *type)
 	else if (is_quote(input[*i]))
 	{
 		char quote = input[(*i)++];
-		*type = TOKEN_WORD;
+		if (quote == '\'')
+			*type = TOKEN_SINGLE_QUOTED;
+		else
+			*type = TOKEN_DOUBLE_QUOTED;
 		return (extract_quoted_string(input, i, quote));
 	}
 	else
@@ -179,66 +182,63 @@ t_token	*tokenize(char *input)
 	return (tokens);
 }
 
-/**
- * @brief Fonction dyal debugging: kataffichi tokens kamlin
- *
- * Had fonction katkhdem ghir bash nshoofo tokens li l9ina. Kataffichi type o
- * value dyal kol token. Type kay affichiw f format lisible (WORD, PIPE, etc.).
- * Katstakhdem f debugging bash nshoofo wach lexer kheddama mezyan.
- *
- * @param tokens Linked list dyal tokens li bghina naffichiwha
- */
-void	print_tokens(t_token *tokens)
-{
-	t_token	*current;
-	int		i;
+// void	print_tokens(t_token *tokens)
+// {
+// 	t_token	*current;
+// 	int		i;
 
-	if (!tokens)
-	{
-		printf("No tokens to print\n");
-		return;
-	}
+// 	if (!tokens)
+// 	{
+// 		printf("No tokens to print\n");
+// 		return;
+// 	}
 
-	current = tokens;
-	i = 0;
+// 	current = tokens;
+// 	i = 0;
 
-	printf("\n--- Tokens ---\n");
-	while (current)
-	{
-		printf("Token %d: Type = ", i);
+// 	printf("\n--- Tokens ---\n");
+// 	while (current)
+// 	{
+// 		printf("Token %d: Type = ", i);
 
-		// Print token type as string
-		switch (current->type)
-		{
-			case TOKEN_WORD:
-				printf("WORD");
-				break;
-			case TOKEN_PIPE:
-				printf("PIPE");
-				break;
-			case TOKEN_REDIR_IN:
-				printf("REDIR_IN");
-				break;
-			case TOKEN_REDIR_OUT:
-				printf("REDIR_OUT");
-				break;
-			case TOKEN_REDIR_APPEND:
-				printf("REDIR_APPEND");
-				break;
-			case TOKEN_HEREDOC:
-				printf("HEREDOC");
-				break;
-			case TOKEN_END_OF_INPUT:
-				printf("END_OF_INPUT");
-				break;
-			default:
-				printf("UNKNOWN");
-		}
+// 		// Print token type as string
+// 		switch (current->type)
+// 		{
+// 			case TOKEN_WORD:
+// 				printf("WORD");
+// 				break;
+// 			case TOKEN_PIPE:
+// 				printf("PIPE");
+// 				break;
+// 			case TOKEN_REDIR_IN:
+// 				printf("REDIR_IN");
+// 				break;
+// 			case TOKEN_REDIR_OUT:
+// 				printf("REDIR_OUT");
+// 				break;
+// 			case TOKEN_REDIR_APPEND:
+// 				printf("REDIR_APPEND");
+// 				break;
+// 			case TOKEN_HEREDOC:
+// 				printf("HEREDOC");
+// 				break;
+// 			case TOKEN_END_OF_INPUT:
+// 				printf("END_OF_INPUT");
+// 				break;
+// 			case TOKEN_SINGLE_QUOTED:
+// 				printf("SINGLE_QUOTED");
+// 				break;
+// 			case TOKEN_DOUBLE_QUOTED:
+// 				printf("DOUBLE_QUOTED");
+// 				break;
+// 			default:
+// 				printf("UNKNOWN");
+// 		}
 
-		printf(", Value = \"%s\"\n", current->value);
+// 		printf(", Value = \"%s\"\n", current->value);
 
-		current = current->next;
-		i++;
-	}
-	printf("--------------\n");
-}
+// 		current = current->next;
+// 		i++;
+// 	}
+// 	printf("--------------\n");
+// }

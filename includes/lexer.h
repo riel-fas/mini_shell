@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 20:25:41 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/22 17:49:31 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/06/18 22:00:10 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,9 @@ char	*extract_quoted_string(char *input, int *i, char quote);
 //lexer.c
 t_token	*tokenize(char *input);
 void	print_tokens(t_token *tokens);
+
+//expansion.c
+char	*expand_variables(char *str, t_env *env, int exit_status, int in_quotes);
+void	expand_tokens(t_token *tokens, t_env *env, int exit_status);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   copy_env.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:50:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/25 18:59:55 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/06/20 18:26:54 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,20 +23,18 @@
  * @param key Pointer fash ghadi tkhebbi smiyat l variable (khassek dir free 3liha men be3d)
  * @param value Pointer fash ghadi tkhebbi l9ima dyal variable (khassek dir free 3liha men be3d)
  */
-static void    parse_env_var(char *env_str, char **key, char **value)
+static void	parse_env_var(char *env_str, char **key, char **value)
 {
-    int     i;
+	int	i;
 
-    i = 0;
-    while (env_str[i] && env_str[i] != '=')
-        i++;
-
-    *key = ft_substr(env_str, 0, i);
-
-    if (env_str[i] == '=')
-        *value = ft_strdup(env_str + i + 1);
-    else
-        *value = ft_strdup("");
+	i = 0;
+	while (env_str[i] && env_str[i] != '=')
+		i++;
+	*key = ft_substr(env_str, 0, i);
+	if (env_str[i] == '=')
+		*value = ft_strdup(env_str + i + 1);
+	else
+		*value = ft_strdup("");
 }
 
 /**
@@ -53,36 +51,28 @@ static void    parse_env_var(char *env_str, char **key, char **value)
  * @param env Array dyal environment li bghina n7ewloh
  * @return t_env* Ras linked list dyal environment jdid, wla NULL ila kan moshkil
  */
-t_env    *create_env_list(char **env)
+t_env	*create_env_list(char **env)
 {
-    t_env   *env_list;
-    t_env   *new_node;
-    int     i;
-    char    *key;
-    char    *value;
+	t_env	*env_list;
+	t_env	*new_node;
+	int		i;
+	char	*key;
+	char	*value;
 
-    env_list = NULL;
-    i = 0;
-
-    while (env[i])
-    {
-        parse_env_var(env[i], &key, &value);
-        new_node = new_env_node(key, value);
-
-        if (!new_node)
-        {
-            // Handle error - cleanup and return
-            // You might need to implement a function to free the env_list
-            return (NULL);
-        }
-
-        add_env_node(&env_list, new_node);
-        free(key);
-        free(value);
-        i++;
-    }
-
-    return (env_list);
+	env_list = NULL;
+	i = 0;
+	while (env[i])
+	{
+		parse_env_var(env[i], &key, &value);
+		new_node = new_env_node(key, value);
+		if (!new_node)
+			return (NULL);
+		add_env_node(&env_list, new_node);
+		free(key);
+		free(value);
+		i++;
+	}
+	return (env_list);
 }
 
 /**
@@ -95,16 +85,16 @@ t_env    *create_env_list(char **env)
  * @param env Linked list dyal environment fash ghadi n9ellbo
  * @return char* String jdida fiha smiyat l'utilisateur
  */
-char    *get_username(t_env *env)
+char	*get_username(t_env *env)
 {
-    char    *username;
+	char	*username;
 
-    username = get_env_value(env, "USER");
-    if (!username)
-        username = ft_strdup("user");
-    else
-        username = ft_strdup(username);
-    return (username);
+	username = get_env_value(env, "USER");
+	if (!username)
+		username = ft_strdup("user");
+	else
+		username = ft_strdup(username);
+	return (username);
 }
 
 /**
@@ -122,14 +112,14 @@ char    *get_username(t_env *env)
  * @return char** Array dyal strings fiha directories dyal PATH,
  *                wla NULL ila mal9inash PATH
  */
-char    **split_paths(t_env *env)
+char	**split_paths(t_env *env)
 {
-    char    *path_str;
-    char    **paths;
+	char	*path_str;
+	char	**paths;
 
-    path_str = get_env_value(env, "PATH");
-    if (!path_str)
-        return (NULL);
-    paths = ft_split(path_str, ':');
-    return (paths);
+	path_str = get_env_value(env, "PATH");
+	if (!path_str)
+		return (NULL);
+	paths = ft_split(path_str, ':');
+	return (paths);
 }

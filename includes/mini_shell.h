@@ -6,7 +6,7 @@
 /*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:59 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/13 12:57:12 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/06/18 22:34:04 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,12 @@
 # include <signal.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-# include "/home/linuxbrew/.linuxbrew/opt/readline/include/readline/rlconf.h" //linux riad
-// # include </Users/roubelka/.brew/opt/readline/include/readline/rlconf.h> //rachid
-// # include </Users/riel-fas/.brew/opt/readline/include/readline/rlconf.h> //riad
 # include "../libft/libft.h"
 // # include "lexer.h"
+
+
+# define READ_END 0
+# define WRITE_END 1
 
 
 /*enum _____ types for lexer\*/
@@ -40,8 +41,10 @@ typedef enum e_token_type
 	TOKEN_REDIR_OUT, //>
 	TOKEN_REDIR_APPEND, //<<
 	TOKEN_HEREDOC, //>>
+	TOKEN_REDIR_READ_WRITE, //<> - open file for both reading and writing
 	TOKEN_END_OF_INPUT, //end of input (heredoc)
-	// TOKEN_UNCLOSED_QUOTE, // QUOTE MAMSDODACH
+	TOKEN_SINGLE_QUOTED, // 'text' - no expansion
+	TOKEN_DOUBLE_QUOTED, // "text" - allow expansion
 }	t_token_type;
 
 //token struct
@@ -58,6 +61,7 @@ typedef struct  s_cmds
 	char			**args; //cmd with the argument
 	char			*input_file; //input for redir. file
 	char			*output_file; //output for redir. file
+	char			*rw_file; //read-write redirection file (<>)
 	int				append_node;	//?
 	char			*heredoc_delimeter; //heredoc delimeter
 	struct s_cmds	*next; //next cmd in the pipeline |
@@ -65,8 +69,8 @@ typedef struct  s_cmds
 
 typedef struct s_env
 {
-	char		*key;
-	char		*value;
+	char			*key;
+	char			*value;
 	struct s_env	*next;
 }	t_env;
 
@@ -79,8 +83,25 @@ typedef struct s_shell
 	t_token			*tokens; //INPUT AFTER IT HAS BEEN TOKENISED
 	t_cmds			*commands; //COMMANDS AFTER PARSING
 	int				exit_status; //EXIT STATUS OF LAST COMMAND
-	// int				working; //SHELL IS RUNNING
 }	t_shell;
+
+typedef enum e_parse_result
+{
+	PARSE_SUCCESS,
+	PARSE_ERROR_SYNTAX,
+	PARSE_ERROR_MEMORY
+}	t_parse_result;
+
+typedef int	(*t_builtin_func)(t_shell *shell, char **args);
+
+int				execute_commands(t_shell *shell, t_cmds *commands);
+t_cmds		*parse_tokens(t_token *tokens);
+void			print_commands(t_cmds *cmds);
+void			free_commands(t_cmds *cmds);
+
+
+
+
 
 //mini_shell_utils.c
 int ft_strcmp(char *s1, char *s2);
@@ -122,5 +143,11 @@ char	*extract_quoted_string(char *input, int *i, char quote);
 //lexer.c
 t_token	*tokenize(char *input);
 void	print_tokens(t_token *tokens);
+
+//mini_shell_input.c
+int		process_exit_check(char *input);
+int		handle_tokenize_error(t_shell *shell, char *input);
+int		handle_parse_error(t_shell *shell, t_parse_result result);
+int		is_only_whitespace(char *input);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:04:54 by roubelka          #+#    #+#             */
-/*   Updated: 2025/06/13 14:33:33 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/06/18 22:34:04 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ t_cmds  *init_new_command(t_cmds **head, t_cmds **tail)
     cmd->args = NULL;
 	cmd->input_file = NULL;
 	cmd->output_file = NULL;
+	cmd->rw_file = NULL;
 	cmd->append_node = 0;
 	cmd->heredoc_delimeter = NULL;
 	cmd->next = NULL;
@@ -71,6 +72,9 @@ void handle_redirections(t_cmds *cmd, t_token **tokens) {
     else if (current->type == TOKEN_REDIR_APPEND) {
         cmd->output_file = ft_strdup(current->next->value);
         cmd->append_node = 1;
+    }
+    else if (current->type == TOKEN_REDIR_READ_WRITE) {
+        cmd->rw_file = ft_strdup(current->next->value);
     }
     else if (current->type == TOKEN_HEREDOC) {
         cmd->heredoc_delimeter = ft_strdup(current->next->value);
@@ -115,7 +119,8 @@ t_cmds	*parse_tokens(t_token *tokens)
 
 	while (tokens)
 	{
-		if (tokens->type == TOKEN_WORD || tokens->type == TOKEN_ARGUMENT)
+		if (tokens->type == TOKEN_WORD || tokens->type == TOKEN_ARGUMENT ||
+			tokens->type == TOKEN_SINGLE_QUOTED || tokens->type == TOKEN_DOUBLE_QUOTED)
 		{
 			if (!current_cmd)
 				current_cmd = init_new_command(&head, &tail);
@@ -130,6 +135,7 @@ t_cmds	*parse_tokens(t_token *tokens)
 		else if (tokens->type == TOKEN_REDIR_IN ||
 				 tokens->type == TOKEN_REDIR_OUT ||
 				 tokens->type == TOKEN_REDIR_APPEND ||
+				 tokens->type == TOKEN_REDIR_READ_WRITE ||
 				 tokens->type == TOKEN_HEREDOC)
 		{
 			if (!current_cmd)

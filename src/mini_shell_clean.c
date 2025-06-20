@@ -6,7 +6,7 @@
 /*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 18:00:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/23 19:05:25 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/06/13 20:51:04 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,5 +50,9 @@ void	cleanup(t_shell *shell)
 	free_env_list(shell->env);
 	free(shell->username);
 	free_path(shell->path);
+	if (shell->tokens)
+		free_tokens(shell->tokens);
+	if (shell->commands)
+		free_commands(shell->commands);
 	free(shell);
 }

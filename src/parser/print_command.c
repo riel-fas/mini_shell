@@ -6,7 +6,7 @@
 /*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 00:56:46 by roubelka          #+#    #+#             */
-/*   Updated: 2025/06/13 13:01:53 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/06/18 22:34:04 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ void free_commands(t_cmds *cmds)
         free(cmds->args);
         free(cmds->input_file);
         free(cmds->output_file);
+        free(cmds->rw_file);
+        free(cmds->heredoc_delimeter);
         free(cmds);
         cmds = next;
     }
