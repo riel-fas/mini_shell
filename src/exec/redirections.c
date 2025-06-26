@@ -6,7 +6,7 @@
 /*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 11:45:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/26 13:07:21 by riad             ###   ########.fr       */
+/*   Updated: 2025/06/26 13:29:08 by riad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,53 +116,36 @@ static int	setup_heredoc(t_cmds *cmd)
 
 	if (pid == 0)
 	{
-		// Child process - handle heredoc input
 		close(pipe_fds[READ_END]);
-
-		// Set up signal handling for child
 		signal(SIGINT, SIG_DFL);
-
 		while (1)
 		{
 			printf("heredoc> ");
 			line = readline("");
-
-			// Handle EOF (Ctrl+D) or signal interruption
 			if (!line)
 			{
 				close(pipe_fds[WRITE_END]);
 				exit(0);
 			}
-
-			// Check if we hit the delimiter
 			if (ft_strcmp(line, cmd->heredoc_delimeter) == 0)
 			{
 				free(line);
 				close(pipe_fds[WRITE_END]);
 				exit(0);
 			}
-
-			// Write line to pipe
 			ft_putendl_fd(line, pipe_fds[WRITE_END]);
 			free(line);
 		}
 	}
 	else
 	{
-		// Parent process
 		close(pipe_fds[WRITE_END]);
-
-		// Wait for child to complete
 		waitpid(pid, &status, 0);
-
-		// Check if child was interrupted by signal
 		if (WIFSIGNALED(status))
 		{
 			close(pipe_fds[READ_END]);
 			return (1);
 		}
-
-		// Redirect stdin to read from pipe
 		status = dup2(pipe_fds[READ_END], STDIN_FILENO);
 		close(pipe_fds[READ_END]);
 		return (status < 0);
@@ -199,9 +182,6 @@ int	setup_redirections(t_cmds *cmd)
 		reset_redirections(stdin_backup, stdout_backup);
 		return (status);
 	}
-
-	// Only close backups if there was an error
-	// Otherwise, the caller is responsible for resetting redirections
 	close(stdin_backup);
 	close(stdout_backup);
 
