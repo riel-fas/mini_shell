@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntax_error.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 05:35:11 by roubelka          #+#    #+#             */
-/*   Updated: 2025/06/18 22:34:04 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/06/24 21:54:37 by riad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,18 +57,29 @@ int check_pipe_syntax(t_token *tokens)
 {
     if (!tokens)
         return 1;
+
+    // Check for pipes at the beginning or consecutive pipes
     if (tokens->type == TOKEN_PIPE)
     {
-        printf("Syntax error near unexpected token `|`\n");
+        // If it starts with pipe and next is also pipe, it's ||
+        if (tokens->next && tokens->next->type == TOKEN_PIPE)
+            printf("Syntax error near unexpected token `||`\n");
+        else
+            printf("Syntax error near unexpected token `|`\n");
         return 0;
     }
+
     while (tokens)
     {
         if (tokens->type == TOKEN_PIPE)
         {
             if (!tokens->next || tokens->next->type == TOKEN_PIPE)
             {
-                printf("Syntax error near unexpected token `|`\n");
+                // Check if it's || (two consecutive pipes)
+                if (tokens->next && tokens->next->type == TOKEN_PIPE)
+                    printf("Syntax error near unexpected token `||`\n");
+                else
+                    printf("Syntax error near unexpected token `|`\n");
                 return 0;
             }
         }

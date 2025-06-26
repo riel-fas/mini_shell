@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 11:45:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/13 21:11:19 by codespace        ###   ########.fr       */
+/*   Updated: 2025/06/24 21:14:49 by riad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include "mini_shell.h"
 # include "builtins.h"
+# include <sys/stat.h>
 
 /* Executor functions */
 int		execute_commands(t_shell *shell, t_cmds *commands);
@@ -32,5 +33,8 @@ char	*find_command_path(char **paths, char *cmd);
 
 /* Error handling */
 void	error_message(char *cmd, char *msg);
+
+/* Memory management */
+void	free_env_array(char **env_array);
 
 #endif

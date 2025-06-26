@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_exec.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 11:45:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/14 00:52:16 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/06/26 12:20:16 by riad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,51 +23,34 @@ int	execute_single_command(t_shell *shell, t_cmds *cmd)
 
 	if (!cmd->args || !cmd->args[0])
 		return (0);
-
-	// Handle standalone logical operators that should be syntax errors
 	if (ft_strcmp(cmd->args[0], "!") == 0 && !cmd->args[1])
 	{
-		// Standalone '!' should exit with status 1 (like bash) without error message
 		return (1);
 	}
-
-	// Check for built-in commands
 	if (is_builtin(cmd->args[0]))
 	{
 		builtin = get_builtin(cmd->args[0]);
 		if (builtin)
 		{
-			// Save standard input/output
 			stdin_backup = dup(STDIN_FILENO);
 			stdout_backup = dup(STDOUT_FILENO);
-
-			// Setup redirections
 			if (setup_redirections(cmd) != 0)
 			{
 				reset_redirections(stdin_backup, stdout_backup);
 				return (1);
 			}
-
-			// Execute built-in
 			status = builtin(shell, cmd->args);
-
-			// Reset redirections
 			reset_redirections(stdin_backup, stdout_backup);
 			return (status);
 		}
 	}
-
-	// Save current stdin/stdout
 	stdin_backup = dup(STDIN_FILENO);
 	stdout_backup = dup(STDOUT_FILENO);
-
-	// Setup redirections if any
 	if (setup_redirections(cmd) != 0)
 	{
 		reset_redirections(stdin_backup, stdout_backup);
 		return (1);
 	}
-
 	pid = fork();
 	if (pid < 0)
 	{
@@ -77,7 +60,16 @@ int	execute_single_command(t_shell *shell, t_cmds *cmd)
 	}
 	else if (pid == 0)
 	{
-		// Child process
+		if (ft_strchr(cmd->args[0], '/'))
+		{
+			struct stat file_stat;
+			if (access(cmd->args[0], F_OK) == 0 && stat(cmd->args[0], &file_stat) == 0 && S_ISDIR(file_stat.st_mode))
+			{
+				error_message(cmd->args[0], "Is a directory");
+				exit(126);
+			}
+		}
+
 		// Find command path
 		cmd_path = find_command_path(shell->path, cmd->args[0]);
 		if (!cmd_path)
@@ -103,9 +95,7 @@ int	execute_single_command(t_shell *shell, t_cmds *cmd)
 
 		// Clean up
 		free(cmd_path);
-		while (*env_array)
-			free(*env_array++);
-		free(env_array);
+		free_env_array(env_array);
 
 		exit(1);
 	}
@@ -168,6 +158,17 @@ static pid_t	execute_pipeline_command(t_shell *shell, t_cmds *cmd,
 		}
 
 		// External command
+		// Check if command is a directory (when it contains '/')
+		if (ft_strchr(cmd->args[0], '/'))
+		{
+			struct stat file_stat;
+			if (access(cmd->args[0], F_OK) == 0 && stat(cmd->args[0], &file_stat) == 0 && S_ISDIR(file_stat.st_mode))
+			{
+				error_message(cmd->args[0], "Is a directory");
+				exit(126);
+			}
+		}
+
 		cmd_path = find_command_path(shell->path, cmd->args[0]);
 		if (!cmd_path)
 		{
@@ -188,6 +189,8 @@ static pid_t	execute_pipeline_command(t_shell *shell, t_cmds *cmd,
 
 		// If execve returns, it failed
 		error_message(cmd->args[0], "Execution failed");
+		free(cmd_path);
+		free_env_array(env_array);
 		exit(1);
 	}
 
