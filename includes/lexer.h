@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 20:25:41 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/18 22:00:10 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/06/29 19:47:24 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 int		is_whitespace(char c);
 int		is_operator(char c);
 int		is_quote(char c);
+int		all_tokens_empty(t_token *tokens);
 t_token	*create_token(char *value, t_token_type type);
 void	add_token(t_token **tokens, t_token *new_token);
 void	free_tokens(t_token *tokens);

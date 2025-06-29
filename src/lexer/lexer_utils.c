@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 19:15:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/29 17:41:21 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/29 19:37:31 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,4 +75,20 @@ int	is_operator(char c)
 int	is_quote(char c)
 {
 	return (c == '\'' || c == '"');
+}
+
+int	all_tokens_empty(t_token *tokens)
+{
+	t_token	*current;
+
+	if (!tokens)
+		return (1);
+	current = tokens;
+	while (current)
+	{
+		if (current->value && current->value[0] != '\0')
+			return (0);
+		current = current->next;
+	}
+	return (1);
 }

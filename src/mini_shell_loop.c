@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 17:54:33 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/29 17:55:00 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/29 19:47:24 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,15 @@ static int	process_input(t_shell *shell, char *input)
 		return (1);
 	// Expand variables in tokens
 	expand_tokens(shell->tokens, shell->env, shell->exit_status);
+
+	// Check if all tokens became empty after expansion
+	if (all_tokens_empty(shell->tokens))
+	{
+		free_tokens(shell->tokens);
+		shell->tokens = NULL;
+		return (1);
+	}
+
 	if (!check_redirection_syntax(shell->tokens) || !check_pipe_syntax(shell->tokens) || !check_unsupported_operators(shell->tokens))
 	{
 		shell->exit_status = 2;
