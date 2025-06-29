@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 19:15:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/13 12:58:21 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/06/29 06:59:11 by riad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,4 +94,28 @@ void	free_tokens(t_token *tokens)
 		free(temp->value);
 		free(temp);
 	}
+}
+
+/**
+ * Check if character is whitespace
+ */
+int	is_whitespace(char c)
+{
+	return (c == ' ' || c == '\t' || c == '\n' || c == '\r');
+}
+
+/**
+ * Check if character is an operator
+ */
+int	is_operator(char c)
+{
+	return (c == '|' || c == '<' || c == '>');
+}
+
+/**
+ * Check if character is a quote
+ */
+int	is_quote(char c)
+{
+	return (c == '\'' || c == '"');
 }

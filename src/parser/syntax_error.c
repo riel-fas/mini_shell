@@ -6,7 +6,7 @@
 /*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 05:35:11 by roubelka          #+#    #+#             */
-/*   Updated: 2025/06/24 21:54:37 by riad             ###   ########.fr       */
+/*   Updated: 2025/06/27 22:25:04 by riad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,10 @@ int check_redirection_syntax(t_token *tokens)
                 tokens->next->type == TOKEN_REDIR_READ_WRITE ||
                 tokens->next->type == TOKEN_PIPE)
             {
-                printf("Syntax error near unexpected token `%s`\n", tokens->next->value);
+                if (tokens->next->type == TOKEN_PIPE)
+                    printf("Syntax error near unexpected token `|`\n");
+                else
+                    printf("Syntax error near unexpected token `%s`\n", tokens->next->value);
                 return 0;
             }
         }
@@ -58,10 +61,10 @@ int check_pipe_syntax(t_token *tokens)
     if (!tokens)
         return 1;
 
-    // Check for pipes at the beginning or consecutive pipes
+    // Check for pipes at the beginning
     if (tokens->type == TOKEN_PIPE)
     {
-        // If it starts with pipe and next is also pipe, it's ||
+        // If it's || at the beginning, report as ||
         if (tokens->next && tokens->next->type == TOKEN_PIPE)
             printf("Syntax error near unexpected token `||`\n");
         else
@@ -73,13 +76,16 @@ int check_pipe_syntax(t_token *tokens)
     {
         if (tokens->type == TOKEN_PIPE)
         {
-            if (!tokens->next || tokens->next->type == TOKEN_PIPE)
+            // Check if pipe is at the end (no next token)
+            if (!tokens->next)
             {
-                // Check if it's || (two consecutive pipes)
-                if (tokens->next && tokens->next->type == TOKEN_PIPE)
-                    printf("Syntax error near unexpected token `||`\n");
-                else
-                    printf("Syntax error near unexpected token `|`\n");
+                printf("Syntax error near unexpected token `newline`\n");
+                return 0;
+            }
+            // Check for consecutive pipes - report error as || like bash
+            else if (tokens->next->type == TOKEN_PIPE)
+            {
+                printf("Syntax error near unexpected token `||`\n");
                 return 0;
             }
         }
@@ -111,6 +117,47 @@ int check_standalone_operators(t_token *tokens)
             if (!current->next || current->next->type == TOKEN_PIPE)
             {
                 return (0); // Syntax error - exit silently like bash
+            }
+        }
+        current = current->next;
+    }
+    return (1);
+}
+
+/**
+ * @brief Checks for unsupported operators that should be syntax errors
+ *
+ * This function checks for operators like '&' and '&&' that are not supported
+ * in this shell and should be treated as syntax errors similar to bash.
+ *
+ * @param tokens Linked list of tokens to check
+ * @return int 1 if syntax is valid, 0 if there's a syntax error
+ */
+int check_unsupported_operators(t_token *tokens)
+{
+    t_token *current = tokens;
+
+    while (current)
+    {
+        if (current->type == TOKEN_WORD && current->value)
+        {
+            // Check for & or && operators
+            if (ft_strcmp(current->value, "&") == 0)
+            {
+                printf("Syntax error near unexpected token `&`\n");
+                return (0);
+            }
+            else if (ft_strcmp(current->value, "&&") == 0 ||
+                     (ft_strlen(current->value) > 1 && current->value[0] == '&' && current->value[1] == '&'))
+            {
+                printf("Syntax error near unexpected token `&&`\n");
+                return (0);
+            }
+            // Check for strings starting with & (like &&&, &&&&, etc.)
+            else if (current->value[0] == '&' && ft_strlen(current->value) > 2)
+            {
+                printf("Syntax error near unexpected token `&&`\n");
+                return (0);
             }
         }
         current = current->next;

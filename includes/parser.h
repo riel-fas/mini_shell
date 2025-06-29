@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 05:36:05 by roubelka          #+#    #+#             */
-/*   Updated: 2025/06/14 00:51:13 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/06/27 22:25:04 by riad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 int     check_redirection_syntax(t_token *tokens);
 int     check_pipe_syntax(t_token *tokens);
+int     check_unsupported_operators(t_token *tokens);
 // int     check_quotes_closed(t_token *tokens);
 
 t_cmds  *init_new_command(t_cmds **head, t_cmds **tail);

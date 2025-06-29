@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 21:10:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/20 19:07:36 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/06/29 16:15:00 by riad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,6 @@
 
 /**
  * @brief Kat extract variable name men position '$'
- *
- * Had fonction katbda men position b3d '$' o kat extract l variable name.
- * Variable names kanun alphanumeric characters w underscores.
- * Special cases: $? (exit status) w $$ (process ID)
-
  */
 static char	*extract_var_name(char *input, int *i)
 {
@@ -42,6 +37,14 @@ static char	*extract_var_name(char *input, int *i)
 		return (ft_strdup("$"));
 	}
 
+	// Single digit (positional parameters)
+	if (ft_isdigit(input[*i]))
+	{
+		char digit_str[2] = {input[*i], '\0'};
+		(*i)++;
+		return (ft_strdup(digit_str));
+	}
+
 	// Regular variable name: letters, digits, underscore
 	if (ft_isalpha(input[*i]) || input[*i] == '_')
 	{
@@ -53,16 +56,12 @@ static char	*extract_var_name(char *input, int *i)
 		return (ft_substr(input, start, len));
 	}
 
-	// Invalid variable name
+	// Invalid variable name - don't advance index, return NULL
 	return (NULL);
 }
 
 /**
  * @brief Katjbed l9ima dyal variable li bghina n expandiha
- *
- * Had fonction kat7awel variable name l value dyalo.
- * Special cases: ? (exit status), $ (process ID)
- * Regular variables: men environment
  */
 static char	*get_var_value(char *var_name, t_env *env, int exit_status)
 {
@@ -72,6 +71,19 @@ static char	*get_var_value(char *var_name, t_env *env, int exit_status)
 		return (ft_itoa(exit_status));
 	if (ft_strcmp(var_name, "$") == 0)
 		return (ft_itoa(getpid()));
+	if (ft_strcmp(var_name, "UID") == 0)
+		return (ft_itoa(getuid()));
+	if (ft_strcmp(var_name, "EUID") == 0)
+		return (ft_itoa(geteuid()));
+
+	// Positional parameters
+	if (ft_strlen(var_name) == 1 && ft_isdigit(var_name[0]))
+	{
+		if (var_name[0] == '0')
+			return (ft_strdup("minishell"));  // Shell name
+		else
+			return (ft_strdup(""));  // Other positional parameters are empty
+	}
 
 	// Regular environment variable
 	value = get_env_value(env, var_name);
@@ -82,11 +94,7 @@ static char	*get_var_value(char *var_name, t_env *env, int exit_status)
 }
 
 /**
- * @brief Kat expandir variables f string wa7d
- *
- * Had fonction katdour 3la string o kat9elleb 3la '$' characters.
- * Ila l9at '$', kat extract variable name o kat replace biha value dyalo.
- * Katrejje3 string jdid fiha all expansions.
+ * @brief CORRECTLY handles mixed quotes - preserves content in single quotes
  */
 char	*expand_variables(char *str, t_env *env, int exit_status, int in_quotes)
 {
@@ -95,20 +103,38 @@ char	*expand_variables(char *str, t_env *env, int exit_status, int in_quotes)
 	char	*var_name;
 	char	*var_value;
 	int		i;
+	int		in_single_quotes;
+	int		in_double_quotes;
 
+	(void)in_quotes; // Parameter not used in this implementation
 	if (!str)
 		return (NULL);
 
-	// If in single quotes, no expansion
-	if (in_quotes == 1)  // 1 = single quotes
-		return (ft_strdup(str));
-
 	result = ft_strdup("");
 	i = 0;
+	in_single_quotes = 0;
+	in_double_quotes = 0;
 
 	while (str[i])
 	{
-		if (str[i] == '$' && str[i + 1])
+		// Handle quote state tracking
+		if (str[i] == '\'' && !in_double_quotes)
+		{
+			in_single_quotes = !in_single_quotes;
+			i++; // Skip the quote character itself
+			continue;
+		}
+		else if (str[i] == '"' && !in_single_quotes)
+		{
+			in_double_quotes = !in_double_quotes;
+			i++; // Skip the quote character itself
+			continue;
+		}
+		// Handle variable expansion (only if not in single quotes)
+		else if (str[i] == '$' && !in_single_quotes && str[i + 1] &&
+				 (ft_isalpha(str[i + 1]) || str[i + 1] == '_' ||
+				  str[i + 1] == '?' || str[i + 1] == '$' ||
+				  ft_isdigit(str[i + 1])))
 		{
 			i++; // Skip the '$'
 			var_name = extract_var_name(str, &i);
@@ -121,17 +147,10 @@ char	*expand_variables(char *str, t_env *env, int exit_status, int in_quotes)
 				free(var_value);
 				result = temp;
 			}
-			else
-			{
-				// Invalid variable, keep the '$'
-				temp = ft_strjoin(result, "$");
-				free(result);
-				result = temp;
-			}
 		}
 		else
 		{
-			// Regular character, append to result
+			// Regular character - add to result
 			char char_str[2] = {str[i], '\0'};
 			temp = ft_strjoin(result, char_str);
 			free(result);
@@ -139,18 +158,11 @@ char	*expand_variables(char *str, t_env *env, int exit_status, int in_quotes)
 			i++;
 		}
 	}
-
 	return (result);
 }
 
 /**
- * @brief Kat expandir variables f kol tokens
- *
- * Had fonction katdour 3la kol token f linked list o kat expandir
- * variables li fihom. Katbeddel value dyal token b expanded version.
- * Single quotes: no expansion
- * Double quotes: allow expansion
- * Regular words: allow expansion
+ * @brief Kat expandir tokens f lista
  */
 void	expand_tokens(t_token *tokens, t_env *env, int exit_status)
 {

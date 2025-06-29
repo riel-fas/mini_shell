@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:26:09 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/20 18:38:04 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/06/29 06:59:11 by riad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,19 +122,17 @@ static t_token	*handle_token_creation(char *value, t_token_type type,
  * @param type Pointer l variable li ghadi n7ettu fiha type dyal token
  * @return char* String dyal value dyal token, khassek dir liha free men be3d
  */
+/**
+ * @brief Check if a quote should be treated as a standalone quoted string
+ *
+ * A quote is considered standalone if after the closing quote, we have
+ * whitespace, operator, or end of string. If there are more characters
+ * after the closing quote, it's part of a word.
+ */
 static char	*get_token_value(char *input, int *i, t_token_type *type)
 {
 	if (is_operator(input[*i]))
 		return (extract_operator(input, i, type));
-	else if (is_quote(input[*i]))
-	{
-		char quote = input[(*i)++];
-		if (quote == '\'')
-			*type = TOKEN_SINGLE_QUOTED;
-		else
-			*type = TOKEN_DOUBLE_QUOTED;
-		return (extract_quoted_string(input, i, quote));
-	}
 	else
 	{
 		*type = TOKEN_WORD;
@@ -169,76 +167,91 @@ t_token	*tokenize(char *input)
 	i = 0;
 	while (input[i])
 	{
+		int old_i = i;  // Save position for safety check
+
+		// Skip whitespace
 		while (is_whitespace(input[i]))
 			i++;
 		if (input[i] == '\0')
 			break;
+
+		// Get token value - this should advance i
 		value = get_token_value(input, &i, &type);
+
+		// Create and add token
 		new_token = handle_token_creation(value, type, tokens);
 		if (!new_token)
 			return (NULL);
 		add_token(&tokens, new_token);
+
+		// Emergency safety check: if we didn't advance, force advance
+		if (i <= old_i)
+		{
+			// This should never happen with correct extraction functions
+			// but prevents infinite loops
+			i = old_i + 1;
+		}
 	}
 	return (tokens);
 }
 
-// void	print_tokens(t_token *tokens)
-// {
-// 	t_token	*current;
-// 	int		i;
+void	print_tokens(t_token *tokens)
+{
+	t_token	*current;
+	int		i;
 
-// 	if (!tokens)
-// 	{
-// 		printf("No tokens to print\n");
-// 		return;
-// 	}
+	if (!tokens)
+	{
+		printf("No tokens to print\n");
+		return;
+	}
 
-// 	current = tokens;
-// 	i = 0;
+	current = tokens;
+	i = 0;
 
-// 	printf("\n--- Tokens ---\n");
-// 	while (current)
-// 	{
-// 		printf("Token %d: Type = ", i);
+	printf("\n--- Tokens ---\n");
+	while (current)
+	{
+		printf("Token %d: Type = ", i);
 
-// 		// Print token type as string
-// 		switch (current->type)
-// 		{
-// 			case TOKEN_WORD:
-// 				printf("WORD");
-// 				break;
-// 			case TOKEN_PIPE:
-// 				printf("PIPE");
-// 				break;
-// 			case TOKEN_REDIR_IN:
-// 				printf("REDIR_IN");
-// 				break;
-// 			case TOKEN_REDIR_OUT:
-// 				printf("REDIR_OUT");
-// 				break;
-// 			case TOKEN_REDIR_APPEND:
-// 				printf("REDIR_APPEND");
-// 				break;
-// 			case TOKEN_HEREDOC:
-// 				printf("HEREDOC");
-// 				break;
-// 			case TOKEN_END_OF_INPUT:
-// 				printf("END_OF_INPUT");
-// 				break;
-// 			case TOKEN_SINGLE_QUOTED:
-// 				printf("SINGLE_QUOTED");
-// 				break;
-// 			case TOKEN_DOUBLE_QUOTED:
-// 				printf("DOUBLE_QUOTED");
-// 				break;
-// 			default:
-// 				printf("UNKNOWN");
-// 		}
+		// Print token type as string
+		switch (current->type)
+		{
+			case TOKEN_WORD:
+				printf("WORD");
+				break;
+			case TOKEN_PIPE:
+				printf("PIPE");
+				break;
+			case TOKEN_REDIR_IN:
+				printf("REDIR_IN");
+				break;
+			case TOKEN_REDIR_OUT:
+				printf("REDIR_OUT");
+				break;
+			case TOKEN_REDIR_APPEND:
+				printf("REDIR_APPEND");
+				break;
+			case TOKEN_HEREDOC:
+				printf("HEREDOC");
+				break;
+			case TOKEN_END_OF_INPUT:
+				printf("END_OF_INPUT");
+				break;
+			case TOKEN_SINGLE_QUOTED:
+				printf("SINGLE_QUOTED");
+				break;
+			case TOKEN_DOUBLE_QUOTED:
+				printf("DOUBLE_QUOTED");
+				break;
+			default:
+				printf("UNKNOWN");
+		}
 
-// 		printf(", Value = \"%s\"\n", current->value);
+		printf(", Value = \"%s\"\n", current->value);
 
-// 		current = current->next;
-// 		i++;
-// 	}
-// 	printf("--------------\n");
-// }
+		current = current->next;
+		i++;
+	}
+	printf("--------------\n");
+}
