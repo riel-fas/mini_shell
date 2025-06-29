@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_exec.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 11:45:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/26 12:20:16 by riad             ###   ########.fr       */
+/*   Updated: 2025/06/29 17:38:35 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,16 +69,12 @@ int	execute_single_command(t_shell *shell, t_cmds *cmd)
 				exit(126);
 			}
 		}
-
-		// Find command path
 		cmd_path = find_command_path(shell->path, cmd->args[0]);
 		if (!cmd_path)
 		{
 			error_message(cmd->args[0], "Command not found");
 			exit(127);
 		}
-
-		// Create environment array from linked list
 		char **env_array = env_list_to_array(shell->env);
 		if (!env_array)
 		{
@@ -86,11 +82,7 @@ int	execute_single_command(t_shell *shell, t_cmds *cmd)
 			error_message(cmd->args[0], "Failed to create environment");
 			exit(1);
 		}
-
-		// Execute command
 		execve(cmd_path, cmd->args, env_array);
-
-		// If execve returns, it failed
 		error_message(cmd->args[0], "Execution failed");
 
 		// Clean up
@@ -112,8 +104,7 @@ int	execute_single_command(t_shell *shell, t_cmds *cmd)
 	}
 }
 
-static pid_t	execute_pipeline_command(t_shell *shell, t_cmds *cmd,
-                                        int in_fd, int out_fd)
+static pid_t	execute_pipeline_command(t_shell *shell, t_cmds *cmd, int in_fd, int out_fd)
 {
 	pid_t	pid;
 	char	*cmd_path;
@@ -121,17 +112,12 @@ static pid_t	execute_pipeline_command(t_shell *shell, t_cmds *cmd,
 
 	if (!cmd->args || !cmd->args[0])
 		return (-1);
-
-	// Fork even for built-ins in a pipeline
 	pid = fork();
 	if (pid < 0)
 		return (-1);
 
 	if (pid == 0)
 	{
-		// Child process
-
-		// Connect pipes
 		if (in_fd != STDIN_FILENO)
 		{
 			dup2(in_fd, STDIN_FILENO);
@@ -143,11 +129,7 @@ static pid_t	execute_pipeline_command(t_shell *shell, t_cmds *cmd,
 			dup2(out_fd, STDOUT_FILENO);
 			close(out_fd);
 		}
-
-		// Setup redirections
 		setup_redirections(cmd);
-
-		// Check for built-ins
 		if (is_builtin(cmd->args[0]))
 		{
 			builtin = get_builtin(cmd->args[0]);
@@ -156,9 +138,6 @@ static pid_t	execute_pipeline_command(t_shell *shell, t_cmds *cmd,
 				exit(builtin(shell, cmd->args));
 			}
 		}
-
-		// External command
-		// Check if command is a directory (when it contains '/')
 		if (ft_strchr(cmd->args[0], '/'))
 		{
 			struct stat file_stat;
@@ -168,15 +147,12 @@ static pid_t	execute_pipeline_command(t_shell *shell, t_cmds *cmd,
 				exit(126);
 			}
 		}
-
 		cmd_path = find_command_path(shell->path, cmd->args[0]);
 		if (!cmd_path)
 		{
 			error_message(cmd->args[0], "Command not found");
 			exit(127);
 		}
-
-		// Create environment array
 		char **env_array = env_list_to_array(shell->env);
 		if (!env_array)
 		{
@@ -184,16 +160,12 @@ static pid_t	execute_pipeline_command(t_shell *shell, t_cmds *cmd,
 			error_message(cmd->args[0], "Failed to create environment");
 			exit(1);
 		}
-
 		execve(cmd_path, cmd->args, env_array);
-
-		// If execve returns, it failed
 		error_message(cmd->args[0], "Execution failed");
 		free(cmd_path);
 		free_env_array(env_array);
 		exit(1);
 	}
-
 	return (pid);
 }
 
@@ -207,7 +179,6 @@ int	execute_pipeline(t_shell *shell, t_cmds *commands)
 	int		status;
 	int		prev_pipe_read;
 
-	// Count commands and allocate PIDs array
 	cmd_count = 0;
 	current = commands;
 	while (current)
@@ -215,22 +186,17 @@ int	execute_pipeline(t_shell *shell, t_cmds *commands)
 		cmd_count++;
 		current = current->next;
 	}
-
 	pids = (pid_t *)malloc(sizeof(pid_t) * cmd_count);
 	if (!pids)
 	{
 		error_message("malloc", "Failed to allocate memory for pipeline");
 		return (1);
 	}
-
-	// Execute commands in pipeline
 	current = commands;
 	prev_pipe_read = STDIN_FILENO;
 	i = 0;
-
 	while (current)
 	{
-		// Create a pipe except for the last command
 		if (current->next)
 		{
 			if (pipe(pipefd) < 0)
@@ -240,39 +206,26 @@ int	execute_pipeline(t_shell *shell, t_cmds *commands)
 				return (1);
 			}
 		}
-
-		// Execute the command
 		if (current->next)
 		{
-			// Not the last command - connect to pipe
 			pids[i] = execute_pipeline_command(shell, current, prev_pipe_read, pipefd[WRITE_END]);
-
-			// Close the pipe ends we've passed to the child
 			if (prev_pipe_read != STDIN_FILENO)
 				close(prev_pipe_read);
 			close(pipefd[WRITE_END]);
-
-			// Save read end for next command
 			prev_pipe_read = pipefd[READ_END];
 		}
 		else
 		{
-			// Last command - output to stdout
 			pids[i] = execute_pipeline_command(shell, current, prev_pipe_read, STDOUT_FILENO);
-
-			// Close the pipe read end we've passed to the child
 			if (prev_pipe_read != STDIN_FILENO)
 				close(prev_pipe_read);
 		}
-
-		// Check for error
 		if (pids[i] == -1)
 		{
 			error_message(current->args[0], "Failed to execute command");
 			free(pids);
 			return (1);
 		}
-
 		current = current->next;
 		i++;
 	}

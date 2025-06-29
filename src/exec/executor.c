@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 11:45:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/18 22:34:04 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/06/29 17:38:49 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,6 @@ int	execute_commands(t_shell *shell, t_cmds *commands)
 		return (0);
 	else if (num_cmds == 1 && !has_command(commands))
 	{
-		// Handle redirection with no command
-		// e.g. > file.txt
 		if (commands->input_file || commands->output_file || commands->rw_file || commands->heredoc_delimeter)
 		{
 			status = setup_redirections(commands);

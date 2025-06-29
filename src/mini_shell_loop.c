@@ -1,25 +1,12 @@
-/* *****************************static int	process_input(t_shell *shell, char *input)
-{
-	int	exit_status;
-
-	if (!input || !*input || is_only_whitespace(input))
-		return (1);
-	if (*input)
-		add_history(input);
-	if (!process_exit_check(input))
-		return (0);
-	shell->tokens = tokenize(input);
-	if (handle_tokenize_error(shell, input))
-		return (1);
-	// ...existing code...**************************** */
+/* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   mini_shell_loop.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/21 10:45:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/27 22:25:04 by riad             ###   ########.fr       */
+/*   Created: 2025/06/29 17:54:33 by marvin            #+#    #+#             */
+/*   Updated: 2025/06/29 17:55:00 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

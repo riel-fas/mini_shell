@@ -3,18 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_extraction.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 19:15:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/29 06:59:11 by riad             ###   ########.fr       */
+/*   Updated: 2025/06/29 17:40:56 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/lexer.h"
 
-/**
- * Extract a WORD token from input string (handles mixed quotes)
- */
+
 char	*extract_word(char *input, int *i)
 {
 	int		start;
@@ -27,7 +25,27 @@ char	*extract_word(char *input, int *i)
 
 	while (input[*i] && !is_whitespace(input[*i]) && !is_operator(input[*i]))
 	{
-		if (is_quote(input[*i]))
+		// Handle special $' and $" quoting
+		if (input[*i] == '$' && (input[*i + 1] == '\'' || input[*i + 1] == '"'))
+		{
+			(*i)++; // Skip the $
+			len++;
+			quote = input[*i]; // Get the quote type (' or ")
+			(*i)++; // Skip opening quote
+			len++;
+			// Include everything until closing quote
+			while (input[*i] && input[*i] != quote)
+			{
+				(*i)++;
+				len++;
+			}
+			if (input[*i] == quote)
+			{
+				(*i)++; // Skip closing quote
+				len++;
+			}
+		}
+		else if (is_quote(input[*i]))
 		{
 			quote = input[*i];
 			(*i)++; // Skip opening quote
@@ -55,9 +73,6 @@ char	*extract_word(char *input, int *i)
 }
 
 
-/**
- * Helper function to return operator and set its type
- */
 static char	*set_operator(char *op, t_token_type token_type, int *i, int increment, t_token_type *type)
 {
 	*i += increment;
@@ -65,9 +80,6 @@ static char	*set_operator(char *op, t_token_type token_type, int *i, int increme
 	return (ft_strdup(op));
 }
 
-/**
- * Extract operator token from input string
- */
 char	*extract_operator(char *input, int *i, t_token_type *type)
 {
 	if (input[*i] == '>' && input[*i + 1] == '>')
@@ -87,9 +99,6 @@ char	*extract_operator(char *input, int *i, t_token_type *type)
 }
 
 
-/**
- * Extract quoted string from input
- */
 char	*extract_quoted_string(char *input, int *i, char quote)
 {
 	int		start;

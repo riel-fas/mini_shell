@@ -3,20 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 21:10:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/29 16:15:00 by riad             ###   ########.fr       */
+/*   Updated: 2025/06/29 17:40:32 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/lexer.h"
-#include <sys/types.h>
-#include <unistd.h>
 
-/**
- * @brief Kat extract variable name men position '$'
- */
 static char	*extract_var_name(char *input, int *i)
 {
 	int		start;
@@ -36,16 +31,12 @@ static char	*extract_var_name(char *input, int *i)
 		(*i)++;
 		return (ft_strdup("$"));
 	}
-
-	// Single digit (positional parameters)
 	if (ft_isdigit(input[*i]))
 	{
 		char digit_str[2] = {input[*i], '\0'};
 		(*i)++;
 		return (ft_strdup(digit_str));
 	}
-
-	// Regular variable name: letters, digits, underscore
 	if (ft_isalpha(input[*i]) || input[*i] == '_')
 	{
 		while (input[*i] && (ft_isalnum(input[*i]) || input[*i] == '_'))
@@ -55,14 +46,40 @@ static char	*extract_var_name(char *input, int *i)
 		}
 		return (ft_substr(input, start, len));
 	}
-
-	// Invalid variable name - don't advance index, return NULL
 	return (NULL);
 }
 
-/**
- * @brief Katjbed l9ima dyal variable li bghina n expandiha
- */
+
+static char	*process_special_quoting(char *str, int *i)
+{
+	char	*result;
+	char	quote_type;
+	int		start;
+	int		len;
+
+	// Skip the $ and get the quote type
+	(*i)++; // Skip $
+	quote_type = str[*i];
+	(*i)++; // Skip opening quote
+	start = *i;
+	len = 0;
+
+	while (str[*i] && str[*i] != quote_type)
+	{
+		(*i)++;
+		len++;
+	}
+	if (str[*i] == quote_type)
+		(*i)++; // Skip closing quote
+	if (len == 0)
+		result = ft_strdup("");
+	else
+		result = ft_substr(str, start, len);
+
+	return (result);
+}
+
+
 static char	*get_var_value(char *var_name, t_env *env, int exit_status)
 {
 	char *value;
@@ -84,8 +101,6 @@ static char	*get_var_value(char *var_name, t_env *env, int exit_status)
 		else
 			return (ft_strdup(""));  // Other positional parameters are empty
 	}
-
-	// Regular environment variable
 	value = get_env_value(env, var_name);
 	if (value)
 		return (ft_strdup(value));
@@ -93,9 +108,7 @@ static char	*get_var_value(char *var_name, t_env *env, int exit_status)
 	return (ft_strdup(""));  // Empty string if variable doesn't exist
 }
 
-/**
- * @brief CORRECTLY handles mixed quotes - preserves content in single quotes
- */
+
 char	*expand_variables(char *str, t_env *env, int exit_status, int in_quotes)
 {
 	char	*result;
@@ -117,7 +130,6 @@ char	*expand_variables(char *str, t_env *env, int exit_status, int in_quotes)
 
 	while (str[i])
 	{
-		// Handle quote state tracking
 		if (str[i] == '\'' && !in_double_quotes)
 		{
 			in_single_quotes = !in_single_quotes;
@@ -130,7 +142,15 @@ char	*expand_variables(char *str, t_env *env, int exit_status, int in_quotes)
 			i++; // Skip the quote character itself
 			continue;
 		}
-		// Handle variable expansion (only if not in single quotes)
+		else if (str[i] == '$' && (str[i + 1] == '\'' || str[i + 1] == '"') &&
+				 !in_single_quotes && !in_double_quotes)
+		{
+			var_value = process_special_quoting(str, &i);
+			temp = ft_strjoin(result, var_value);
+			free(result);
+			free(var_value);
+			result = temp;
+		}
 		else if (str[i] == '$' && !in_single_quotes && str[i + 1] &&
 				 (ft_isalpha(str[i + 1]) || str[i + 1] == '_' ||
 				  str[i + 1] == '?' || str[i + 1] == '$' ||
@@ -150,7 +170,6 @@ char	*expand_variables(char *str, t_env *env, int exit_status, int in_quotes)
 		}
 		else
 		{
-			// Regular character - add to result
 			char char_str[2] = {str[i], '\0'};
 			temp = ft_strjoin(result, char_str);
 			free(result);
@@ -161,9 +180,7 @@ char	*expand_variables(char *str, t_env *env, int exit_status, int in_quotes)
 	return (result);
 }
 
-/**
- * @brief Kat expandir tokens f lista
- */
+
 void	expand_tokens(t_token *tokens, t_env *env, int exit_status)
 {
 	t_token	*current;
@@ -174,7 +191,6 @@ void	expand_tokens(t_token *tokens, t_env *env, int exit_status)
 	{
 		if (current->type == TOKEN_WORD)
 		{
-			// Regular word - allow expansion
 			expanded = expand_variables(current->value, env, exit_status, 0);
 			if (expanded)
 			{
@@ -184,7 +200,6 @@ void	expand_tokens(t_token *tokens, t_env *env, int exit_status)
 		}
 		else if (current->type == TOKEN_DOUBLE_QUOTED)
 		{
-			// Double quotes - allow expansion
 			expanded = expand_variables(current->value, env, exit_status, 2);
 			if (expanded)
 			{
@@ -192,7 +207,6 @@ void	expand_tokens(t_token *tokens, t_env *env, int exit_status)
 				current->value = expanded;
 			}
 		}
-		// TOKEN_SINGLE_QUOTED - no expansion needed
 		current = current->next;
 	}
 }

@@ -148,7 +148,7 @@ SRCS = $(SRC_DIR)/main.c \
 		$(SRC_DIR)/lexer/lexer_utils.c \
 		$(SRC_DIR)/lexer/expansion.c \
 		$(SRC_DIR)/parser/parser_token.c \
-		$(SRC_DIR)/parser/print_command.c \
+		$(SRC_DIR)/parser/parser_utils.c \
 		$(SRC_DIR)/parser/syntax_error.c \
 		$(SRC_DIR)/exec/cmd_exec.c \
 		$(SRC_DIR)/exec/exec_utils.c \
