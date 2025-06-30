@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini_shell_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 19:13:56 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/21 18:32:37 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/06/30 12:36:57 by riad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,12 @@ int ft_strcmp(char *s1, char *s2)
 {
 	int i = 0;
 
+	if (!s1 && !s2)
+		return (0);
+	if (!s1)
+		return (-1);
+	if (!s2)
+		return (1);
 	while((s1[i] == s2[i]) && s1[i] && s2[i])
 		i++;
 	return (s1[i]-s2[i]);

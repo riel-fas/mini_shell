@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_list.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 18:53:58 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/26 12:28:54 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/06/30 12:36:57 by riad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,10 @@ t_env	*new_env_node(char *name, char *value)
 	if (!new)
 		return (NULL);
 	new->key = ft_strdup(name);
-	new->value = ft_strdup(value);
+	if (value)
+		new->value = ft_strdup(value);
+	else
+		new->value = NULL;
 	new->next = NULL;
 	return (new);
 }
@@ -84,7 +87,10 @@ char	**env_list_to_array(t_env *env)
 	while (current)
 	{
 		temp = ft_strjoin(current->key, "=");
-		env_array[i] = ft_strjoin(temp, current->value);
+		if (current->value)
+			env_array[i] = ft_strjoin(temp, current->value);
+		else
+			env_array[i] = ft_strjoin(temp, "");
 		free(temp);
 		current = current->next;
 		i++;

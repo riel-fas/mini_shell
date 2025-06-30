@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini_shell.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:59 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/29 17:16:56 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/06/30 13:55:48 by riad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ typedef enum e_token_type
 	TOKEN_END_OF_INPUT, //end of input (heredoc)
 	TOKEN_SINGLE_QUOTED, // 'text' - no expansion
 	TOKEN_DOUBLE_QUOTED, // "text" - allow expansion
+	TOKEN_SEMICOLON, // ; - command separator
 }	t_token_type;
 
 //token struct

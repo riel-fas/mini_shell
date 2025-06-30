@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_extraction.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 19:15:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/29 17:40:56 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/30 13:55:48 by riad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,8 @@ char	*extract_operator(char *input, int *i, t_token_type *type)
 		return (set_operator("<", TOKEN_REDIR_IN, i, 1, type));
 	else if (input[*i] == '|')
 		return (set_operator("|", TOKEN_PIPE, i, 1, type));
+	else if (input[*i] == ';')
+		return (set_operator(";", TOKEN_SEMICOLON, i, 1, type));
 	*type = TOKEN_WORD;
 	return (NULL);
 }

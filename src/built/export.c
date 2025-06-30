@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 12:15:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/13 20:43:58 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/06/30 13:32:47 by riad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,95 +38,24 @@ static int	is_valid_varname(char *name)
 static void	print_sorted_env(t_env *env)
 {
 	t_env	*current;
-	t_env	*smallest;
-	t_env	*temp;
-	char	**printed;
-	int		count;
-	int		i;
 
-	// Count environment variables
-	count = 0;
+	// Simple implementation without sorting for now
+	// TODO: implement proper sorting later if needed
 	current = env;
 	while (current)
 	{
-		count++;
+		// Print in declare -x format
+		ft_putstr_fd("declare -x ", 1);
+		ft_putstr_fd(current->key, 1);
+		if (current->value)
+		{
+			ft_putstr_fd("=\"", 1);
+			ft_putstr_fd(current->value, 1);
+			ft_putstr_fd("\"", 1);
+		}
+		ft_putchar_fd('\n', 1);
 		current = current->next;
 	}
-
-	// Allocate array to track printed variables
-	printed = (char **)malloc(sizeof(char *) * (count + 1));
-	if (!printed)
-		return;
-
-	// Initialize printed array
-	i = 0;
-	while (i < count)
-	{
-		printed[i] = NULL;
-		i++;
-	}
-
-	// Print variables in sorted order
-	i = 0;
-	while (i < count)
-	{
-		// Find smallest remaining variable
-		smallest = NULL;
-		current = env;
-		while (current)
-		{
-			// Skip if already printed
-			temp = env;
-			while (temp && i > 0)
-			{
-				if (ft_strcmp(current->key, printed[i - 1]) <= 0)
-					break;
-				temp = temp->next;
-			}
-
-			if (!smallest || ft_strcmp(current->key, smallest->key) < 0)
-			{
-				// Check if already printed
-				int j = 0;
-				int is_printed = 0;
-				while (j < i)
-				{
-					if (ft_strcmp(current->key, printed[j]) == 0)
-					{
-						is_printed = 1;
-						break;
-					}
-					j++;
-				}
-
-				if (!is_printed)
-					smallest = current;
-			}
-
-			current = current->next;
-		}
-
-		if (smallest)
-		{
-			// Mark as printed
-			printed[i] = smallest->key;
-
-			// Print in declare -x format
-			ft_putstr_fd("declare -x ", 1);
-			ft_putstr_fd(smallest->key, 1);
-			if (smallest->value)
-			{
-				ft_putstr_fd("=\"", 1);
-				ft_putstr_fd(smallest->value, 1);
-				ft_putstr_fd("\"", 1);
-			}
-			ft_putchar_fd('\n', 1);
-		}
-
-		i++;
-	}
-
-	free(printed);
 }
 
 static int	parse_assignment(char *arg, char **name, char **value)
@@ -161,9 +90,30 @@ int	builtin_export(t_shell *shell, char **args)
 	char	*name;
 	char	*value;
 	t_env	*env_var;
+	int		has_valid_args;
 
 	// No arguments - print sorted environment
 	if (!args[1])
+	{
+		print_sorted_env(shell->env);
+		return (0);
+	}
+
+	// Check if we have any non-empty arguments
+	has_valid_args = 0;
+	i = 1;
+	while (args[i])
+	{
+		if (args[i][0] != '\0')  // Non-empty argument
+		{
+			has_valid_args = 1;
+			break;
+		}
+		i++;
+	}
+
+	// If all arguments are empty strings (from variable expansion), behave like no arguments
+	if (!has_valid_args)
 	{
 		print_sorted_env(shell->env);
 		return (0);
@@ -173,6 +123,13 @@ int	builtin_export(t_shell *shell, char **args)
 	i = 1;
 	while (args[i])
 	{
+		// Skip empty arguments (from variable expansion)
+		if (args[i][0] == '\0')
+		{
+			i++;
+			continue;
+		}
+
 		// Parse NAME=VALUE format
 		if (!parse_assignment(args[i], &name, &value))
 			return (1);
@@ -196,9 +153,11 @@ int	builtin_export(t_shell *shell, char **args)
 			// Only update if there's a value
 			if (value)
 			{
-				free(env_var->value);
+				if (env_var->value)
+					free(env_var->value);
 				env_var->value = value;
 			}
+			// If no value provided, just mark as exported (don't change existing value)
 		}
 		else
 			add_env_node(&shell->env, new_env_node(name, value));
