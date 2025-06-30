@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 21:10:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/30 18:25:06 by codespace        ###   ########.fr       */
+/*   Updated: 2025/06/30 20:18:37 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,28 +114,41 @@ char	*expand_variables(char *str, t_env *env, int exit_status, int in_quotes)
 			in_double_quotes = !in_double_quotes;
 			i++; // Skip quote, don't copy it
 		}
-		else if (str[i] == '$' && !in_single_quotes && str[i + 1] &&
-				 (ft_isalpha(str[i + 1]) || str[i + 1] == '_' ||
-				  str[i + 1] == '?' || str[i + 1] == '$' ||
-				  ft_isdigit(str[i + 1])))
+		else if (str[i] == '$' && !in_single_quotes && str[i + 1])
 		{
-			// Variable expansion
-			char *var_name;
-			char *var_value;
-
-			i++; // Skip '$'
-			var_name = extract_var_name(str, &i);
-			if (var_name)
+			if (str[i + 1] == '"' || str[i + 1] == '\'')
 			{
-				var_value = get_var_value(var_name, env, exit_status);
-				if (var_value)
+				// Handle $"..." and $'...' - skip the $ and treat as regular quotes
+				i++; // Skip the $
+				// The quote will be handled in the next iteration
+			}
+			else if (ft_isalpha(str[i + 1]) || str[i + 1] == '_' ||
+					 str[i + 1] == '?' || str[i + 1] == '$' ||
+					 ft_isdigit(str[i + 1]))
+			{
+				// Variable expansion
+				char *var_name;
+				char *var_value;
+
+				i++; // Skip '$'
+				var_name = extract_var_name(str, &i);
+				if (var_name)
 				{
-					int val_len = ft_strlen(var_value);
-					ft_memcpy(result + j, var_value, val_len);
-					j += val_len;
-					free(var_value);
+					var_value = get_var_value(var_name, env, exit_status);
+					if (var_value)
+					{
+						int val_len = ft_strlen(var_value);
+						ft_memcpy(result + j, var_value, val_len);
+						j += val_len;
+						free(var_value);
+					}
+					free(var_name);
 				}
-				free(var_name);
+			}
+			else
+			{
+				// Invalid variable name, copy $ literally
+				result[j++] = str[i++];
 			}
 		}
 		else
