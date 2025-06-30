@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   copy_env.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:50:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/26 12:28:23 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/06/30 22:15:47 by riad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,4 +72,29 @@ char	**split_paths(t_env *env)
 		return (NULL);
 	paths = ft_split(path_str, ':');
 	return (paths);
+}
+
+void	update_shell_path(t_shell *shell)
+{
+	char	**new_path;
+	int		i;
+
+	if (!shell)
+		return ;
+
+	// Free the current path array
+	if (shell->path)
+	{
+		i = 0;
+		while (shell->path[i])
+		{
+			free(shell->path[i]);
+			i++;
+		}
+		free(shell->path);
+	}
+
+	// Get the new path from the updated environment
+	new_path = split_paths(shell->env);
+	shell->path = new_path;
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_exec.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 11:45:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/29 17:38:35 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/30 22:30:13 by riad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ int	execute_single_command(t_shell *shell, t_cmds *cmd)
 		cmd_path = find_command_path(shell->path, cmd->args[0]);
 		if (!cmd_path)
 		{
-			error_message(cmd->args[0], "Command not found");
+			error_message(cmd->args[0], "No such file or directory");
 			exit(127);
 		}
 		char **env_array = env_list_to_array(shell->env);
@@ -150,7 +150,7 @@ static pid_t	execute_pipeline_command(t_shell *shell, t_cmds *cmd, int in_fd, in
 		cmd_path = find_command_path(shell->path, cmd->args[0]);
 		if (!cmd_path)
 		{
-			error_message(cmd->args[0], "Command not found");
+			error_message(cmd->args[0], "No such file or directory");
 			exit(127);
 		}
 		char **env_array = env_list_to_array(shell->env);

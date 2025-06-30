@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 12:15:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/13 20:44:10 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/06/30 22:15:47 by riad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,10 +71,12 @@ int	builtin_unset(t_shell *shell, char **args)
 {
 	int	i;
 	int	status;
+	int	path_modified;
 
 	if (!args[1])
 		return (0);
 	status = 0;
+	path_modified = 0;
 	i = 1;
 	while (args[i])
 	{
@@ -86,8 +88,18 @@ int	builtin_unset(t_shell *shell, char **args)
 			status = 1;
 		}
 		else
+		{
+			// Check if we're unsetting PATH
+			if (ft_strcmp(args[i], "PATH") == 0)
+				path_modified = 1;
 			remove_env_var(&shell->env, args[i]);
+		}
 		i++;
 	}
+
+	// Update shell path if PATH was modified
+	if (path_modified)
+		update_shell_path(shell);
+
 	return (status);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini_shell.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:59 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/30 18:25:06 by codespace        ###   ########.fr       */
+/*   Updated: 2025/06/30 22:15:47 by riad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ int ft_strcmp(char *s1, char *s2);
 t_env    *create_env_list(char **env);
 char    *get_username(t_env *env);
 char    **split_paths(t_env *env);
+void     update_shell_path(t_shell *shell);
 
 //env_list.c
 t_env   *new_env_node(char *name, char *value);

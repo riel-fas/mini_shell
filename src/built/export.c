@@ -6,7 +6,7 @@
 /*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 12:15:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/30 13:32:47 by riad             ###   ########.fr       */
+/*   Updated: 2025/06/30 22:15:47 by riad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ int	builtin_export(t_shell *shell, char **args)
 	char	*value;
 	t_env	*env_var;
 	int		has_valid_args;
+	int		path_modified;
 
 	// No arguments - print sorted environment
 	if (!args[1])
@@ -121,6 +122,7 @@ int	builtin_export(t_shell *shell, char **args)
 
 	// Process each argument
 	i = 1;
+	path_modified = 0;
 	while (args[i])
 	{
 		// Skip empty arguments (from variable expansion)
@@ -153,6 +155,9 @@ int	builtin_export(t_shell *shell, char **args)
 			// Only update if there's a value
 			if (value)
 			{
+				// Check if we're modifying PATH
+				if (ft_strcmp(name, "PATH") == 0)
+					path_modified = 1;
 				if (env_var->value)
 					free(env_var->value);
 				env_var->value = value;
@@ -160,11 +165,20 @@ int	builtin_export(t_shell *shell, char **args)
 			// If no value provided, just mark as exported (don't change existing value)
 		}
 		else
+		{
+			// Check if we're adding PATH
+			if (ft_strcmp(name, "PATH") == 0)
+				path_modified = 1;
 			add_env_node(&shell->env, new_env_node(name, value));
+		}
 
 		free(name);
 		i++;
 	}
+
+	// Update shell path if PATH was modified
+	if (path_modified)
+		update_shell_path(shell);
 
 	return (0);
 }
