@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_extraction.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 19:15:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/30 13:55:48 by riad             ###   ########.fr       */
+/*   Updated: 2025/06/30 17:48:23 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,9 @@ char	*extract_word(char *input, int *i)
 
 	while (input[*i] && !is_whitespace(input[*i]) && !is_operator(input[*i]))
 	{
-		// Handle special $' and $" quoting
-		if (input[*i] == '$' && (input[*i + 1] == '\'' || input[*i + 1] == '"'))
+		if (is_quote(input[*i]))
 		{
-			(*i)++; // Skip the $
-			len++;
-			quote = input[*i]; // Get the quote type (' or ")
+			quote = input[*i];
 			(*i)++; // Skip opening quote
 			len++;
 			// Include everything until closing quote
@@ -45,9 +42,12 @@ char	*extract_word(char *input, int *i)
 				len++;
 			}
 		}
-		else if (is_quote(input[*i]))
+		else if (input[*i] == '$' && (input[*i + 1] == '\'' || input[*i + 1] == '"'))
 		{
-			quote = input[*i];
+			// Handle special $' and $" quoting
+			(*i)++; // Skip the $
+			len++;
+			quote = input[*i]; // Get the quote type (' or ")
 			(*i)++; // Skip opening quote
 			len++;
 			// Include everything until closing quote

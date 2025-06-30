@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 19:15:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/30 13:55:48 by riad             ###   ########.fr       */
+/*   Updated: 2025/06/30 18:25:06 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,13 @@ t_token	*create_token(char *value, t_token_type type)
 	token->value = ft_strdup(value);
 	if (!token->value)
 	{
+		free(token);
+		return (NULL);
+	}
+	token->original_value = ft_strdup(value);
+	if (!token->original_value)
+	{
+		free(token->value);
 		free(token);
 		return (NULL);
 	}
@@ -58,6 +65,7 @@ void	free_tokens(t_token *tokens)
 		temp = current;
 		current = current->next;
 		free(temp->value);
+		free(temp->original_value);
 		free(temp);
 	}
 }

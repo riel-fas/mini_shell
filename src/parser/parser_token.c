@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   parser_token.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:04:54 by roubelka          #+#    #+#             */
-/*   Updated: 2025/06/29 17:45:30 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/30 18:25:06 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/parser.h"
+#include "../../includes/lexer.h"
 
 t_cmds  *init_new_command(t_cmds **head, t_cmds **tail)
 {
@@ -47,6 +48,127 @@ void	add_arg_to_cmd(t_cmds *cmd, char *value)
 	cmd->args[count] = strdup(value);
 	cmd->args[count + 1] = NULL;
 }
+
+static void	add_split_args_to_cmd(t_cmds *cmd, char *value)
+{
+	char	**words;
+	int		i;
+	int		word_count;
+	int		start;
+	int		j;
+	char	*word;
+
+	if (!cmd || !value || !*value)
+		return;
+
+	// Count words
+	word_count = 0;
+	i = 0;
+	while (value[i])
+	{
+		while (value[i] && (value[i] == ' ' || value[i] == '\t'))
+			i++;
+		if (value[i])
+		{
+			word_count++;
+			while (value[i] && value[i] != ' ' && value[i] != '\t')
+				i++;
+		}
+	}
+
+	if (word_count == 0)
+		return;
+
+	words = malloc(sizeof(char *) * (word_count + 1));
+	if (!words)
+		return;
+
+	// Extract words
+	word_count = 0;
+	i = 0;
+	while (value[i])
+	{
+		while (value[i] && (value[i] == ' ' || value[i] == '\t'))
+			i++;
+		if (value[i])
+		{
+			start = i;
+			while (value[i] && value[i] != ' ' && value[i] != '\t')
+				i++;
+			word = malloc(i - start + 1);
+			if (word)
+			{
+				for (j = 0; j < i - start; j++)
+					word[j] = value[start + j];
+				word[j] = '\0';
+				words[word_count++] = word;
+			}
+		}
+	}
+	words[word_count] = NULL;
+
+	// Add each word as a separate argument
+	for (i = 0; words[i]; i++)
+	{
+		add_arg_to_cmd(cmd, words[i]);
+		free(words[i]);
+	}
+	free(words);
+}
+
+static int	contains_unquoted_variables(char *str)
+{
+	int	i = 0;
+	int	in_quotes = 0;
+	char quote_char = 0;
+
+	if (!str)
+		return (0);
+
+	while (str[i])
+	{
+		if (!in_quotes && (str[i] == '"' || str[i] == '\''))
+		{
+			in_quotes = 1;
+			quote_char = str[i];
+		}
+		else if (in_quotes && str[i] == quote_char)
+		{
+			in_quotes = 0;
+		}
+		else if (!in_quotes && str[i] == '$' && str[i + 1] &&
+				 (ft_isalpha(str[i + 1]) || str[i + 1] == '_' ||
+				  str[i + 1] == '?' || str[i + 1] == '$' ||
+				  ft_isdigit(str[i + 1])))
+		{
+			return (1);
+		}
+		i++;
+	}
+	return (0);
+}
+
+static int	should_word_split(char *original_value, char *expanded_value)
+{
+	int	i = 0;
+
+	// Safety checks
+	if (!original_value || !expanded_value)
+		return (0);
+
+	// Only split if original contained unquoted variables
+	if (!contains_unquoted_variables(original_value))
+		return (0);
+
+	// And the expanded result contains whitespace
+	while (expanded_value[i])
+	{
+		if (expanded_value[i] == ' ' || expanded_value[i] == '\t')
+			return (1);
+		i++;
+	}
+	return (0);
+}
 void handle_redirections(t_cmds *cmd, t_token **tokens)
 {
 	t_token *current = *tokens;
@@ -80,14 +202,25 @@ t_cmds	*parse_tokens(t_token *tokens)
 
 	while (tokens)
 	{
-		if (tokens->type == TOKEN_WORD || tokens->type == TOKEN_ARGUMENT ||
-			tokens->type == TOKEN_SINGLE_QUOTED || tokens->type == TOKEN_DOUBLE_QUOTED)
+		if (tokens->type == TOKEN_WORD || tokens->type == TOKEN_ARGUMENT)
 		{
 			if (!current_cmd)
 				current_cmd = init_new_command(&head, &tail);
+
+			// Check if this token should be word-split (unquoted variable expansion)
+			if (should_word_split(tokens->original_value, tokens->value))
+				add_split_args_to_cmd(current_cmd, tokens->value);
+			else
+				add_arg_to_cmd(current_cmd, tokens->value);
+		}
+		else if (tokens->type == TOKEN_SINGLE_QUOTED || tokens->type == TOKEN_DOUBLE_QUOTED)
+		{
+			if (!current_cmd)
+				current_cmd = init_new_command(&head, &tail);
+			// Quoted tokens are never word-split
 			add_arg_to_cmd(current_cmd, tokens->value);
 		}
-		else if (tokens->type == TOKEN_PIPE)
+		else if (tokens->type == TOKEN_PIPE || tokens->type == TOKEN_SEMICOLON)
 		{
 			current_cmd = NULL;
 		}

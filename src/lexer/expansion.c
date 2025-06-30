@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 21:10:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/29 17:40:32 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/30 18:25:06 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,36 +50,6 @@ static char	*extract_var_name(char *input, int *i)
 }
 
 
-static char	*process_special_quoting(char *str, int *i)
-{
-	char	*result;
-	char	quote_type;
-	int		start;
-	int		len;
-
-	// Skip the $ and get the quote type
-	(*i)++; // Skip $
-	quote_type = str[*i];
-	(*i)++; // Skip opening quote
-	start = *i;
-	len = 0;
-
-	while (str[*i] && str[*i] != quote_type)
-	{
-		(*i)++;
-		len++;
-	}
-	if (str[*i] == quote_type)
-		(*i)++; // Skip closing quote
-	if (len == 0)
-		result = ft_strdup("");
-	else
-		result = ft_substr(str, start, len);
-
-	return (result);
-}
-
-
 static char	*get_var_value(char *var_name, t_env *env, int exit_status)
 {
 	char *value;
@@ -112,19 +82,23 @@ static char	*get_var_value(char *var_name, t_env *env, int exit_status)
 char	*expand_variables(char *str, t_env *env, int exit_status, int in_quotes)
 {
 	char	*result;
-	char	*temp;
-	char	*var_name;
-	char	*var_value;
+	int		len;
 	int		i;
+	int		j;
 	int		in_single_quotes;
 	int		in_double_quotes;
 
-	(void)in_quotes; // Parameter not used in this implementation
+	(void)in_quotes;
 	if (!str)
 		return (NULL);
 
-	result = ft_strdup("");
+	len = ft_strlen(str);
+	result = malloc(len * 4 + 1); // Allocate extra space for expansions
+	if (!result)
+		return (NULL);
+
 	i = 0;
+	j = 0;
 	in_single_quotes = 0;
 	in_double_quotes = 0;
 
@@ -133,52 +107,50 @@ char	*expand_variables(char *str, t_env *env, int exit_status, int in_quotes)
 		if (str[i] == '\'' && !in_double_quotes)
 		{
 			in_single_quotes = !in_single_quotes;
-			i++; // Skip the quote character itself
-			continue;
+			i++; // Skip quote, don't copy it
 		}
 		else if (str[i] == '"' && !in_single_quotes)
 		{
 			in_double_quotes = !in_double_quotes;
-			i++; // Skip the quote character itself
-			continue;
-		}
-		else if (str[i] == '$' && (str[i + 1] == '\'' || str[i + 1] == '"') &&
-				 !in_single_quotes && !in_double_quotes)
-		{
-			var_value = process_special_quoting(str, &i);
-			temp = ft_strjoin(result, var_value);
-			free(result);
-			free(var_value);
-			result = temp;
+			i++; // Skip quote, don't copy it
 		}
 		else if (str[i] == '$' && !in_single_quotes && str[i + 1] &&
 				 (ft_isalpha(str[i + 1]) || str[i + 1] == '_' ||
 				  str[i + 1] == '?' || str[i + 1] == '$' ||
 				  ft_isdigit(str[i + 1])))
 		{
-			i++; // Skip the '$'
+			// Variable expansion
+			char *var_name;
+			char *var_value;
+
+			i++; // Skip '$'
 			var_name = extract_var_name(str, &i);
 			if (var_name)
 			{
 				var_value = get_var_value(var_name, env, exit_status);
-				temp = ft_strjoin(result, var_value);
-				free(result);
+				if (var_value)
+				{
+					int val_len = ft_strlen(var_value);
+					ft_memcpy(result + j, var_value, val_len);
+					j += val_len;
+					free(var_value);
+				}
 				free(var_name);
-				free(var_value);
-				result = temp;
 			}
 		}
 		else
 		{
-			char char_str[2] = {str[i], '\0'};
-			temp = ft_strjoin(result, char_str);
-			free(result);
-			result = temp;
-			i++;
+			result[j++] = str[i++];
 		}
 	}
-	return (result);
+	result[j] = '\0';
+
+	// Reallocate to exact size
+	char *final_result = ft_strdup(result);
+	free(result);
+	return (final_result);
 }
+
 
 
 void	expand_tokens(t_token *tokens, t_env *env, int exit_status)
@@ -192,15 +164,6 @@ void	expand_tokens(t_token *tokens, t_env *env, int exit_status)
 		if (current->type == TOKEN_WORD)
 		{
 			expanded = expand_variables(current->value, env, exit_status, 0);
-			if (expanded)
-			{
-				free(current->value);
-				current->value = expanded;
-			}
-		}
-		else if (current->type == TOKEN_DOUBLE_QUOTED)
-		{
-			expanded = expand_variables(current->value, env, exit_status, 2);
 			if (expanded)
 			{
 				free(current->value);
