@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: roubelka <roubelka@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:54 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/20 18:20:58 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/07/01 00:32:12 by roubelka         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ int	main(int argc, char **argv, char **env)
 	(void)argc;
 	(void)argv;
 	signal(SIGINT, handler);
-	signal(SIGQUIT, SIG_IGN);
+	// signal(SIGQUIT, SIG_IGN);
+	signal(SIGQUIT, sigquit_handler); // Handle Ctrl+ "\"
 	rl_catch_signals = 0;
 	shell = shell_init(env);
 	if (!shell)

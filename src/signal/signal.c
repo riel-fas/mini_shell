@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: roubelka <roubelka@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 05:33:05 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/05/23 19:26:55 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/07/01 00:31:42 by roubelka         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,4 +22,9 @@ void    handler(int sig)
     rl_on_new_line();  // hadi opchn fi readline kat3lmo anaho bdasatr jdid
     rl_replace_line("", 0); // kadir satr jdid okatmsah command lktbti 9bl
     rl_redisplay(); // kat3awd t3rad (prompt) mn jdid
+}
+
+void sigquit_handler(int signum) 
+{
+    printf("Quit: %d\n", signum);
 }

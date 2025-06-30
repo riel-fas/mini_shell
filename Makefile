@@ -124,8 +124,8 @@ LIBFT_INC		=	-I$(LIBFT_DIR)
 LIBFT_LIB		=	-L$(LIBFT_DIR) -lft
 
 # Readline support
-# READLINE_PATH	=	/Users/roubelka/.brew/opt/readline
-READLINE_PATH	=	/Users/riel-fas/.brew/opt/readline
+READLINE_PATH	=	/Users/roubelka/.brew/opt/readline
+# READLINE_PATH	=	/Users/riel-fas/.brew/opt/readline
 READLINE_FLAGS	=	-I$(READLINE_PATH)/include
 READLINE_LIBS	=	-L$(READLINE_PATH)/lib -lreadline
 
