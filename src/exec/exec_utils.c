@@ -6,7 +6,7 @@
 /*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 11:45:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/24 21:14:49 by riad             ###   ########.fr       */
+/*   Updated: 2025/07/01 13:01:03 by riad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,17 @@ char	*find_command_path(char **paths, char *cmd)
 	// If command contains '/', it's a direct path
 	if (ft_strchr(cmd, '/'))
 	{
-		if (access(cmd, X_OK) == 0)
+		// First check if file exists
+		if (access(cmd, F_OK) == 0)
 		{
 			// Check if it's a directory
 			if (stat(cmd, &file_stat) == 0 && S_ISDIR(file_stat.st_mode))
 				return (NULL); // Let caller handle "Is a directory" error
-			return (ft_strdup(cmd));
+			// File exists, now check execute permission
+			if (access(cmd, X_OK) == 0)
+				return (ft_strdup(cmd));
+			// File exists but no execute permission - return special value
+			return (ft_strdup("PERMISSION_DENIED"));
 		}
 		return (NULL);
 	}

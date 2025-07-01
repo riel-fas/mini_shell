@@ -6,7 +6,7 @@
 /*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 11:45:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/30 22:30:13 by riad             ###   ########.fr       */
+/*   Updated: 2025/07/01 13:47:33 by riad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,12 @@ int	execute_single_command(t_shell *shell, t_cmds *cmd)
 			error_message(cmd->args[0], "No such file or directory");
 			exit(127);
 		}
+		if (ft_strcmp(cmd_path, "PERMISSION_DENIED") == 0)
+		{
+			free(cmd_path);
+			error_message(cmd->args[0], "Permission denied");
+			exit(126);
+		}
 		char **env_array = env_list_to_array(shell->env);
 		if (!env_array)
 		{
@@ -118,6 +124,7 @@ static pid_t	execute_pipeline_command(t_shell *shell, t_cmds *cmd, int in_fd, in
 
 	if (pid == 0)
 	{
+		// Close all unused pipe file descriptors
 		if (in_fd != STDIN_FILENO)
 		{
 			dup2(in_fd, STDIN_FILENO);
@@ -153,6 +160,12 @@ static pid_t	execute_pipeline_command(t_shell *shell, t_cmds *cmd, int in_fd, in
 			error_message(cmd->args[0], "No such file or directory");
 			exit(127);
 		}
+		if (ft_strcmp(cmd_path, "PERMISSION_DENIED") == 0)
+		{
+			free(cmd_path);
+			error_message(cmd->args[0], "Permission denied");
+			exit(126);
+		}
 		char **env_array = env_list_to_array(shell->env);
 		if (!env_array)
 		{
@@ -178,6 +191,7 @@ int	execute_pipeline(t_shell *shell, t_cmds *commands)
 	int		i;
 	int		status;
 	int		prev_pipe_read;
+	int		dummy_pipe[2];
 
 	cmd_count = 0;
 	current = commands;
@@ -193,7 +207,18 @@ int	execute_pipeline(t_shell *shell, t_cmds *commands)
 		return (1);
 	}
 	current = commands;
-	prev_pipe_read = STDIN_FILENO;
+
+	// Create a dummy pipe for the first command to prevent hanging
+	// This ensures the first command gets EOF instead of waiting for terminal input
+	if (pipe(dummy_pipe) < 0)
+	{
+		error_message("pipe", "Failed to create dummy pipe");
+		free(pids);
+		return (1);
+	}
+	close(dummy_pipe[WRITE_END]); // Close write end immediately - this gives EOF to read end
+	prev_pipe_read = dummy_pipe[READ_END];
+
 	i = 0;
 	while (current)
 	{
@@ -223,6 +248,9 @@ int	execute_pipeline(t_shell *shell, t_cmds *commands)
 		if (pids[i] == -1)
 		{
 			error_message(current->args[0], "Failed to execute command");
+			// Clean up any remaining file descriptors
+			if (prev_pipe_read != STDIN_FILENO)
+				close(prev_pipe_read);
 			free(pids);
 			return (1);
 		}

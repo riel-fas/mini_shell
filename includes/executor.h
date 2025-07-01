@@ -6,7 +6,7 @@
 /*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 11:45:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/24 21:14:49 by riad             ###   ########.fr       */
+/*   Updated: 2025/07/01 13:47:33 by riad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,12 @@
 # include "mini_shell.h"
 # include "builtins.h"
 # include <sys/stat.h>
+# include <fcntl.h>
+# include <unistd.h>
+
+/* Pipe constants */
+# define READ_END 0
+# define WRITE_END 1
 
 /* Executor functions */
 int		execute_commands(t_shell *shell, t_cmds *commands);

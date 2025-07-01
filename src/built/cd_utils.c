@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 00:50:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/13 20:43:29 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/07/01 12:41:31 by riad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,4 +65,35 @@ char	*handle_oldpwd_dir(t_env *env, char **old_pwd)
 	}
 	ft_putendl_fd(target_dir, 1);
 	return (target_dir);
+}
+
+char	*handle_tilde_expansion(t_env *env, char *path, char **old_pwd, int *should_free_target)
+{
+	char	*home_dir;
+	char	*expanded_path;
+
+	*should_free_target = 0;
+	if (!path || path[0] != '~')
+		return (path);
+	if (path[0] == '~' && (path[1] == '\0' || path[1] == '/'))
+	{
+		home_dir = get_env_value(env, "HOME");
+		if (!home_dir)
+		{
+			ft_putendl_fd("cd: HOME not set", 2);
+			free(*old_pwd);
+			return (NULL);
+		}
+		if (path[1] == '\0')
+			return (home_dir);
+		expanded_path = ft_strjoin(home_dir, &path[1]);
+		if (!expanded_path)
+		{
+			free(*old_pwd);
+			return (NULL);
+		}
+		*should_free_target = 1;
+		return (expanded_path);
+	}
+	return (path);
 }
