@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 21:10:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/30 20:18:37 by codespace        ###   ########.fr       */
+/*   Updated: 2025/07/01 02:46:03 by riad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,13 +87,16 @@ char	*expand_variables(char *str, t_env *env, int exit_status, int in_quotes)
 	int		j;
 	int		in_single_quotes;
 	int		in_double_quotes;
+	int		result_size;
 
 	(void)in_quotes;
 	if (!str)
 		return (NULL);
 
 	len = ft_strlen(str);
-	result = malloc(len * 4 + 1); // Allocate extra space for expansions
+	// Allocate much more space to handle long variable expansions
+	result_size = len * 10 + 1024;  // Be very generous with allocation
+	result = malloc(result_size);
 	if (!result)
 		return (NULL);
 
@@ -138,8 +141,23 @@ char	*expand_variables(char *str, t_env *env, int exit_status, int in_quotes)
 					if (var_value)
 					{
 						int val_len = ft_strlen(var_value);
-						ft_memcpy(result + j, var_value, val_len);
-						j += val_len;
+						// Safety check: ensure we don't overflow the buffer
+						if (j + val_len + 1 < result_size)
+						{
+							ft_memcpy(result + j, var_value, val_len);
+							j += val_len;
+						}
+						else
+						{
+							// Buffer would overflow - truncate or handle error
+							// For safety, we'll truncate to fit
+							int space_left = result_size - j - 1;
+							if (space_left > 0)
+							{
+								ft_memcpy(result + j, var_value, space_left);
+								j += space_left;
+							}
+						}
 						free(var_value);
 					}
 					free(var_name);
@@ -148,12 +166,19 @@ char	*expand_variables(char *str, t_env *env, int exit_status, int in_quotes)
 			else
 			{
 				// Invalid variable name, copy $ literally
-				result[j++] = str[i++];
+				if (j + 1 < result_size)
+					result[j++] = str[i++];
+				else
+					i++; // Skip if no space
 			}
 		}
 		else
 		{
-			result[j++] = str[i++];
+			// Copy regular character
+			if (j + 1 < result_size)
+				result[j++] = str[i++];
+			else
+				i++; // Skip if no space
 		}
 	}
 	result[j] = '\0';
