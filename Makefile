@@ -123,11 +123,9 @@ LIBFT_A			=	$(LIBFT_DIR)/libft.a
 LIBFT_INC		=	-I$(LIBFT_DIR)
 LIBFT_LIB		=	-L$(LIBFT_DIR) -lft
 
-# Readline support
-READLINE_PATH	=	/Users/roubelka/.brew/opt/readline
-# READLINE_PATH	=	/Users/riel-fas/.brew/opt/readline
-READLINE_FLAGS	=	-I$(READLINE_PATH)/include
-READLINE_LIBS	=	-L$(READLINE_PATH)/lib -lreadline
+# Readline support - using system readline
+READLINE_FLAGS	=	
+READLINE_LIBS	=	-lreadline
 
 # Directories
 SRC_DIR			=	src
