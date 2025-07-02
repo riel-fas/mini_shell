@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_exec.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 11:45:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/01 13:47:33 by riad             ###   ########.fr       */
+/*   Updated: 2025/07/02 17:40:55 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,14 +110,19 @@ int	execute_single_command(t_shell *shell, t_cmds *cmd)
 	}
 }
 
-static pid_t	execute_pipeline_command(t_shell *shell, t_cmds *cmd, int in_fd, int out_fd)
+static pid_t	execute_pipeline_command(t_shell *shell, t_cmds *cmd, int in_fd, int out_fd, int heredoc_fd)
 {
 	pid_t	pid;
 	char	*cmd_path;
 	t_builtin_func	builtin;
+	int		effective_in_fd;
 
 	if (!cmd->args || !cmd->args[0])
 		return (-1);
+
+	// Use heredoc_fd if available and this is the first command with heredoc
+	effective_in_fd = (heredoc_fd >= 0 && cmd->heredoc_delimeter) ? heredoc_fd : in_fd;
+
 	pid = fork();
 	if (pid < 0)
 		return (-1);
@@ -125,10 +130,10 @@ static pid_t	execute_pipeline_command(t_shell *shell, t_cmds *cmd, int in_fd, in
 	if (pid == 0)
 	{
 		// Close all unused pipe file descriptors
-		if (in_fd != STDIN_FILENO)
+		if (effective_in_fd != STDIN_FILENO)
 		{
-			dup2(in_fd, STDIN_FILENO);
-			close(in_fd);
+			dup2(effective_in_fd, STDIN_FILENO);
+			close(effective_in_fd);
 		}
 
 		if (out_fd != STDOUT_FILENO)
@@ -136,7 +141,19 @@ static pid_t	execute_pipeline_command(t_shell *shell, t_cmds *cmd, int in_fd, in
 			dup2(out_fd, STDOUT_FILENO);
 			close(out_fd);
 		}
-		setup_redirections(cmd);
+
+		// Close the original heredoc_fd if it's different from effective_in_fd
+		if (heredoc_fd >= 0 && heredoc_fd != effective_in_fd)
+			close(heredoc_fd);
+
+		// Setup other redirections (but skip heredoc since it's already handled)
+		if (cmd->input_file || cmd->output_file || cmd->rw_file)
+		{
+			t_cmds temp_cmd = *cmd;
+			temp_cmd.heredoc_delimeter = NULL;  // Skip heredoc processing
+			setup_redirections(&temp_cmd);
+		}
+
 		if (is_builtin(cmd->args[0]))
 		{
 			builtin = get_builtin(cmd->args[0]);
@@ -191,7 +208,7 @@ int	execute_pipeline(t_shell *shell, t_cmds *commands)
 	int		i;
 	int		status;
 	int		prev_pipe_read;
-	int		dummy_pipe[2];
+	int		heredoc_fd = -1;
 
 	cmd_count = 0;
 	current = commands;
@@ -208,16 +225,20 @@ int	execute_pipeline(t_shell *shell, t_cmds *commands)
 	}
 	current = commands;
 
-	// Create a dummy pipe for the first command to prevent hanging
-	// This ensures the first command gets EOF instead of waiting for terminal input
-	if (pipe(dummy_pipe) < 0)
+	// Process heredoc for the first command if it has one
+	if (current && current->heredoc_delimeter)
 	{
-		error_message("pipe", "Failed to create dummy pipe");
-		free(pids);
-		return (1);
+		if (process_heredoc_for_pipeline(current, &heredoc_fd) != 0)
+		{
+			free(pids);
+			return (1);
+		}
+		prev_pipe_read = heredoc_fd;
 	}
-	close(dummy_pipe[WRITE_END]); // Close write end immediately - this gives EOF to read end
-	prev_pipe_read = dummy_pipe[READ_END];
+	else
+	{
+		prev_pipe_read = STDIN_FILENO;
+	}
 
 	i = 0;
 	while (current)
@@ -227,35 +248,45 @@ int	execute_pipeline(t_shell *shell, t_cmds *commands)
 			if (pipe(pipefd) < 0)
 			{
 				error_message("pipe", "Failed to create pipe");
+				if (heredoc_fd >= 0)
+					close(heredoc_fd);
 				free(pids);
 				return (1);
 			}
 		}
 		if (current->next)
 		{
-			pids[i] = execute_pipeline_command(shell, current, prev_pipe_read, pipefd[WRITE_END]);
-			if (prev_pipe_read != STDIN_FILENO)
+			pids[i] = execute_pipeline_command(shell, current, prev_pipe_read, pipefd[WRITE_END], heredoc_fd);
+			if (prev_pipe_read != STDIN_FILENO && prev_pipe_read != heredoc_fd)
 				close(prev_pipe_read);
 			close(pipefd[WRITE_END]);
 			prev_pipe_read = pipefd[READ_END];
 		}
 		else
 		{
-			pids[i] = execute_pipeline_command(shell, current, prev_pipe_read, STDOUT_FILENO);
-			if (prev_pipe_read != STDIN_FILENO)
+			pids[i] = execute_pipeline_command(shell, current, prev_pipe_read, STDOUT_FILENO, heredoc_fd);
+			if (prev_pipe_read != STDIN_FILENO && prev_pipe_read != heredoc_fd)
 				close(prev_pipe_read);
 		}
 		if (pids[i] == -1)
 		{
 			error_message(current->args[0], "Failed to execute command");
 			// Clean up any remaining file descriptors
-			if (prev_pipe_read != STDIN_FILENO)
+			if (prev_pipe_read != STDIN_FILENO && prev_pipe_read != heredoc_fd)
 				close(prev_pipe_read);
+			if (heredoc_fd >= 0)
+				close(heredoc_fd);
 			free(pids);
 			return (1);
 		}
 		current = current->next;
 		i++;
+		// Clear heredoc_fd for subsequent commands
+		if (i == 1 && heredoc_fd >= 0)
+		{
+			close(heredoc_fd);
+			heredoc_fd = -1;
+		}
 	}
 
 	// Wait for all child processes

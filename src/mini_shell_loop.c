@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini_shell_loop.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 17:54:33 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/29 19:47:24 by marvin           ###   ########.fr       */
+/*   Updated: 2025/07/02 18:05:30 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,8 @@ int	minishell_loop(t_shell *shell)
 		// Process the input
 		status = process_input(shell, input);
 		free(input);
+		// Debug: print status to see what's happening
+		// printf("DEBUG: process_input returned: %d\n", status);
 	}
 	return (shell->exit_status);
 }

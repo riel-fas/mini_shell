@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 11:45:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/29 17:38:49 by marvin           ###   ########.fr       */
+/*   Updated: 2025/07/02 18:11:44 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,9 @@ int	execute_commands(t_shell *shell, t_cmds *commands)
 		if (commands->input_file || commands->output_file || commands->rw_file || commands->heredoc_delimeter)
 		{
 			status = setup_redirections(commands);
-			reset_redirections(0, 1); // Reset after setting up redirections
+			// Don't reset redirections for standalone redirections - they handle their own cleanup
+			if (status == 130) // If interrupted by SIGINT, return 130 but don't exit shell
+				return (130);
 			return (status);
 		}
 		return (0);
