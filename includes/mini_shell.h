@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini_shell.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:59 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/03 02:34:48 by codespace        ###   ########.fr       */
+/*   Updated: 2025/07/03 17:59:14 by riad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "../libft/libft.h"
-// # include "lexer.h"
 
 
 # define READ_END 0
@@ -104,6 +103,10 @@ typedef enum e_parse_result
 	PARSE_ERROR_MEMORY
 }	t_parse_result;
 
+/* Include memory and error handling after struct definitions */
+# include "memory.h"
+# include "error.h"
+
 typedef int	(*t_builtin_func)(t_shell *shell, char **args);
 
 int				execute_commands(t_shell *shell, t_cmds *commands);
@@ -175,5 +178,7 @@ char	*get_next_line(int fd);
 //redirections.c
 int	process_all_heredocs(t_cmds *cmd);
 int	process_heredocs_after_parsing(t_cmds *commands);
+
+//heredoc_signal.c functions declared above in signal section
 
 #endif

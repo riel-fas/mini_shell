@@ -12,6 +12,9 @@
 
 #include "../includes/mini_shell.h"
 
+// Global exit status variable
+int g_exit_status = 0;
+
 // void ll()
 // {
 // 	system("leaks -q minishell");

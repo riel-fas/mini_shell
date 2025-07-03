@@ -155,6 +155,18 @@ SRCS = $(SRC_DIR)/main.c \
 		$(SRC_DIR)/exec/exec_utils.c \
 		$(SRC_DIR)/exec/executor.c \
 		$(SRC_DIR)/exec/redirections.c \
+		$(SRC_DIR)/exec/advanced_executor.c \
+		$(SRC_DIR)/exec/advanced_redirections.c \
+		$(SRC_DIR)/exec/advanced_cmd_utils.c \
+		$(SRC_DIR)/exec/exec_signals.c \
+		$(SRC_DIR)/exec/advanced_single_exec.c \
+		$(SRC_DIR)/exec/advanced_pipeline.c \
+		$(SRC_DIR)/exec/enhanced_pipeline.c \
+		$(SRC_DIR)/exec/command_path.c \
+		$(SRC_DIR)/exec/error_handling.c \
+		$(SRC_DIR)/exec/error_detection.c \
+		$(SRC_DIR)/exec/robust_executor.c \
+		$(SRC_DIR)/exec/builtin_resolver.c \
 		$(SRC_DIR)/built/builtins.c \
 		$(SRC_DIR)/built/cd.c \
 		$(SRC_DIR)/built/cd_utils.c \
@@ -166,7 +178,8 @@ SRCS = $(SRC_DIR)/main.c \
 		$(SRC_DIR)/built/pwd.c \
 		$(SRC_DIR)/built/unset.c \
 		$(SRC_DIR)/utils/get_next_line.c \
-		$(SRC_DIR)/utils/heredoc_utils.c
+		$(SRC_DIR)/utils/heredoc_utils.c \
+		$(SRC_DIR)/utils/memory_management.c
 
 
 

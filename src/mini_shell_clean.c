@@ -3,56 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   mini_shell_clean.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 18:00:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/13 20:51:04 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/07/03 17:59:14 by riad             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../includes/mini_shell.h"
+#include "../includes/mini_shell.h"
 
-/* Free the environment linked list */
-static void	free_env_list(t_env *env)
-{
-	t_env	*temp;
-
-	while (env)
-	{
-		temp = env;
-		env = env->next;
-		free(temp->key);
-		free(temp->value);
-		free(temp);
-	}
-}
-
-/* Free the path array */
-static void	free_path(char **path)
-{
-	int	i;
-
-	if (!path)
-		return ;
-	i = 0;
-	while (path[i])
-	{
-		free(path[i]);
-		i++;
-	}
-	free(path);
-}
-
+/**
+ * Clean up and free all resources in the shell structure
+ * This function now uses the specialized memory management functions
+ * @param shell The shell structure to clean up
+ */
 void	cleanup(t_shell *shell)
 {
 	if (!shell)
 		return ;
-	free_env_list(shell->env);
-	free(shell->username);
-	free_path(shell->path);
-	if (shell->tokens)
-		free_tokens(shell->tokens);
-	if (shell->commands)
-		free_commands(shell->commands);
-	free(shell);
+
+	// Use our specialized memory management functions
+	complete_shell_cleanup(shell);
 }

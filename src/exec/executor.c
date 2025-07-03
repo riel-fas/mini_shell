@@ -12,6 +12,12 @@
 
 #include "../../includes/executor.h"
 
+extern int	g_exit_status;
+
+/*
+ * Counts the number of commands in the command list
+ * Returns the total number of commands to execute
+ */
 static int	count_commands(t_cmds *commands)
 {
 	t_cmds	*current;
@@ -27,11 +33,19 @@ static int	count_commands(t_cmds *commands)
 	return (count);
 }
 
+/*
+ * Checks if a command has arguments (is not empty)
+ * Returns 1 if command has arguments, 0 otherwise
+ */
 static int	has_command(t_cmds *cmd)
 {
 	return (cmd && cmd->args && cmd->args[0]);
 }
 
+/*
+ * Main execution entry point - determines execution strategy
+ * Handles single commands, pipelines, and redirection-only commands
+ */
 int	execute_commands(t_shell *shell, t_cmds *commands)
 {
 	int	num_cmds;
@@ -46,31 +60,20 @@ int	execute_commands(t_shell *shell, t_cmds *commands)
 		return (0);
 	else if (num_cmds == 1 && !has_command(commands))
 	{
-		if (commands->input_file || commands->output_file || commands->rw_file || commands->heredoc_delimeter)
-		{
-			int stdin_backup = dup(STDIN_FILENO);
-			int stdout_backup = dup(STDOUT_FILENO);
-
-			// Redirect stdout to /dev/null to suppress output from heredocs
-			int devnull = open("/dev/null", O_WRONLY);
-			if (devnull >= 0)
-			{
-				dup2(devnull, STDOUT_FILENO);
-				close(devnull);
-			}
-
-			status = setup_redirections(commands);
-			// Just consume the redirections but don't produce any output for standalone redirs
-			reset_redirections(stdin_backup, stdout_backup);
-
-			if (status == 130) // If interrupted by SIGINT, return 130 but don't exit shell
-				return (130);
-			return (status);
-		}
-		return (0);
+		// Handle redirection-only commands
+		status = handle_empty_command_redirections(commands);
+		if (status == 130) // SIGINT during heredoc
+			return (130);
+		return (status);
 	}
 	else if (num_cmds == 1)
+	{
+		// Single command execution
 		return (execute_single_command(shell, commands));
+	}
 	else
+	{
+		// Pipeline execution
 		return (execute_pipeline(shell, commands));
+	}
 }
