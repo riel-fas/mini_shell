@@ -6,12 +6,14 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:04:54 by roubelka          #+#    #+#             */
-/*   Updated: 2025/07/03 02:34:48 by codespace        ###   ########.fr       */
+/*   Updated: 2025/07/03 02:55:50 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/parser.h"
 #include "../../includes/lexer.h"
+
+static char	*process_heredoc_delimiter(char *raw_delimiter);
 
 t_cmds  *init_new_command(t_cmds **head, t_cmds **tail)
 {
@@ -191,10 +193,18 @@ void handle_redirections(t_cmds *cmd, t_token **tokens)
 		cmd->rw_file = ft_strdup(current->next->value);
 	}
 	else if (current->type == TOKEN_HEREDOC) {
+		// Process heredoc delimiter: use expanded value for variable expansion,
+		// but still process quotes
+		char *raw_delimiter = current->next->value;
+		char *processed_delimiter = process_heredoc_delimiter(raw_delimiter);
+
+		if (!processed_delimiter)
+			processed_delimiter = ft_strdup(raw_delimiter);
+
 		// Add to heredoc list
 		t_heredoc_list *new_heredoc = malloc(sizeof(t_heredoc_list));
 		if (new_heredoc) {
-			new_heredoc->delimiter = ft_strdup(current->next->value);
+			new_heredoc->delimiter = ft_strdup(processed_delimiter);
 			new_heredoc->next = NULL;
 
 			// Add to end of list
@@ -212,9 +222,67 @@ void handle_redirections(t_cmds *cmd, t_token **tokens)
 		if (cmd->heredoc_delimeter) {
 			free(cmd->heredoc_delimeter);
 		}
-		cmd->heredoc_delimeter = ft_strdup(current->next->value);
+		cmd->heredoc_delimeter = ft_strdup(processed_delimiter);
+		free(processed_delimiter);
 	}
 	*tokens = current->next->next; // skip both the redirection operator and the filename
+}
+
+static char	*process_heredoc_delimiter(char *raw_delimiter)
+{
+	char	*result;
+	int		i;
+	int		j;
+	int		len;
+	char	quote;
+
+	if (!raw_delimiter)
+		return (NULL);
+
+	len = ft_strlen(raw_delimiter);
+	result = malloc(len + 1);
+	if (!result)
+		return (NULL);
+
+	i = 0;
+	j = 0;
+	while (raw_delimiter[i])
+	{
+		if (raw_delimiter[i] == '\'' || raw_delimiter[i] == '"')
+		{
+			quote = raw_delimiter[i];
+			i++; // Skip opening quote
+			// Copy everything until closing quote, but don't include quotes
+			while (raw_delimiter[i] && raw_delimiter[i] != quote)
+			{
+				result[j++] = raw_delimiter[i++];
+			}
+			if (raw_delimiter[i] == quote)
+				i++; // Skip closing quote
+		}
+		else if (raw_delimiter[i] == '$' && raw_delimiter[i + 1] &&
+				 (raw_delimiter[i + 1] == '"' || raw_delimiter[i + 1] == '\''))
+		{
+			// Handle $"..." and $'...' - skip the $ and process the quoted string
+			i++; // Skip the $
+			quote = raw_delimiter[i];
+			i++; // Skip opening quote
+			// Copy everything until closing quote, but don't include quotes
+			while (raw_delimiter[i] && raw_delimiter[i] != quote)
+			{
+				result[j++] = raw_delimiter[i++];
+			}
+			if (raw_delimiter[i] == quote)
+				i++; // Skip closing quote
+		}
+		else
+		{
+			// Copy regular characters (including $ if not followed by quotes)
+			result[j++] = raw_delimiter[i++];
+		}
+	}
+	result[j] = '\0';
+	return (result);
 }
 
 t_cmds	*parse_tokens(t_token *tokens)
