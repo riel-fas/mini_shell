@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mini_shell.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roubelka <roubelka@student.42.fr>          +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:59 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/01 00:31:59 by roubelka         ###   ########.fr       */
+/*   Updated: 2025/07/03 01:10:22 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,13 @@ char    **env_list_to_array(t_env *env);
 //signal.c
 void    handler(int sig);
 void sigquit_handler(int signum);
+
+//heredoc_signal.c
+void	setup_heredoc_signals(void);
+void	handle_heredoc_sigint(int sig);
+void	setup_parent_heredoc_signals(void);
+void	handle_parent_heredoc_sigint(int sig);
+void	restore_heredoc_signals(void);
 
 //clean_mini_shell.c
 void    cleanup(t_shell *shell);

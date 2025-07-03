@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 11:45:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/02 17:40:55 by codespace        ###   ########.fr       */
+/*   Updated: 2025/07/03 01:10:22 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,25 @@ int	execute_single_command(t_shell *shell, t_cmds *cmd)
 	int		stdout_backup;
 	t_builtin_func	builtin;
 
+	// If there are no arguments but there are redirections,
+	// handle them properly but don't output anything
 	if (!cmd->args || !cmd->args[0])
-		return (0);
+	{
+		stdin_backup = dup(STDIN_FILENO);
+		stdout_backup = dup(STDOUT_FILENO);
+
+		// We need to set stdout to /dev/null to prevent output from cat command
+		int devnull = open("/dev/null", O_WRONLY);
+		if (devnull >= 0)
+		{
+			dup2(devnull, STDOUT_FILENO);
+			close(devnull);
+		}
+
+		status = setup_redirections(cmd);
+		reset_redirections(stdin_backup, stdout_backup);
+		return (status);
+	}
 	if (ft_strcmp(cmd->args[0], "!") == 0 && !cmd->args[1])
 	{
 		return (1);

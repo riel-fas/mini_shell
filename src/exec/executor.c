@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 11:45:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/02 18:11:44 by codespace        ###   ########.fr       */
+/*   Updated: 2025/07/03 01:10:22 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,21 @@ int	execute_commands(t_shell *shell, t_cmds *commands)
 	{
 		if (commands->input_file || commands->output_file || commands->rw_file || commands->heredoc_delimeter)
 		{
+			int stdin_backup = dup(STDIN_FILENO);
+			int stdout_backup = dup(STDOUT_FILENO);
+
+			// Redirect stdout to /dev/null to suppress output from heredocs
+			int devnull = open("/dev/null", O_WRONLY);
+			if (devnull >= 0)
+			{
+				dup2(devnull, STDOUT_FILENO);
+				close(devnull);
+			}
+
 			status = setup_redirections(commands);
-			// Don't reset redirections for standalone redirections - they handle their own cleanup
+			// Just consume the redirections but don't produce any output for standalone redirs
+			reset_redirections(stdin_backup, stdout_backup);
+
 			if (status == 130) // If interrupted by SIGINT, return 130 but don't exit shell
 				return (130);
 			return (status);

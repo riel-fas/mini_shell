@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 11:45:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/02 18:15:00 by codespace        ###   ########.fr       */
+/*   Updated: 2025/07/03 01:12:42 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,6 @@ int	create_heredoc_pipe(t_cmds *cmd, int *heredoc_fd)
 	char	*line;
 	int		status;
 	pid_t	pid;
-	int		tty_fd;
 
 	if (!cmd->heredoc_delimeter)
 		return (0);
@@ -118,60 +117,35 @@ int	create_heredoc_pipe(t_cmds *cmd, int *heredoc_fd)
 	if (pid == 0)
 	{
 		close(pipe_fds[READ_END]);
-
-		// Open /dev/tty directly to avoid stdin issues
-		tty_fd = open("/dev/tty", O_RDONLY);
-		if (tty_fd < 0)
-		{
-			close(pipe_fds[WRITE_END]);
-			exit(1);
-		}
-
-		signal(SIGINT, SIG_DFL);
+		setup_heredoc_signals();
+		
 		while (1)
 		{
-			write(STDOUT_FILENO, "> ", 3);
-			fflush(stdout);
-
-			// Read directly from terminal
-			line = NULL;
-			char buffer[1024];
-			int len = 0;
-			char c;
-			int bytes_read;
-
-			while ((bytes_read = read(tty_fd, &c, 1)) > 0 && c != '\n')
+			line = readline("> ");
+			
+			if (!line) // EOF (Ctrl+D)
 			{
-				if (len < 1023)
-					buffer[len++] = c;
-			}
-
-			// Handle EOF (Ctrl+D)
-			if (bytes_read <= 0 && len == 0)
-			{
-				close(tty_fd);
 				close(pipe_fds[WRITE_END]);
 				exit(0);
 			}
-
-			buffer[len] = '\0';
-			line = ft_strdup(buffer);
-
+			
 			if (ft_strcmp(line, cmd->heredoc_delimeter) == 0)
 			{
 				free(line);
-				close(tty_fd);
 				close(pipe_fds[WRITE_END]);
 				exit(0);
 			}
+			
 			ft_putendl_fd(line, pipe_fds[WRITE_END]);
 			free(line);
 		}
 	}
 	else
 	{
+		setup_parent_heredoc_signals();
 		close(pipe_fds[WRITE_END]);
 		waitpid(pid, &status, 0);
+		restore_heredoc_signals();
 
 		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
 		{
@@ -197,8 +171,12 @@ static int	setup_heredoc(t_cmds *cmd)
 	if (status != 0)
 		return (status);
 
-	// Debug: Always just consume and close for standalone heredoc
-	// Don't redirect stdin for standalone heredoc
+	// Set up stdin redirection from the heredoc pipe
+	if (dup2(heredoc_fd, STDIN_FILENO) < 0)
+	{
+		close(heredoc_fd);
+		return (1);
+	}
 	close(heredoc_fd);
 	return (0);
 }
@@ -219,9 +197,8 @@ int	setup_redirections(t_cmds *cmd)
 	status = 0;
 	if (cmd->heredoc_delimeter)
 		status = setup_heredoc(cmd);
-	if (status == 0 && cmd->rw_file)
-		status = setup_rw_redirection(cmd);
-	else if (status == 0 && cmd->input_file)
+	// If we have a regular input file after heredoc, it should override the heredoc
+	if (status == 0 && cmd->input_file)
 		status = setup_input_redirection(cmd);
 	if (status == 0 && cmd->output_file)
 		status = setup_output_redirection(cmd);
