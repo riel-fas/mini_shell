@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 11:45:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/03 01:12:42 by codespace        ###   ########.fr       */
+/*   Updated: 2025/07/03 02:34:48 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,25 +118,34 @@ int	create_heredoc_pipe(t_cmds *cmd, int *heredoc_fd)
 	{
 		close(pipe_fds[READ_END]);
 		setup_heredoc_signals();
-		
+
 		while (1)
 		{
-			line = readline("> ");
-			
+			write(1, "> ", 2);
+			fsync(1);
+			line = get_next_line(0);
+
 			if (!line) // EOF (Ctrl+D)
 			{
+				write(1, "\n", 1);
 				close(pipe_fds[WRITE_END]);
 				exit(0);
 			}
-			
+
+			// Remove newline from line to compare with delimiter
+			if (line[ft_strlen(line) - 1] == '\n')
+				line[ft_strlen(line) - 1] = '\0';
+
 			if (ft_strcmp(line, cmd->heredoc_delimeter) == 0)
 			{
 				free(line);
 				close(pipe_fds[WRITE_END]);
 				exit(0);
 			}
-			
-			ft_putendl_fd(line, pipe_fds[WRITE_END]);
+
+			// Add newline back for writing to pipe
+			write(pipe_fds[WRITE_END], line, ft_strlen(line));
+			write(pipe_fds[WRITE_END], "\n", 1);
 			free(line);
 		}
 	}
@@ -188,14 +197,30 @@ int	setup_redirections(t_cmds *cmd)
 	int	stdout_backup;
 	int	status;
 
-	if (!cmd || (!cmd->input_file && !cmd->output_file && !cmd->rw_file && !cmd->heredoc_delimeter))
+	if (!cmd || (!cmd->input_file && !cmd->output_file && !cmd->rw_file && !cmd->heredoc_delimeter && cmd->heredoc_fd < 0))
 		return (0);
 
 	stdin_backup = dup(STDIN_FILENO);
 	stdout_backup = dup(STDOUT_FILENO);
 
 	status = 0;
-	if (cmd->heredoc_delimeter)
+	// Use the stored heredoc file descriptor if available
+	if (cmd->heredoc_fd >= 0)
+	{
+		if (dup2(cmd->heredoc_fd, STDIN_FILENO) < 0)
+		{
+			close(cmd->heredoc_fd);
+			status = 1;
+		}
+		else
+		{
+			close(cmd->heredoc_fd);
+			cmd->heredoc_fd = -1; // Mark as used
+		}
+	}
+	else if (cmd->heredoc_list)
+		status = process_all_heredocs(cmd);
+	else if (cmd->heredoc_delimeter)
 		status = setup_heredoc(cmd);
 	// If we have a regular input file after heredoc, it should override the heredoc
 	if (status == 0 && cmd->input_file)
@@ -239,4 +264,62 @@ int	process_heredoc_for_pipeline(t_cmds *cmd, int *heredoc_fd)
 		return (0);
 	}
 	return (create_heredoc_pipe(cmd, heredoc_fd));
+}
+
+int	process_all_heredocs(t_cmds *cmd)
+{
+	t_heredoc_list	*current;
+	int				dummy_fd;
+
+	if (!cmd->heredoc_list)
+		return (0);
+
+	current = cmd->heredoc_list;
+	while (current)
+	{
+		// Create a temporary command structure for each heredoc
+		t_cmds temp_cmd = *cmd;
+		temp_cmd.heredoc_delimeter = current->delimiter;
+
+		if (current->next == NULL)
+		{
+			// This is the last heredoc - keep its file descriptor
+			if (create_heredoc_pipe(&temp_cmd, &cmd->heredoc_fd) != 0)
+				return (1);
+		}
+		else
+		{
+			// This is not the last heredoc - process but discard
+			if (create_heredoc_pipe(&temp_cmd, &dummy_fd) != 0)
+				return (1);
+			if (dummy_fd >= 0)
+				close(dummy_fd);
+		}
+		current = current->next;
+	}
+
+	return (0);
+}
+
+int	process_heredocs_after_parsing(t_cmds *commands)
+{
+	t_cmds	*current;
+
+	current = commands;
+	while (current)
+	{
+		if (current->heredoc_list)
+		{
+			// For multiple heredocs, we need to modify process_all_heredocs to return the fd
+			if (process_all_heredocs(current) != 0)
+				return (1);
+		}
+		else if (current->heredoc_delimeter)
+		{
+			if (create_heredoc_pipe(current, &current->heredoc_fd) != 0)
+				return (1);
+		}
+		current = current->next;
+	}
+	return (0);
 }

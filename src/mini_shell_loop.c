@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 17:54:33 by marvin            #+#    #+#             */
-/*   Updated: 2025/07/02 18:05:30 by codespace        ###   ########.fr       */
+/*   Updated: 2025/07/03 02:34:48 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,17 @@ static int	process_input(t_shell *shell, char *input)
 		shell->tokens = NULL;
 		return (1);
 	}
+
+	// Process heredocs immediately after parsing to show prompts
+	if (process_heredocs_after_parsing(shell->commands) != 0)
+	{
+		free_tokens(shell->tokens);
+		shell->tokens = NULL;
+		free_commands(shell->commands);
+		shell->commands = NULL;
+		return (1);
+	}
+
 	// print_commands(shell->commands);
 	exit_status = execute_commands(shell, shell->commands);
 	shell->exit_status = exit_status;

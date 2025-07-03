@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:04:54 by roubelka          #+#    #+#             */
-/*   Updated: 2025/06/30 18:25:06 by codespace        ###   ########.fr       */
+/*   Updated: 2025/07/03 02:34:48 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ t_cmds  *init_new_command(t_cmds **head, t_cmds **tail)
 	cmd->rw_file = NULL;
 	cmd->append_node = 0;
 	cmd->heredoc_delimeter = NULL;
+	cmd->heredoc_list = NULL;
+	cmd->heredoc_fd = -1;
 	cmd->next = NULL;
 
 	if (!*head) // if list khawya khadi iwli cmd howa head
@@ -189,6 +191,27 @@ void handle_redirections(t_cmds *cmd, t_token **tokens)
 		cmd->rw_file = ft_strdup(current->next->value);
 	}
 	else if (current->type == TOKEN_HEREDOC) {
+		// Add to heredoc list
+		t_heredoc_list *new_heredoc = malloc(sizeof(t_heredoc_list));
+		if (new_heredoc) {
+			new_heredoc->delimiter = ft_strdup(current->next->value);
+			new_heredoc->next = NULL;
+
+			// Add to end of list
+			if (!cmd->heredoc_list) {
+				cmd->heredoc_list = new_heredoc;
+			} else {
+				t_heredoc_list *temp = cmd->heredoc_list;
+				while (temp->next)
+					temp = temp->next;
+				temp->next = new_heredoc;
+			}
+		}
+
+		// Keep track of the last delimiter for compatibility
+		if (cmd->heredoc_delimeter) {
+			free(cmd->heredoc_delimeter);
+		}
 		cmd->heredoc_delimeter = ft_strdup(current->next->value);
 	}
 	*tokens = current->next->next; // skip both the redirection operator and the filename

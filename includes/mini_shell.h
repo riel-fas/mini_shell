@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:59 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/03 01:10:22 by codespace        ###   ########.fr       */
+/*   Updated: 2025/07/03 02:34:48 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,16 +58,25 @@ typedef struct s_token
 	struct s_token	*next;
 }	t_token;
 
+//struct for multiple heredocs
+typedef struct s_heredoc_list
+{
+	char					*delimiter;
+	struct s_heredoc_list	*next;
+}	t_heredoc_list;
+
 //struct for commands
 typedef struct  s_cmds
 {
-	char			**args; //cmd with the argument
-	char			*input_file; //input for redir. file
-	char			*output_file; //output for redir. file
-	char			*rw_file; //read-write redirection file (<>)
-	int				append_node;	//?
-	char			*heredoc_delimeter; //heredoc delimeter
-	struct s_cmds	*next; //next cmd in the pipeline |
+	char				**args; //cmd with the argument
+	char				*input_file; //input for redir. file
+	char				*output_file; //output for redir. file
+	char				*rw_file; //read-write redirection file (<>)
+	int					append_node;	//?
+	char				*heredoc_delimeter; //heredoc delimeter (last one)
+	t_heredoc_list		*heredoc_list; //list of all heredocs
+	int					heredoc_fd; //file descriptor for processed heredoc
+	struct s_cmds		*next; //next cmd in the pipeline |
 }	t_cmds;
 
 typedef struct s_env
@@ -161,5 +170,10 @@ int		process_exit_check(char *input);
 int		handle_tokenize_error(t_shell *shell, char *input);
 int		handle_parse_error(t_shell *shell, t_parse_result result);
 int		is_only_whitespace(char *input);
+char	*get_next_line(int fd);
+
+//redirections.c
+int	process_all_heredocs(t_cmds *cmd);
+int	process_heredocs_after_parsing(t_cmds *commands);
 
 #endif

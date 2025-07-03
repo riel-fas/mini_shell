@@ -164,7 +164,9 @@ SRCS = $(SRC_DIR)/main.c \
 		$(SRC_DIR)/built/exit.c \
 		$(SRC_DIR)/built/export.c \
 		$(SRC_DIR)/built/pwd.c \
-		$(SRC_DIR)/built/unset.c
+		$(SRC_DIR)/built/unset.c \
+		$(SRC_DIR)/utils/get_next_line.c \
+		$(SRC_DIR)/utils/heredoc_utils.c
 
 
 
