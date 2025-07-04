@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 19:15:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/30 18:25:06 by codespace        ###   ########.fr       */
+/*   Updated: 2025/07/04 04:32:14 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,11 @@ void	add_token(t_token **tokens, t_token *new_token)
 	t_token	*current;
 
 	if (!tokens || !new_token)
-		return;
+		return ;
 	if (!*tokens)
 	{
 		*tokens = new_token;
-		return;
+		return ;
 	}
 	current = *tokens;
 	while (current->next)
@@ -68,35 +68,4 @@ void	free_tokens(t_token *tokens)
 		free(temp->original_value);
 		free(temp);
 	}
-}
-
-int	is_whitespace(char c)
-{
-	return (c == ' ' || c == '\t' || c == '\n' || c == '\r');
-}
-
-int	is_operator(char c)
-{
-	return (c == '|' || c == '<' || c == '>' || c == ';');
-}
-
-int	is_quote(char c)
-{
-	return (c == '\'' || c == '"');
-}
-
-int	all_tokens_empty(t_token *tokens)
-{
-	t_token	*current;
-
-	if (!tokens)
-		return (1);
-	current = tokens;
-	while (current)
-	{
-		if (current->value && current->value[0] != '\0')
-			return (0);
-		current = current->next;
-	}
-	return (1);
 }

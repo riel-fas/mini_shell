@@ -5,187 +5,96 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/18 21:10:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/03 23:11:49 by codespace        ###   ########.fr       */
+/*   Created: 2025/07/04 04:06:00 by riel-fas          #+#    #+#             */
+/*   Updated: 2025/07/04 05:19:56 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/lexer.h"
 
-static char	*extract_var_name(char *input, int *i)
+static void	handle_var_expansion(int *i, t_expansion_ctx *ctx)
 {
-	int		start;
-	int		len;
+	char	*var_name;
+	char	*var_value;
 
-	start = *i;
-	len = 0;
-
-	// Special cases: $? and $$
-	if (input[*i] == '?')
+	(*i)++;
+	var_name = extract_var_name(ctx->str, i);
+	if (var_name)
 	{
-		(*i)++;
-		return (ft_strdup("?"));
-	}
-	if (input[*i] == '$')
-	{
-		(*i)++;
-		return (ft_strdup("$"));
-	}
-	if (ft_isdigit(input[*i]))
-	{
-		char digit_str[2] = {input[*i], '\0'};
-		(*i)++;
-		return (ft_strdup(digit_str));
-	}
-	if (ft_isalpha(input[*i]) || input[*i] == '_')
-	{
-		while (input[*i] && (ft_isalnum(input[*i]) || input[*i] == '_'))
+		var_value = get_var_value(var_name, ctx->env, ctx->exit_status);
+		if (var_value)
 		{
-			(*i)++;
-			len++;
+			*(ctx->j) = copy_var_value(
+					var_value, ctx->result, *(ctx->j), ctx->result_size);
+			free(var_value);
 		}
-		return (ft_substr(input, start, len));
+		free(var_name);
 	}
-	return (NULL);
 }
 
-
-static char	*get_var_value(char *var_name, t_env *env, int exit_status)
+static void	expand_variables_loop(t_expansion_ctx *ctx)
 {
-	char *value;
+	int	in_single;
+	int	in_double;
+	int	i;
 
-	if (ft_strcmp(var_name, "?") == 0)
-		return (ft_itoa(exit_status));
-	if (ft_strcmp(var_name, "$") == 0)
-		return (ft_strdup("$$"));  // Simple shell PID representation
-
-	// Positional parameters
-	if (ft_strlen(var_name) == 1 && ft_isdigit(var_name[0]))
+	in_single = 0;
+	in_double = 0;
+	i = 0;
+	while (ctx->str[i])
 	{
-		if (var_name[0] == '0')
-			return (ft_strdup("minishell"));  // Shell name
+		if ((ctx->str[i] == '\'' && !in_double)
+			|| (ctx->str[i] == '"' && !in_single))
+			toggle_quotes(ctx->str[i], &in_single, &in_double);
+		else if (ctx->str[i] == '$' && !in_single && ctx->str[i + 1]
+			&& is_var_start(ctx->str[i + 1]))
+			handle_var_expansion(&i, ctx);
+		else if (ctx->str[i] == '$' && !in_single && ctx->str[i + 1]
+			&& (ctx->str[i + 1] == '"' || ctx->str[i + 1] == '\''))
+			i++;
 		else
-			return (ft_strdup(""));  // Other positional parameters are empty
+			ctx->result[(*ctx->j)++] = ctx->str[i++];
 	}
-	value = get_env_value(env, var_name);
-	if (value)
-		return (ft_strdup(value));
-
-	return (ft_strdup(""));  // Empty string if variable doesn't exist
 }
 
+static void	init_expansion_ctx(t_expansion_ctx *ctx, t_init_ctx_args *args)
+{
+	ctx->str = args->str;
+	ctx->result = args->result;
+	ctx->j = args->j;
+	ctx->result_size = args->result_size;
+	ctx->env = args->env;
+	ctx->exit_status = args->exit_status;
+}
 
 char	*expand_variables(char *str, t_env *env, int exit_status, int in_quotes)
 {
-	char	*result;
-	int		len;
-	int		i;
-	int		j;
-	int		in_single_quotes;
-	int		in_double_quotes;
-	int		result_size;
+	t_expand_vars_locals	v;
+	t_expansion_ctx			ctx;
+	t_init_ctx_args			args;
 
 	(void)in_quotes;
 	if (!str)
 		return (NULL);
-
-	len = ft_strlen(str);
-	// Allocate much more space to handle long variable expansions
-	result_size = len * 10 + 1024;  // Be very generous with allocation
-	result = malloc(result_size);
-	if (!result)
+	v.len = ft_strlen(str);
+	v.result_size = v.len * 10 + 1024;
+	v.result = malloc(v.result_size);
+	if (!v.result)
 		return (NULL);
-
-	i = 0;
-	j = 0;
-	in_single_quotes = 0;
-	in_double_quotes = 0;
-
-	while (str[i])
-	{
-		if (str[i] == '\'' && !in_double_quotes)
-		{
-			in_single_quotes = !in_single_quotes;
-			i++; // Skip quote, don't copy it
-		}
-		else if (str[i] == '"' && !in_single_quotes)
-		{
-			in_double_quotes = !in_double_quotes;
-			i++; // Skip quote, don't copy it
-		}
-		else if (str[i] == '$' && !in_single_quotes && str[i + 1])
-		{
-			if (str[i + 1] == '"' || str[i + 1] == '\'')
-			{
-				// Handle $"..." and $'...' - skip the $ and treat as regular quotes
-				i++; // Skip the $
-				// The quote will be handled in the next iteration
-			}
-			else if (ft_isalpha(str[i + 1]) || str[i + 1] == '_' ||
-					 str[i + 1] == '?' || str[i + 1] == '$' ||
-					 ft_isdigit(str[i + 1]))
-			{
-				// Variable expansion
-				char *var_name;
-				char *var_value;
-
-				i++; // Skip '$'
-				var_name = extract_var_name(str, &i);
-				if (var_name)
-				{
-					var_value = get_var_value(var_name, env, exit_status);
-					if (var_value)
-					{
-						int val_len = ft_strlen(var_value);
-						// Safety check: ensure we don't overflow the buffer
-						if (j + val_len + 1 < result_size)
-						{
-							ft_memcpy(result + j, var_value, val_len);
-							j += val_len;
-						}
-						else
-						{
-							// Buffer would overflow - truncate or handle error
-							// For safety, we'll truncate to fit
-							int space_left = result_size - j - 1;
-							if (space_left > 0)
-							{
-								ft_memcpy(result + j, var_value, space_left);
-								j += space_left;
-							}
-						}
-						free(var_value);
-					}
-					free(var_name);
-				}
-			}
-			else
-			{
-				// Invalid variable name, copy $ literally
-				if (j + 1 < result_size)
-					result[j++] = str[i++];
-				else
-					i++; // Skip if no space
-			}
-		}
-		else
-		{
-			// Copy regular character
-			if (j + 1 < result_size)
-				result[j++] = str[i++];
-			else
-				i++; // Skip if no space
-		}
-	}
-	result[j] = '\0';
-
-	// Reallocate to exact size
-	char *final_result = ft_strdup(result);
-	free(result);
-	return (final_result);
+	v.j = 0;
+	args.str = str;
+	args.result = v.result;
+	args.j = &v.j;
+	args.result_size = v.result_size;
+	args.env = env;
+	args.exit_status = exit_status;
+	init_expansion_ctx(&ctx, &args);
+	expand_variables_loop(&ctx);
+	v.result[v.j] = '\0';
+	v.final_result = ft_strdup(v.result);
+	free(v.result);
+	return (v.final_result);
 }
-
-
 
 void	expand_tokens(t_token *tokens, t_env *env, int exit_status)
 {

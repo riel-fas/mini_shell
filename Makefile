@@ -39,8 +39,13 @@ SRCS = $(SRC_DIR)/main.c \
 		$(SRC_DIR)/utils/mini_shell_utils.c \
 		$(SRC_DIR)/lexer/lexer.c \
 		$(SRC_DIR)/lexer/lexer_extraction.c \
+		$(SRC_DIR)/lexer/lexer_extraction_2.c \
+		$(SRC_DIR)/lexer/lexer_extraction_utils.c \
 		$(SRC_DIR)/lexer/lexer_utils.c \
+		$(SRC_DIR)/lexer/lexer_utils_2.c \
 		$(SRC_DIR)/lexer/expansion.c \
+		$(SRC_DIR)/lexer/expansion_utils.c \
+		$(SRC_DIR)/lexer/expansion_utils_2.c \
 		$(SRC_DIR)/parser/parser_token.c \
 		$(SRC_DIR)/parser/parser_utils.c \
 		$(SRC_DIR)/parser/syntax_error.c \
