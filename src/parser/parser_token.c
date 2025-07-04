@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 20:04:54 by roubelka          #+#    #+#             */
-/*   Updated: 2025/07/03 02:55:50 by codespace        ###   ########.fr       */
+/*   Updated: 2025/07/03 23:11:49 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,11 @@ void	add_arg_to_cmd(t_cmds *cmd, char *value)
 		count = 0; //3adad args likaynin fargs
 	while (cmd->args && cmd->args[count])
 		count++;
-	char **new_args = realloc(cmd->args, sizeof(char *) * (count + 2)); // nzido size dyal args jdida whay(+ 2) 1 dyal args jdid 2 dyal NULL
+	char **new_args = ft_realloc(cmd->args, sizeof(char *) * (count + 1), sizeof(char *) * (count + 2)); // nzido size dyal args jdida whay(+ 2) 1 dyal args jdid 2 dyal NULL
 	if (!new_args)
 		return ;
 	cmd->args = new_args; // kanhadto cmd->args bjdid lizdna fnew->args
-	cmd->args[count] = strdup(value);
+	cmd->args[count] = ft_strdup(value);
 	cmd->args[count + 1] = NULL;
 }
 

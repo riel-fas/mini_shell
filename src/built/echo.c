@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 12:15:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/29 02:58:11 by riad             ###   ########.fr       */
+/*   Updated: 2025/07/03 23:38:53 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,11 @@ int	builtin_echo(t_shell *shell, char **args)
 	(void)shell;
 	n_flag = 0;
 	i = 1;
-
-	// Handle multiple -n flags (including -nn, -nnn, etc.)
 	while (args[i] && is_n_flag(args[i]))
 	{
 		n_flag = 1;
 		i++;
 	}
-
-	// Print remaining arguments
 	while (args[i])
 	{
 		ft_putstr_fd(args[i], 1);
@@ -52,9 +48,7 @@ int	builtin_echo(t_shell *shell, char **args)
 			ft_putchar_fd(' ', 1);
 		i++;
 	}
-
 	if (!n_flag)
 		ft_putchar_fd('\n', 1);
-	
 	return (0);
 }

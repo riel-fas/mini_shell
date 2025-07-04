@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   env_list.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 18:53:58 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/30 12:36:57 by riad             ###   ########.fr       */
+/*   Updated: 2025/07/04 00:26:15 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../../includes/mini_shell.h"
+#include "../../includes/mini_shell.h"
 
 t_env	*new_env_node(char *name, char *value)
 {
@@ -35,7 +35,7 @@ void	add_env_node(t_env **env_list, t_env *new_node)
 	if (!*env_list)
 	{
 		*env_list = new_node;
-		return;
+		return ;
 	}
 	temp = *env_list;
 	while (temp->next)
@@ -65,36 +65,4 @@ char	*get_env_value(t_env *env, char *key)
 	if (var)
 		return (var->value);
 	return (NULL);
-}
-
-char	**env_list_to_array(t_env *env)
-{
-	t_env	*current;
-	char	**env_array;
-	int		count;
-	int		i;
-	char	*temp;
-
-	count = 0;
-	current = env;
-	while (current && ++count)
-		current = current->next;
-	env_array = (char **)malloc(sizeof(char *) * (count + 1));
-	if (!env_array)
-		return (NULL);
-	current = env;
-	i = 0;
-	while (current)
-	{
-		temp = ft_strjoin(current->key, "=");
-		if (current->value)
-			env_array[i] = ft_strjoin(temp, current->value);
-		else
-			env_array[i] = ft_strjoin(temp, "");
-		free(temp);
-		current = current->next;
-		i++;
-	}
-	env_array[i] = NULL;
-	return (env_array);
 }

@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 19:15:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/30 20:18:37 by codespace        ###   ########.fr       */
+/*   Updated: 2025/07/03 23:11:49 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,9 @@ char	*extract_word(char *input, int *i)
 		// Reallocate if needed
 		if (len >= capacity - 1)
 		{
+			size_t old_capacity = capacity;
 			capacity *= 2;
-			char *new_result = realloc(result, capacity);
+			char *new_result = ft_realloc(result, old_capacity, capacity);
 			if (!new_result)
 			{
 				free(result);
@@ -51,8 +52,9 @@ char	*extract_word(char *input, int *i)
 			{
 				if (len >= capacity - 1)
 				{
+					size_t old_capacity = capacity;
 					capacity *= 2;
-					char *new_result = realloc(result, capacity);
+					char *new_result = ft_realloc(result, old_capacity, capacity);
 					if (!new_result)
 					{
 						free(result);
@@ -79,8 +81,9 @@ char	*extract_word(char *input, int *i)
 			{
 				if (len >= capacity - 1)
 				{
+					size_t old_capacity = capacity;
 					capacity *= 2;
-					char *new_result = realloc(result, capacity);
+					char *new_result = ft_realloc(result, old_capacity, capacity);
 					if (!new_result)
 					{
 						free(result);
@@ -109,29 +112,54 @@ char	*extract_word(char *input, int *i)
 }
 
 
-static char	*set_operator(char *op, t_token_type token_type, int *i, int increment, t_token_type *type)
+static void	set_operator_context(int *i, int increment, t_token_type *type, t_token_type token_type)
 {
 	*i += increment;
 	*type = token_type;
+}
+
+static char	*create_operator_token(char *op)
+{
 	return (ft_strdup(op));
 }
 
 char	*extract_operator(char *input, int *i, t_token_type *type)
 {
 	if (input[*i] == '>' && input[*i + 1] == '>')
-		return (set_operator(">>", TOKEN_REDIR_APPEND, i, 2, type));
+	{
+		set_operator_context(i, 2, type, TOKEN_REDIR_APPEND);
+		return (create_operator_token(">>"));
+	}
 	else if (input[*i] == '<' && input[*i + 1] == '<')
-		return (set_operator("<<", TOKEN_HEREDOC, i, 2, type));
+	{
+		set_operator_context(i, 2, type, TOKEN_HEREDOC);
+		return (create_operator_token("<<"));
+	}
 	else if (input[*i] == '<' && input[*i + 1] == '>')
-		return (set_operator("<>", TOKEN_REDIR_READ_WRITE, i, 2, type));
+	{
+		set_operator_context(i, 2, type, TOKEN_REDIR_READ_WRITE);
+		return (create_operator_token("<>"));
+	}
 	else if (input[*i] == '>')
-		return (set_operator(">", TOKEN_REDIR_OUT, i, 1, type));
+	{
+		set_operator_context(i, 1, type, TOKEN_REDIR_OUT);
+		return (create_operator_token(">"));
+	}
 	else if (input[*i] == '<')
-		return (set_operator("<", TOKEN_REDIR_IN, i, 1, type));
+	{
+		set_operator_context(i, 1, type, TOKEN_REDIR_IN);
+		return (create_operator_token("<"));
+	}
 	else if (input[*i] == '|')
-		return (set_operator("|", TOKEN_PIPE, i, 1, type));
+	{
+		set_operator_context(i, 1, type, TOKEN_PIPE);
+		return (create_operator_token("|"));
+	}
 	else if (input[*i] == ';')
-		return (set_operator(";", TOKEN_SEMICOLON, i, 1, type));
+	{
+		set_operator_context(i, 1, type, TOKEN_SEMICOLON);
+		return (create_operator_token(";"));
+	}
 	*type = TOKEN_WORD;
 	return (NULL);
 }

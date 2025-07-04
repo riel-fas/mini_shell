@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   mini_shell_init.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 04:10:39 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/20 18:23:16 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/07/04 00:11:06 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../includes/mini_shell.h"
+#include "../includes/mini_shell.h"
 
 t_shell	*shell_init(char **env)
 {

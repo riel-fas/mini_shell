@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 12:15:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/01 12:41:31 by riad             ###   ########.fr       */
+/*   Updated: 2025/07/03 23:37:53 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,43 +24,32 @@ static int	check_invalid_option(char *arg)
 	return (0);
 }
 
-static char	*get_target_dir(t_shell *shell, char **args, char **old_pwd, int *should_free_target)
+static char	*get_target_dir(t_shell *shell, char **args, char **old_pwd,
+		int *should_free_target)
 {
 	*should_free_target = 0;
 	if (!args[1])
 		return (handle_home_dir(shell->env, old_pwd));
 	else if (ft_strcmp(args[1], "-") == 0)
-	{
-		if (args[2])
-		{
-			ft_putendl_fd("cd: too many arguments", 2);
-			free(*old_pwd);
-			return (NULL);
-		}
-		return (handle_oldpwd_dir(shell->env, old_pwd));
-	}
-	else if (ft_strcmp(args[1], "--") == 0 && args[2])
-	{
-		if (args[3])
-		{
-			ft_putendl_fd("cd: too many arguments", 2);
-			free(*old_pwd);
-			return (NULL);
-		}
-		return (handle_tilde_expansion(shell->env, args[2], old_pwd, should_free_target));
-	}
+		return (handle_dash_arg(shell, args, old_pwd));
 	else if (ft_strcmp(args[1], "--") == 0)
-		return (handle_home_dir(shell->env, old_pwd));
+		return (handle_double_dash_arg(shell, args, old_pwd,
+				should_free_target));
 	else
-	{
-		if (args[2])
-		{
-			ft_putendl_fd("cd: too many arguments", 2);
-			free(*old_pwd);
-			return (NULL);
-		}
-		return (handle_tilde_expansion(shell->env, args[1], old_pwd, should_free_target));
-	}
+		return (handle_regular_arg(shell, args, old_pwd, should_free_target));
+}
+
+static int	handle_chdir_error(char *target_dir, char *old_pwd,
+		int should_free_target)
+{
+	ft_putstr_fd("cd: ", 2);
+	ft_putstr_fd(target_dir, 2);
+	ft_putstr_fd(": ", 2);
+	ft_putendl_fd(strerror(errno), 2);
+	if (should_free_target)
+		free(target_dir);
+	free(old_pwd);
+	return (1);
 }
 
 int	builtin_cd(t_shell *shell, char **args)
@@ -81,16 +70,7 @@ int	builtin_cd(t_shell *shell, char **args)
 	if (!target_dir)
 		return (1);
 	if (chdir(target_dir) != 0)
-	{
-		ft_putstr_fd("cd: ", 2);
-		ft_putstr_fd(target_dir, 2);
-		ft_putstr_fd(": ", 2);
-		ft_putendl_fd(strerror(errno), 2);
-		if (should_free_target)
-			free(target_dir);
-		free(old_pwd);
-		return (1);
-	}
+		return (handle_chdir_error(target_dir, old_pwd, should_free_target));
 	if (should_free_target)
 		free(target_dir);
 	update_pwd_env(shell, old_pwd);

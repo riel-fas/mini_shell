@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/18 21:10:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/01 02:46:03 by riad             ###   ########.fr       */
+/*   Updated: 2025/07/03 23:11:49 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,7 @@ static char	*get_var_value(char *var_name, t_env *env, int exit_status)
 	if (ft_strcmp(var_name, "?") == 0)
 		return (ft_itoa(exit_status));
 	if (ft_strcmp(var_name, "$") == 0)
-		return (ft_itoa(getpid()));
-	if (ft_strcmp(var_name, "UID") == 0)
-		return (ft_itoa(getuid()));
-	if (ft_strcmp(var_name, "EUID") == 0)
-		return (ft_itoa(geteuid()));
+		return (ft_strdup("$$"));  // Simple shell PID representation
 
 	// Positional parameters
 	if (ft_strlen(var_name) == 1 && ft_isdigit(var_name[0]))

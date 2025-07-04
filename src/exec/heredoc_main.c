@@ -1,20 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   colon.c                                            :+:      :+:    :+:   */
+/*   heredoc_main.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/13 23:40:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/04 03:50:08 by codespace        ###   ########.fr       */
+/*   Created: 2025/07/04 02:50:26 by riel-fas          #+#    #+#             */
+/*   Updated: 2025/07/04 02:50:26 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/builtins.h"
+#include "../../includes/executor.h"
 
-int	builtin_colon(t_shell *shell, char **args)
+int	process_heredocs_after_parsing(t_cmds *commands)
 {
-	(void)shell;
-	(void)args;
+	t_cmds	*current;
+
+	current = commands;
+	while (current)
+	{
+		if (process_command_heredocs(current) != 0)
+			return (1);
+		current = current->next;
+	}
 	return (0);
 }

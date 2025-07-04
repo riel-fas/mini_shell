@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:26:09 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/30 17:32:59 by codespace        ###   ########.fr       */
+/*   Updated: 2025/07/04 03:51:30 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ t_token	*tokenize(char *input)
 	int				i;
 	char			*value;
 	t_token_type	type;
+	int				 old_i;
 
 	if (!input)
 		return (NULL);
@@ -57,7 +58,7 @@ t_token	*tokenize(char *input)
 	i = 0;
 	while (input[i])
 	{
-		int old_i = i;  // Save position for safety check
+		old_i = i;
 		while (is_whitespace(input[i]))
 			i++;
 		if (input[i] == '\0')

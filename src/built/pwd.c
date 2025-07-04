@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riad <riad@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 12:15:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/01 11:20:31 by riad             ###   ########.fr       */
+/*   Updated: 2025/07/03 23:26:04 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static int	parse_pwd_options(char **args)
 		if (args[i][0] == '-' && args[i][1])
 		{
 			if (args[i][1] == '-' && !args[i][2])
-				break;
+				break ;
 			j = 1;
 			while (args[i][j])
 			{
@@ -41,7 +41,7 @@ static int	parse_pwd_options(char **args)
 			}
 		}
 		else
-			break;
+			break ;
 		i++;
 	}
 	return (0);

@@ -12,15 +12,10 @@
 
 #include "../../includes/executor.h"
 
-/*
- * Checks if a command is a builtin
- * Returns 1 if builtin, 0 otherwise
- */
 int	is_builtin(char *cmd_name)
 {
 	if (!cmd_name)
 		return (0);
-
 	if (ft_strcmp(cmd_name, "cd") == 0)
 		return (1);
 	if (ft_strcmp(cmd_name, "echo") == 0)
@@ -37,19 +32,13 @@ int	is_builtin(char *cmd_name)
 		return (1);
 	if (ft_strcmp(cmd_name, ":") == 0)
 		return (1);
-
 	return (0);
 }
 
-/*
- * Returns the function pointer for a builtin command
- * Returns NULL if not a builtin
- */
 t_builtin_func	get_builtin(char *cmd_name)
 {
 	if (!cmd_name)
 		return (NULL);
-
 	if (ft_strcmp(cmd_name, "cd") == 0)
 		return (builtin_cd);
 	if (ft_strcmp(cmd_name, "echo") == 0)
@@ -66,6 +55,5 @@ t_builtin_func	get_builtin(char *cmd_name)
 		return (builtin_exit);
 	if (ft_strcmp(cmd_name, ":") == 0)
 		return (builtin_colon);
-
 	return (NULL);
 }

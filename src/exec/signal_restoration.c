@@ -1,16 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtins.c                                         :+:      :+:    :+:   */
+/*   signal_restoration.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/23 12:15:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/14 00:32:29 by riel-fas         ###   ########.fr       */
+/*   Created: 2025/07/04 02:59:01 by riel-fas          #+#    #+#             */
+/*   Updated: 2025/07/04 02:59:01 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/builtins.h"
+#include "../../includes/executor.h"
 
-// Legacy builtins.c - is_builtin and get_builtin functions moved to builtin_resolver.c
-// This file now contains only non-conflicting helper functions if any
+void	restore_signals(void)
+{
+	signal(SIGINT, handler);
+	signal(SIGQUIT, sigquit_handler);
+}
