@@ -6,12 +6,13 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 13:00:00 by codespace         #+#    #+#             */
-/*   Updated: 2025/07/04 02:16:52 by codespace        ###   ########.fr       */
+/*   Updated: 2025/07/04 20:50:24 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/mini_shell.h"
 #include "../../includes/executor.h"
+#include "../../includes/error.h"
 
 static int	check_file_permissions(char *cmd, struct stat *sb)
 {

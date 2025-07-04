@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 11:45:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/04 03:21:39 by codespace        ###   ########.fr       */
+/*   Updated: 2025/07/04 21:31:58 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,95 +64,116 @@ typedef struct s_parent_ctx
 	int		heredoc_fd;
 }	t_parent_ctx;
 
-/* Executor functions */
-int					execute_commands(t_shell *shell, t_cmds *commands);
-int					execution(t_cmds *commands, t_env *env);
-int					execute_command_robust(t_shell *shell, t_cmds *cmd);
-int					execute_pipeline_robust(t_shell *shell, t_cmds *commands);
-int					execute_commands_robust(t_shell *shell, t_cmds *commands);
-
-/* Advanced redirection functions */
-int					setup_redirections(t_cmds *cmd);
-int					handle_exec_redirections(t_cmds *cmd);
-int					open_input_file(char *file);
-int					open_output_file(char *file, int append);
-int					process_heredoc_list(t_cmds *cmd);
-void				reset_redirections(int stdin_backup, int stdout_backup);
-int					process_heredoc_for_pipeline(t_cmds *cmd, int *heredoc_fd);
-int					create_heredoc_pipe(t_cmds *cmd, int *heredoc_fd);
-int					process_heredocs_after_parsing(t_cmds *commands);
-
-/* Advanced pipeline functions */
-int					execute_single_command(t_shell *shell, t_cmds *cmd);
-int					execute_pipeline(t_shell *shell, t_cmds *commands);
-int					execute_pipeline_enhanced(t_shell *shell, t_cmds *commands);
-int					create_pipe_safe(int *pipe_fds);
-int					create_pipe_enhanced(int *pipe_fds);
-int					handle_fork_failure(t_cmds *cmd);
-void				safe_close(int fd);
-void				ft_child_process(t_cmds *cmd, t_env *env, int input_fd,
-						int *pipe_fds);
-void				ft_parent_process(int *input_fd, int *pipe_fds,
-						t_cmds *cmd);
-void				finish_execution(pid_t last_pid);
-int					verify_pipeline_commands(t_shell *shell, t_cmds *commands);
-int					wait_for_all_children(pid_t *pids, int count);
-
-/* Advanced command path functions */
-char				*find_command_path(char **paths, char *cmd);
-char				*get_command_path(char *cmd, t_env *env);
-char				*get_command_path_enhanced(char *cmd, t_env *env);
-bool				is_directory(char *path);
-bool				is_full_path(char *cmd);
-int					handle_path_errors(char *cmd_path, char *cmd_name);
-bool				is_empty_executable(char *cmd_path);
-int					check_command_access(char *path);
-
-/* Advanced error handling */
-void				error_message(char *cmd, char *msg);
-void				ft_cmd_error(char *cmd, char *error, int status);
-void				handle_execution_error(char *cmd_path, char *cmd_name);
-
-/* Advanced memory management */
-void				free_env_array(char **env_array);
-char				**convert_env_to_array(t_env *env);
-
-/* Signal handling for execution */
-void				setup_child_signals(void);
-void				setup_parent_waiting_signals(void);
-void				restore_signals(void);
-
-/* Advanced execution functions */
-int					execute_single_command_advanced(t_shell *shell,
-						t_cmds *cmd);
-int					handle_empty_command_redirections(t_cmds *cmd);
-int					execute_builtin_with_redirections(t_shell *shell,
-						t_cmds *cmd);
-int					execute_external_command(t_shell *shell, t_cmds *cmd);
+//child_exec.c
 void				execute_child_command(t_shell *shell, t_cmds *cmd);
 
-/* Advanced pipeline functions */
-int					count_pipeline_commands(t_cmds *commands);
-int					prepare_pipeline_heredoc(t_cmds *commands);
-pid_t				execute_pipeline_command_advanced(t_shell *shell,
-						t_cmds *cmd, t_pipeline_ctx *ctx);
-void				execute_pipeline_child(t_shell *shell, t_cmds *cmd,
-						t_child_ctx *child_ctx);
-void				handle_pipeline_parent(t_cmds *cmd,
-						t_parent_ctx *parent_ctx);
-int					handle_file_redirections_only(t_cmds *cmd);
-int					wait_for_pipeline(pid_t *pids, int cmd_count);
-void				cleanup_pipeline(pid_t *pids, int created_processes,
-						int prev_pipe_read, int heredoc_fd);
-
-/* Builtin function getter */
+//builtin_resolver.c
 t_builtin_func		get_builtin(char *cmd_name);
 int					is_builtin(char *cmd_name);
 
-int	handle_output_redirection(t_cmds *cmd);
-int	handle_input_redirection(t_cmds *cmd);
-int	process_command_heredocs(t_cmds *current);
+//cmd_path.c
+char				*get_command_path(char *cmd, t_env *env);
 
+//cmd_utils.c
+int					check_command_access(char *path);
+void				handle_execution_error(char *cmd_path, char *cmd_name);
+void				ft_cmd_error(char *cmd, char *error, int status);
+void				free_env_array(char **env_array);
 
+//env_converter.c
+char				**convert_env_to_array(t_env *env);
+
+//error_check.c
+int					check_redirection_errors(t_cmds *cmd);
+int					check_pipeline_errors(t_cmds *commands, t_env *env);
+
+//error_detection.c
+int					check_command_errors(char *cmd, t_env *env);
+int					detect_execution_errors(t_shell *shell, t_cmds *commands);
+
+//error_handling.h
+void				enhanced_exec_error(char *cmd_path, char *cmd_name);
+void				enhanced_redir_error(char *file, char *msg, int err);
+void				ambiguous_redirect_error(char *file);
+void				enhanced_syntax_error(char *msg, char *token, int line_num);
+
+//exec_signals.c
+void				handle_child_sigint(int sig);
+void				handle_child_sigquit(int sig);
+void				setup_child_signals(void);
+void				handle_parent_sigint(int sig);
+void				setup_parent_waiting_signals(void);
+
+//exec_utils.c
+char				*find_command_path(char **paths, char *cmd);
+void				error_message(char *cmd, char *msg);
+
+//execution_cleanup.c
+void				finish_execution(pid_t last_pid);
+
+//executor_process.c
+void				ft_child_process(t_cmds *cmd, t_env *env,
+						int input_fd, int *pipe_fds);
+
+//executor.c
+int					execute_commands(t_shell *shell, t_cmds *commands);
+
+//file_operations.c
+int					open_input_file(char *file);
+int					open_output_file(char *file, int append);
+void				reset_redirections(int stdin_backup, int stdout_backup);
+int					handle_output_redirection(t_cmds *cmd);
+int					handle_input_redirection(t_cmds *cmd);
+
+//heredoc_exec.c
+int					process_command_heredocs(t_cmds *current);
+int					process_heredoc_for_pipeline(t_cmds *cmd, int *heredoc_fd);
+
+//heredoc_list.c
+int					process_heredoc_list(t_cmds *cmd);
+int					process_single_heredoc(t_heredoc_list *current,
+						t_cmds *cmd, int is_last);
+int					process_all_heredocs(t_cmds *cmd);
+
+//heredoc_main.c
+int					process_heredocs_after_parsing(t_cmds *commands);
+
+//heredoc_pipe.c
+void				process_heredoc_child(int write_fd, char *delimiter);
+int					handle_heredoc_parent(pid_t pid, int read_fd);
+int					create_heredoc_pipe(t_cmds *cmd, int *heredoc_fd);
+
+//heredoc_signals.c
+void				handle_parent_heredoc_sigint(int sig);
+void				handle_heredoc_sigint(int sig);
+void				setup_heredoc_signals(void);
+void				setup_parent_heredoc_signals(void);
+void				restore_heredoc_signals(void);
+
+//pipeline_exec.c
+int					execution(t_cmds *commands, t_env *env);
+void				ft_parent_process(int *input_fd, int *pipe_fds,
+						t_cmds *cmd);
+int					create_pipe_safe(int *pipe_fds);
+
+//redirection.c
+int					handle_heredoc_redirection(t_cmds *cmd);
+int					handle_rw_redirection(t_cmds *cmd);
+int					handle_exec_redirections(t_cmds *cmd);
+int					setup_redirections(t_cmds *cmd);
+
+//signal_restoration.c
+void				restore_signals(void);
+
+//single_exec_utils.c
+int					execute_builtin_with_redirections(t_shell *shell,
+						t_cmds *cmd);
+int					execute_external_command(t_shell *shell, t_cmds *cmd);
+
+//single_exec.c
+int					execute_single_command_advanced(t_shell *shell,
+						t_cmds *cmd);
+int					handle_empty_command_redirections(t_cmds *cmd);
+int					execute_single_command(t_shell *shell, t_cmds *cmd);
 
 #endif

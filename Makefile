@@ -46,9 +46,12 @@ SRCS = $(SRC_DIR)/main.c \
 		$(SRC_DIR)/lexer/expansion.c \
 		$(SRC_DIR)/lexer/expansion_utils.c \
 		$(SRC_DIR)/lexer/expansion_utils_2.c \
-		$(SRC_DIR)/parser/parser_token.c \
 		$(SRC_DIR)/parser/parser_utils.c \
 		$(SRC_DIR)/parser/syntax_error.c \
+		$(SRC_DIR)/parser/syntax_error_2.c \
+		$(SRC_DIR)/parser/parser_main.c \
+		$(SRC_DIR)/parser/parser_cmd.c \
+		$(SRC_DIR)/parser/parser_redirection.c \
 		$(SRC_DIR)/exec/executor_process.c \
 		$(SRC_DIR)/exec/execution_cleanup.c \
 		$(SRC_DIR)/exec/pipeline_exec.c \
@@ -86,9 +89,10 @@ SRCS = $(SRC_DIR)/main.c \
 		$(SRC_DIR)/built/unset.c \
 		$(SRC_DIR)/built/unset_utils.c \
 		$(SRC_DIR)/utils/get_next_line.c \
+		$(SRC_DIR)/utils/get_next_line_utils.c \
 		$(SRC_DIR)/utils/heredoc_utils.c \
-		$(SRC_DIR)/utils/memory_management.c
-
+		$(SRC_DIR)/utils/memory_management.c \
+		$(SRC_DIR)/utils/memory_management_2.c
 
 
 OBJS			=	$(SRCS:.c=.o)

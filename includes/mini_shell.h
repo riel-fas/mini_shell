@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:59 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/04 00:19:58 by codespace        ###   ########.fr       */
+/*   Updated: 2025/07/04 22:03:46 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,9 +150,15 @@ int				handle_tokenize_error(t_shell *shell, char *input);
 int				handle_parse_error(t_shell *shell, t_parse_result result);
 int				is_only_whitespace(char *input);
 char			*get_next_line(int fd);
+char			*my_strchr(char *s, char c);
+char			*my_strjoin(char *s1, char *s2);
+char			*my_substr(char *s, unsigned int start, size_t len);
+char			*get_line(int fd, char *hold);
+char			*extract_line(char **hold);
+int				next_line_index(char *hold);
+int				read_and_append(int fd, char *buff, char **hold);
 int				process_all_heredocs(t_cmds *cmd);
 int				process_heredocs_after_parsing(t_cmds *commands);
 char			*generate_prompt(t_shell *shell);
-
 
 #endif

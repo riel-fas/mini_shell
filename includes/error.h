@@ -6,13 +6,14 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 12:48:00 by codespace         #+#    #+#             */
-/*   Updated: 2025/07/04 02:17:10 by codespace        ###   ########.fr       */
+/*   Updated: 2025/07/04 21:27:05 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef ERROR_H
 # define ERROR_H
 
+# include "mini_shell.h"
 # include <stdlib.h>
 # include <unistd.h>
 # include <errno.h>
@@ -36,6 +37,5 @@ int		check_command_errors(char *cmd, t_env *env);
 int		check_redirection_errors(t_cmds *cmd);
 int		check_pipeline_errors(t_cmds *commands, t_env *env);
 int		detect_execution_errors(t_shell *shell, t_cmds *commands);
-
 
 #endif

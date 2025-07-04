@@ -6,25 +6,26 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 19:13:56 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/04 00:19:44 by codespace        ###   ########.fr       */
+/*   Updated: 2025/07/04 21:36:42 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/mini_shell.h"
 
-int ft_strcmp(char *s1, char *s2)
+int	ft_strcmp(char *s1, char *s2)
 {
-	int i = 0;
+	int	i;
 
+	i = 0;
 	if (!s1 && !s2)
 		return (0);
 	if (!s1)
 		return (-1);
 	if (!s2)
 		return (1);
-	while((s1[i] == s2[i]) && s1[i] && s2[i])
+	while ((s1[i] == s2[i]) && s1[i] && s2[i])
 		i++;
-	return (s1[i]-s2[i]);
+	return (s1[i] - s2[i]);
 }
 
 void	*ft_realloc(void *ptr, size_t old_size, size_t new_size)
