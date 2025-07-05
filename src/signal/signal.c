@@ -6,13 +6,11 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 05:33:05 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/04 22:14:58 by codespace        ###   ########.fr       */
+/*   Updated: 2025/07/05 02:31:08 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/mini_shell.h"
-
-extern int	rl_catch_signals;
 
 void	handler(int sig)
 {

@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/29 17:54:33 by marvin            #+#    #+#             */
-/*   Updated: 2025/07/04 00:20:20 by codespace        ###   ########.fr       */
+/*   Updated: 2025/07/05 02:23:11 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,10 @@
 
 static int	validate_syntax(t_shell *shell)
 {
-	if (!check_redirection_syntax(shell->tokens)
-		|| !check_pipe_syntax(shell->tokens)
-		|| !check_unsupported_operators(shell->tokens))
-	{
-		shell->exit_status = 2;
-		free_tokens(shell->tokens);
-		shell->tokens = NULL;
+	if (!check_first_token_redirection(shell))
 		return (0);
-	}
+	if (!check_general_syntax(shell))
+		return (0);
 	return (1);
 }
 

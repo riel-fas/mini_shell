@@ -35,6 +35,7 @@ SRCS = $(SRC_DIR)/main.c \
 		$(SRC_DIR)/signal/signal.c \
 		$(SRC_DIR)/signal/heredoc_signal.c \
 		$(SRC_DIR)/mini_shell_loop.c \
+		$(SRC_DIR)/mini_shell_loop_utils.c \
 		$(SRC_DIR)/mini_shell_input.c \
 		$(SRC_DIR)/utils/mini_shell_utils.c \
 		$(SRC_DIR)/lexer/lexer.c \

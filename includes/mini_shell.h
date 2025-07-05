@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 11:19:59 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/04 22:03:46 by codespace        ###   ########.fr       */
+/*   Updated: 2025/07/05 02:25:08 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,5 +160,7 @@ int				read_and_append(int fd, char *buff, char **hold);
 int				process_all_heredocs(t_cmds *cmd);
 int				process_heredocs_after_parsing(t_cmds *commands);
 char			*generate_prompt(t_shell *shell);
+int				check_general_syntax(t_shell *shell);
+int				check_first_token_redirection(t_shell *shell);
 
 #endif
