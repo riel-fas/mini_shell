@@ -68,30 +68,6 @@ Welcome to **MiniShell**, a project developed as part of the rigorous 42 School 
 
 ---
 
-## 📂 Project Structure
-
-```
-mini_shell/
-│
-├── src/
-│   ├── main.c
-│   ├── lexer.c
-│   ├── parser.c
-│   ├── executor.c
-│   ├── builtins/
-│   └── ...
-├── include/
-│   ├── minishell.h
-│   ├── lexer.h
-│   └── ...
-├── tests/
-│   └── ...
-├── Makefile
-└── README.md
-```
-
----
-
 ## 📜 Supported Built-ins
 
 | Command   | Description                                       | Example Usage                      |
@@ -156,4 +132,3 @@ This project is for educational purposes as part of the 42 School curriculum and
 <p align="center">
   <img src="https://img.shields.io/badge/42-Network-000000?style=flat-square&logo=42&logoColor=white">
 </p>
-````
