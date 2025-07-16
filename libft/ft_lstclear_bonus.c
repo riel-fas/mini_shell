@@ -1,28 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_lstclear_bonus.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/16 00:38:05 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/16 00:38:27 by riel-fas         ###   ########.fr       */
+/*   Created: 2025/07/15 20:08:42 by riel-fas          #+#    #+#             */
+/*   Updated: 2025/07/15 20:08:43 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/mini_shell.h"
+#include "libft.h"
 
-int	pwd_built(t_list **env)
+void	ft_lstclear(t_list **lst, void (*del)(void *))
 {
-	char	*cwd;
+	t_list	*temp;
 
-	cwd = env_getting("PWD", *env);
-	if (cwd != NULL)
+	if (!lst || !del)
+		return ;
+	while (*lst)
 	{
-		printf("%s\n", cwd);
-		free(cwd);
+		temp = (*lst)->next;
+		del((*lst)->key);
+		del((*lst)->value);
+		free(*lst);
+		*lst = temp;
 	}
-	else
-		perror("pwd");
-	return (0);
+	*lst = NULL;
 }

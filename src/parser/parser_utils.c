@@ -3,60 +3,53 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/13 00:56:46 by roubelka          #+#    #+#             */
-/*   Updated: 2025/07/04 19:40:53 by codespace        ###   ########.fr       */
+/*   Created: 2025/07/16 00:09:46 by riel-fas          #+#    #+#             */
+/*   Updated: 2025/07/16 01:36:18 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/parser.h"
+#include "../../includes/mini_shell.h"
 
-void	free_heredoc(t_heredoc_list *heredoc_list)
+bool	dollar_exp(t_token **token, ssize_t dollar_pos)
 {
-	t_heredoc_list	*temp;
-
-	while (heredoc_list)
-	{
-		temp = heredoc_list;
-		heredoc_list = heredoc_list->next;
-		free(temp->delimiter);
-		free(temp);
-	}
+	return ((*token)->value[dollar_pos + 1] == '$' || (*token)->value[dollar_pos
+			+ 1] == '?' || ft_isdigit((*token)->value[dollar_pos + 1]));
 }
 
-static void	free_single_command(t_cmds *cmd)
+char	*expanding(t_token **token, t_list *minienv, ssize_t dollar_pos)
 {
-	int	i;
+	char	*var;
+	char	*expanded;
 
-	i = 0;
-	if (cmd->args)
-	{
-		while (cmd->args[i])
-		{
-			free(cmd->args[i]);
-			i++;
-		}
-		free(cmd->args);
-	}
-	free(cmd->input_file);
-	free(cmd->output_file);
-	free(cmd->rw_file);
-	free(cmd->heredoc_delimeter);
-	if (cmd->heredoc_fd >= 0)
-		close(cmd->heredoc_fd);
-	free_heredoc(cmd->heredoc_list);
-	free(cmd);
+	var = ft_substr((*token)->value, dollar_pos + 1,
+			var_size((*token)->value + dollar_pos + 1));
+	expanded = var_getting(var, minienv);
+	free(var);
+	return (expanded);
 }
 
-void	free_commands(t_cmds *cmds)
+char	*remaining_por(t_token **token, ssize_t dollar_pos)
 {
-	t_cmds	*next;
+	return (ft_substr((*token)->value, dollar_pos
+			+ var_size((*token)->value + dollar_pos + 1) + 1,
+			ft_strlen((*token)->value)));
+}
 
-	while (cmds)
-	{
-		next = cmds->next;
-		free_single_command(cmds);
-		cmds = next;
-	}
+char	*str_join_free(char *s1, char *s2)
+{
+	char	*result;
+
+	result = ft_strjoin(s1, s2);
+	free(s1);
+	return (result);
+}
+
+char	**freeall(char **p, size_t x)
+{
+	while (x > 0)
+		free(p[--x]);
+	free(p);
+	return (NULL);
 }

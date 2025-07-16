@@ -6,24 +6,27 @@
 /*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 11:24:58 by riel-fas          #+#    #+#             */
-/*   Updated: 2024/11/15 11:44:12 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/07/16 01:34:49 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static size_t	countwords(const char *s, char c)
+size_t	countwords(const char *s, char *c)
 {
-	size_t	index;
+	size_t	i;
 	size_t	count;
 
-	index = 0;
+	i = 0;
 	count = 0;
-	while (s[index])
+	while (s[i])
 	{
-		if (s[index] != c && (index == 0 || s[index - 1] == c))
+		if (ft_strchr(c, s[i]) == NULL && (i == 0 || ft_strchr(c, s[i
+						- 1]) != NULL))
+		{
 			count++;
-		index++;
+		}
+		i++;
 	}
 	return (count);
 }
@@ -31,12 +34,12 @@ static size_t	countwords(const char *s, char c)
 static char	**freeall(char **p, size_t x)
 {
 	while (x > 0)
-		free (p[--x]);
-	free (p);
+		free(p[--x]);
+	free(p);
 	return (NULL);
 }
 
-static char	**copywords(char **p, const char *s, char c)
+static char	**copywords(char **p, const char *s, char *c)
 {
 	size_t	i;
 	size_t	start;
@@ -44,12 +47,12 @@ static char	**copywords(char **p, const char *s, char c)
 
 	i = 0;
 	x = 0;
-	while (s[i] && x < countwords (s, c))
+	while (s[i] && x < countwords(s, c))
 	{
-		while (s[i] == c)
+		while (ft_strchr(c, s[i]) != NULL)
 			i++;
 		start = i;
-		while (s[i] && s[i] != c)
+		while (s[i] && ft_strchr(c, s[i]) == NULL)
 			i++;
 		p[x++] = ft_substr(s, start, i - start);
 		if (!p[x - 1])
@@ -59,7 +62,7 @@ static char	**copywords(char **p, const char *s, char c)
 	return (p);
 }
 
-char	**ft_split(const char *s, char c)
+char	**ft_split(const char *s, char *c)
 {
 	size_t	count;
 	char	**p;

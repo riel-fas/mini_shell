@@ -1,28 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/16 00:38:05 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/16 00:38:27 by riel-fas         ###   ########.fr       */
+/*   Created: 2025/07/15 20:53:07 by riel-fas          #+#    #+#             */
+/*   Updated: 2025/07/16 01:17:30 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/mini_shell.h"
+#include "../includes/mini_shell.h"
 
-int	pwd_built(t_list **env)
+int	main(int ac, char **av, char **env)
 {
-	char	*cwd;
+	t_list	*minienv;
+	char	*input;
 
-	cwd = env_getting("PWD", *env);
-	if (cwd != NULL)
+	(void)av;
+	(void)ac;
+	rl_catch_signals = 0;
+	handle_signals();
+	minienv = init_env(env);
+	while (1)
 	{
-		printf("%s\n", cwd);
-		free(cwd);
+		input = readline("minishell~> ");
+		if (input == NULL)
+		{
+			printf("exit\n");
+			break ;
+		}
+		minishell(input, &minienv);
+		free(input);
 	}
-	else
-		perror("pwd");
 	return (0);
 }

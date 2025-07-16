@@ -1,28 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   cmd_run_3.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/16 00:38:05 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/16 00:38:27 by riel-fas         ###   ########.fr       */
+/*   Created: 2025/07/16 00:44:48 by riel-fas          #+#    #+#             */
+/*   Updated: 2025/07/16 00:44:53 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/mini_shell.h"
 
-int	pwd_built(t_list **env)
+char	*check_full_path(char *p)
 {
-	char	*cwd;
-
-	cwd = env_getting("PWD", *env);
-	if (cwd != NULL)
+	if (!p)
+		return (NULL);
+	if (*p == '/' || *p == '.')
 	{
-		printf("%s\n", cwd);
-		free(cwd);
+		if (access(p, X_OK) == 0)
+			return (ft_strdup(p));
+		else
+			return (NULL);
 	}
-	else
-		perror("pwd");
-	return (0);
+	return (NULL);
+}
+
+void	handle_exec_error(char *cmd_path, char *cmd_name)
+{
+	free(cmd_path);
+	free(cmd_name);
+	command_error(NULL, "malloc failure\n", 1);
 }

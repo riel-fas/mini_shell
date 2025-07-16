@@ -3,52 +3,79 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/23 12:15:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/03 23:43:55 by codespace        ###   ########.fr       */
+/*   Created: 2025/07/16 00:38:43 by riel-fas          #+#    #+#             */
+/*   Updated: 2025/07/16 00:38:49 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/builtins.h"
+#include "../../includes/mini_shell.h"
 
-static void	process_unset_arg(t_shell *shell, char *arg, int *status,
-		int *path_modified)
+int	remove_env_node(t_list **env_list, t_list *node)
 {
-	if (!arg || !*arg)
-		return ;
-	if (!is_valid_varname(arg))
-		handle_invalid_varname(arg, status);
+	if (!node)
+		return (1);
+	if (node->prev)
+		node->prev->next = node->next;
 	else
-	{
-		if (ft_strcmp(arg, "PATH") == 0)
-			*path_modified = 1;
-		remove_env_var(&shell->env, arg);
-	}
+		*env_list = node->next;
+	if (node->next)
+		node->next->prev = node->prev;
+	if (node->key)
+		free(node->key);
+	if (node->value)
+		free(node->value);
+	free(node);
+	return (1);
 }
 
-int	builtin_unset(t_shell *shell, char **args)
+int	set_env_built(t_list **env)
 {
-	int	i;
-	int	status;
-	int	path_modified;
+	char	*cwd;
+	char	cwd_buffer[1024];
 
-	if (!shell || !args || !args[1])
-		return (0);
-	status = 0;
-	path_modified = 0;
-	i = 1;
-	while (args[i])
+	if (!*env || !env)
 	{
-		if (!args[i] || !*args[i])
-		{
-			i++;
-			continue ;
-		}
-		process_unset_arg(shell, args[i], &status, &path_modified);
-		i++;
+		if (getcwd(cwd_buffer, sizeof(cwd_buffer)) != NULL)
+			cwd = ft_strdup(cwd_buffer);
+		else
+			cwd = ft_strdup("/Users/yagame");
+		ft_lstadd_back(env, ft_lstnew(ft_strdup("OLDPWD"), NULL));
+		ft_lstadd_back(env, ft_lstnew(ft_strdup("PWD"), cwd));
+		ft_lstadd_back(env, ft_lstnew(ft_strdup("SHLVL"), ft_strdup("1")));
+		ft_lstadd_back(env, ft_lstnew(ft_strdup("_"),
+				ft_strdup("/usr/bin/env")));
+		return (1);
 	}
-	if (path_modified)
-		update_shell_path(shell);
-	return (status);
+	return (0);
+}
+
+int	unset_built(char **cmd, t_list **env)
+{
+	t_list	*tmp;
+	t_list	**env_ptr;
+	t_list	*to_remove;
+
+	if (!cmd || !*cmd || !env || !*env)
+		return (1);
+	env_ptr = env;
+	while (*cmd)
+	{
+		tmp = *env_ptr;
+		while (tmp)
+		{
+			if (ft_strcmp(*cmd, "_") && ft_strcmp(tmp->key, *cmd) == 0)
+			{
+				to_remove = tmp;
+				tmp = tmp->next;
+				remove_env_node(env_ptr, to_remove);
+				break ;
+			}
+			else
+				tmp = tmp->next;
+		}
+		cmd++;
+	}
+	return (1);
 }

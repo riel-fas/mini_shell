@@ -3,97 +3,125 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_path.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/04 00:36:10 by codespace         #+#    #+#             */
-/*   Updated: 2025/07/04 03:45:04 by codespace        ###   ########.fr       */
+/*   Created: 2025/07/16 00:45:18 by riel-fas          #+#    #+#             */
+/*   Updated: 2025/07/16 00:45:26 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/executor.h"
+#include "../../includes/mini_shell.h"
 
-static char	*check_absolute_path(char *cmd)
+void	free_list(t_list **list)
 {
-	struct stat	file_stat;
+	t_list	*current;
+	t_list	*next;
 
-	if (access(cmd, F_OK) != 0)
-		return (NULL);
-	if (stat(cmd, &file_stat) == 0 && S_ISDIR(file_stat.st_mode))
-		return (NULL);
-	if (access(cmd, X_OK) == 0)
-		return (ft_strdup(cmd));
-	return (NULL);
-}
-
-static char	*create_full_path(char *dir, char *cmd)
-{
-	char	*temp;
-	char	*full_path;
-
-	temp = ft_strjoin(dir, "/");
-	if (!temp)
-		return (NULL);
-	full_path = ft_strjoin(temp, cmd);
-	free(temp);
-	return (full_path);
-}
-
-static char	*check_path_executable(char *full_path)
-{
-	struct stat	file_stat;
-
-	if (access(full_path, F_OK) != 0)
-		return (NULL);
-	if (stat(full_path, &file_stat) == 0 && S_ISDIR(file_stat.st_mode))
-		return (NULL);
-	if (access(full_path, X_OK) == 0)
-		return (full_path);
-	return (NULL);
-}
-
-static char	*search_in_paths(char **paths, char *cmd)
-{
-	char	*full_path;
-	int		i;
-
-	i = 0;
-	while (paths[i])
+	if (!list || !*list)
+		return ;
+	current = *list;
+	while (current)
 	{
-		full_path = create_full_path(paths[i], cmd);
-		if (!full_path)
-		{
-			free_env_array(paths);
-			return (NULL);
-		}
-		if (check_path_executable(full_path))
-		{
-			free_env_array(paths);
-			return (full_path);
-		}
-		free(full_path);
-		i++;
+		next = current->next;
+		if (current->key)
+			free(current->key);
+		if (current->value)
+			free(current->value);
+		free(current);
+		current = next;
+	}
+	*list = NULL;
+}
+
+char	*find_path(t_list *path)
+{
+	t_list	*tmp;
+
+	tmp = path;
+	while (tmp)
+	{
+		if (!ft_strncmp(tmp->key, "PATH", 4))
+			return (tmp->value);
+		tmp = tmp->next;
 	}
 	return (NULL);
 }
 
-char	*get_command_path(char *cmd, t_env *env)
+void	get_the_path(char **full_path, char **path_cmd, char *p)
 {
-	char	*path_env;
-	char	**paths;
-	char	*result;
+	char	*tmp;
 
-	if (!cmd || !*cmd)
+	tmp = NULL;
+	*full_path = NULL;
+	while (*path_cmd)
+	{
+		*full_path = ft_strjoin(*path_cmd, "/");
+		if (!*full_path)
+			return ;
+		tmp = *full_path;
+		*full_path = ft_strjoin(*full_path, p);
+		free(tmp);
+		tmp = NULL;
+		if (!*full_path)
+			return ;
+		if (access(*full_path, X_OK) == 0)
+			return ;
+		free(*full_path);
+		*full_path = NULL;
+		path_cmd++;
+	}
+}
+
+char	*joining_path(char *p)
+{
+	char	*path;
+	char	*tmp;
+
+	tmp = NULL;
+	path = getcwd(NULL, 0);
+	if (!path)
 		return (NULL);
-	if (ft_strchr(cmd, '/'))
-		return (check_absolute_path(cmd));
-	path_env = get_env_value(env, "PATH");
-	if (!path_env)
+	tmp = ft_strjoin(path, "/");
+	if (!tmp)
+	{
+		free(path);
 		return (NULL);
-	paths = ft_split(path_env, ':');
-	if (!paths)
+	}
+	free(path);
+	tmp = my_strjoin(tmp, p);
+	if (!tmp)
 		return (NULL);
-	result = search_in_paths(paths, cmd);
-	if (!result)
-		free_env_array(paths);
-	return (result);
+	if (access(tmp, X_OK) == 0)
+		return (tmp);
+	free(tmp);
+	return (NULL);
+}
+
+char	*check_exec(char *p, t_list *env, int *no_file)
+{
+	char	*full_path;
+	char	*path;
+	char	**path_cmd;
+	char	*dir_path;
+
+	full_path = check_full_path(p);
+	if (full_path)
+		return (full_path);
+	path = find_path(env);
+	if (path)
+	{
+		path_cmd = parsing_split(path, ':');
+		if (!path_cmd)
+			return (NULL);
+		get_the_path(&full_path, path_cmd, p);
+		free_buitl(path_cmd);
+		if (full_path)
+			return (full_path);
+	}
+	else
+		*no_file = 1;
+	dir_path = joining_path(p);
+	if (dir_path)
+		return (dir_path);
+	return (NULL);
 }

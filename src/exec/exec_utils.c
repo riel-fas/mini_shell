@@ -3,78 +3,88 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/04 03:30:41 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/04 03:46:10 by codespace        ###   ########.fr       */
+/*   Created: 2025/07/16 00:43:26 by riel-fas          #+#    #+#             */
+/*   Updated: 2025/07/16 00:43:33 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/executor.h"
+#include "../../includes/mini_shell.h"
 
-static char	*handle_absolute_path(char *cmd)
+int	size_list(t_cmd *node)
 {
-	struct stat	file_stat;
-
-	if (access(cmd, F_OK) == 0)
-	{
-		if (stat(cmd, &file_stat) == 0 && S_ISDIR(file_stat.st_mode))
-			return (NULL);
-		if (access(cmd, X_OK) == 0)
-			return (ft_strdup(cmd));
-		return (ft_strdup("PERMISSION_DENIED"));
-	}
-	return (NULL);
-}
-
-static int	is_valid_executable(char *full_path)
-{
-	struct stat	file_stat;
-
-	if (access(full_path, X_OK) == 0)
-	{
-		if (stat(full_path, &file_stat) == 0 && S_ISDIR(file_stat.st_mode))
-			return (0);
-		return (1);
-	}
-	return (0);
-}
-
-static char	*search_in_path_dirs(char **paths, char *cmd)
-{
-	char	*path;
-	char	*full_path;
-	int		i;
+	int	i;
 
 	i = 0;
-	while (paths[i])
+	if (!node)
+		return (0);
+	while (node)
 	{
-		path = ft_strjoin(paths[i], "/");
-		full_path = ft_strjoin(path, cmd);
-		free(path);
-		if (!full_path)
-			return (NULL);
-		if (is_valid_executable(full_path))
-			return (full_path);
-		free(full_path);
 		i++;
+		node = node->next;
 	}
-	return (NULL);
+	return (i);
 }
 
-char	*find_command_path(char **paths, char *cmd)
+void	free_all(char **bf, int j)
 {
-	if (ft_strchr(cmd, '/'))
-		return (handle_absolute_path(cmd));
-	if (!paths)
+	while (j >= 0)
+	{
+		free(bf[j]);
+		bf[j] = NULL;
+		j--;
+	}
+	free(bf);
+}
+
+void	allocate(char **envp, int *i, char *key_equals, t_list *env)
+{
+	char	*str;
+
+	while (env)
+	{
+		if (ft_strcmp(env->key, "SHLVL") == 0)
+			env->value = ft_itoa(ft_atoi(env->value) + 1);
+		key_equals = ft_strjoin(env->key, "=");
+		str = ft_strjoin(key_equals, env->value);
+		free(key_equals);
+		envp[*i] = ft_strdup(str);
+		free(str);
+		env = env->next;
+		(*i)++;
+	}
+}
+
+char	**get_env(t_list *env)
+{
+	char	**envp;
+	int		i;
+	t_list	*tmp;
+	char	*key_equals;
+
+	i = 0;
+	key_equals = NULL;
+	tmp = env;
+	if (!env)
 		return (NULL);
-	return (search_in_path_dirs(paths, cmd));
+	while (tmp)
+	{
+		i++;
+		tmp = tmp->next;
+	}
+	envp = malloc(sizeof(char *) * (i + 1));
+	if (!envp)
+		return (NULL);
+	i = 0;
+	allocate(envp, &i, key_equals, env);
+	envp[i] = NULL;
+	return (envp);
 }
 
-void	error_message(char *cmd, char *msg)
+void	free_dir(char **cmd_path, char **cmd_name, t_cmd *current_cmd)
 {
-	ft_putstr_fd("minishell: ", 2);
-	ft_putstr_fd(cmd, 2);
-	ft_putstr_fd(": ", 2);
-	ft_putendl_fd(msg, 2);
+	free(*cmd_path);
+	free(*cmd_name);
+	command_error(current_cmd->cmd[0], "is a directory\n", 126);
 }

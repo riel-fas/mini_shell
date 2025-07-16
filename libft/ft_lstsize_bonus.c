@@ -6,7 +6,7 @@
 /*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 14:45:04 by riel-fas          #+#    #+#             */
-/*   Updated: 2024/11/14 17:52:28 by riel-fas         ###   ########.fr       */
+/*   Updated: 2025/07/15 20:11:07 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,17 @@
 
 int	ft_lstsize(t_list *lst)
 {
-	int	i;
+	t_list	*p;
+	int		len;
 
-	i = 0;
-	while (lst)
+	if (lst == NULL)
+		return (0);
+	p = lst;
+	len = 0;
+	while (p != NULL)
 	{
-		lst = lst->next;
-		i++;
+		p = p->next;
+		len++;
 	}
-	return (i);
+	return (len);
 }

@@ -3,77 +3,116 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/23 12:15:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/03 23:37:53 by codespace        ###   ########.fr       */
+/*   Created: 2025/07/16 00:31:41 by riel-fas          #+#    #+#             */
+/*   Updated: 2025/07/16 00:31:49 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/builtins.h"
+#include "../../includes/mini_shell.h"
 
-static int	check_invalid_option(char *arg)
+void	path_recheck(t_list *env, char *new_path, char *old_path)
 {
-	if (arg[0] == '-' && arg[1] == '-' && arg[2] != '\0')
+	t_list	*old_pwd;
+	t_list	*current_pwd;
+	char	*tmp;
+	char	*cwd;
+
+	free_every_char(new_path);
+	tmp = NULL;
+	cwd = getcwd(NULL, 0);
+	old_pwd = node(env, "OLDPWD");
+	current_pwd = node(env, "PWD");
+	if (old_pwd)
 	{
-		ft_putstr_fd("cd: ", 2);
-		ft_putstr_fd(arg, 2);
-		ft_putendl_fd(": invalid option", 2);
-		return (1);
+		if (old_pwd->value)
+			free(old_pwd->value);
+		old_pwd->value = ft_strdup(old_path);
+	}
+	free(old_path);
+	if (current_pwd)
+	{
+		tmp = current_pwd->value;
+		current_pwd->value = cwd;
+		free(tmp);
+	}
+	else
+		free(cwd);
+}
+
+static char	*handel_tilde(char *cmd, t_list *env)
+{
+	char	*home;
+	char	*tmp;
+
+	tmp = NULL;
+	if (cmd[0] == '~')
+	{
+		home = env_getting("HOME", env);
+		if (home == NULL)
+			return (NULL);
+		tmp = my_strjoin(home, cmd + 1);
+	}
+	else
+		tmp = cmd;
+	return (tmp);
+}
+
+static int	get_target_path(char **cmd, char **path,
+			char *old_path, t_list **env)
+{
+	char	*tmp;
+
+	tmp = NULL;
+	if (cmd[1] == NULL || ft_strcmp(cmd[1], "~") == 0)
+	{
+		*path = env_getting("HOME", *env);
+		if (*path == NULL)
+			return (free(old_path), write(2, CD_HOME_ERR, 28), 1);
+	}
+	else if (ft_strcmp(cmd[1], "-") == 0)
+	{
+		*path = env_getting("OLDPWD", *env);
+		if (*path == NULL)
+			return (free(old_path), write(2, CD_OLDPWD_ERR, 30), 1);
+	}
+	else
+	{
+		tmp = handel_tilde(cmd[1], *env);
+		if (tmp == NULL)
+			return (free(old_path), write(2, CD_HOME_ERR, 28), 1);
+		*path = ft_strdup(tmp);
+		if (tmp != cmd[1])
+			free(tmp);
 	}
 	return (0);
 }
 
-static char	*get_target_dir(t_shell *shell, char **args, char **old_pwd,
-		int *should_free_target)
+int	cd_built(char **cmd, t_list **env)
 {
-	*should_free_target = 0;
-	if (!args[1])
-		return (handle_home_dir(shell->env, old_pwd));
-	else if (ft_strcmp(args[1], "-") == 0)
-		return (handle_dash_arg(shell, args, old_pwd));
-	else if (ft_strcmp(args[1], "--") == 0)
-		return (handle_double_dash_arg(shell, args, old_pwd,
-				should_free_target));
-	else
-		return (handle_regular_arg(shell, args, old_pwd, should_free_target));
-}
+	char	*path;
+	char	*old_path;
+	int		is_dash;
 
-static int	handle_chdir_error(char *target_dir, char *old_pwd,
-		int should_free_target)
-{
-	ft_putstr_fd("cd: ", 2);
-	ft_putstr_fd(target_dir, 2);
-	ft_putstr_fd(": ", 2);
-	ft_putendl_fd(strerror(errno), 2);
-	if (should_free_target)
-		free(target_dir);
-	free(old_pwd);
-	return (1);
-}
-
-int	builtin_cd(t_shell *shell, char **args)
-{
-	char	*target_dir;
-	char	*old_pwd;
-	int		should_free_target;
-
-	if (args[1] && check_invalid_option(args[1]))
-		return (1);
-	old_pwd = getcwd(NULL, 0);
-	if (!old_pwd)
+	path = NULL;
+	old_path = env_getting("PWD", *env);
+	is_dash = (cmd[1] != NULL && ft_strcmp(cmd[1], "-") == 0);
+	if (size_cd(cmd) > 2)
+		return (free(old_path), write(2, "minishell :cd: too many arguments\n",
+				34), 1);
+	if (get_target_path(cmd, &path, old_path, env) != 0)
+		return (free(path), 1);
+	if (path == NULL)
+		return (free(old_path), write(2, "minishell :cd: HOME not set\n", 28),
+			1);
+	if (chdir(path) != 0)
+		return (perror(path), free(path), free(old_path), 1);
+	if (is_dash)
 	{
-		ft_putendl_fd("cd: error retrieving current directory", 2);
-		return (1);
+		write(1, path, ft_strlen(path));
+		write(1, "\n", 1);
 	}
-	target_dir = get_target_dir(shell, args, &old_pwd, &should_free_target);
-	if (!target_dir)
-		return (1);
-	if (chdir(target_dir) != 0)
-		return (handle_chdir_error(target_dir, old_pwd, should_free_target));
-	if (should_free_target)
-		free(target_dir);
-	update_pwd_env(shell, old_pwd);
-	free(old_pwd);
+	path_recheck(*env, path, old_path);
 	return (0);
 }

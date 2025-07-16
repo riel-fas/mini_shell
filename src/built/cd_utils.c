@@ -3,77 +3,38 @@
 /*                                                        :::      ::::::::   */
 /*   cd_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 00:50:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/03 23:37:53 by codespace        ###   ########.fr       */
+/*   Created: 2025/07/16 00:31:19 by riel-fas          #+#    #+#             */
+/*   Updated: 2025/07/16 00:31:26 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/builtins.h"
+#include "../../includes/mini_shell.h"
 
-void	update_pwd_var(t_env **env, char *pwd_name, char *value)
+int	size_cd(char **c)
 {
-	t_env	*var;
+	int	i;
 
-	var = find_env_var(*env, pwd_name);
-	if (var)
+	i = 0;
+	while (*c)
 	{
-		free(var->value);
-		var->value = ft_strdup(value);
+		c++;
+		i++;
 	}
-	else
-		add_env_node(env, new_env_node(pwd_name, value));
+	return (i);
 }
 
-void	update_pwd_env(t_shell *shell, char *old_pwd)
+t_list	*node(t_list *env, char *key)
 {
-	char	*new_pwd;
+	t_list	*tmp;
 
-	new_pwd = getcwd(NULL, 0);
-	if (!new_pwd)
-		return ;
-	update_pwd_var(&shell->env, "PWD", new_pwd);
-	update_pwd_var(&shell->env, "OLDPWD", old_pwd);
-	free(new_pwd);
-}
-
-char	*handle_home_dir(t_env *env, char **old_pwd)
-{
-	char	*target_dir;
-
-	target_dir = get_env_value(env, "HOME");
-	if (!target_dir)
+	tmp = env;
+	while (tmp)
 	{
-		ft_putendl_fd("cd: HOME not set", 2);
-		free(*old_pwd);
-		return (NULL);
+		if (ft_strcmp(tmp->key, key) == 0)
+			return (tmp);
+		tmp = tmp->next;
 	}
-	return (target_dir);
-}
-
-char	*handle_oldpwd_dir(t_env *env, char **old_pwd)
-{
-	char	*target_dir;
-
-	target_dir = get_env_value(env, "OLDPWD");
-	if (!target_dir)
-	{
-		ft_putendl_fd("cd: OLDPWD not set", 2);
-		free(*old_pwd);
-		return (NULL);
-	}
-	ft_putendl_fd(target_dir, 1);
-	return (target_dir);
-}
-
-char	*handle_tilde_expansion(t_env *env, char *path, char **old_pwd,
-		int *should_free_target)
-{
-	*should_free_target = 0;
-	if (!path || path[0] != '~')
-		return (path);
-	if (path[0] == '~' && (path[1] == '\0' || path[1] == '/'))
-		return (expand_tilde_with_home(env, path, old_pwd, should_free_target));
-	return (path);
+	return (NULL);
 }

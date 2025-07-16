@@ -1,28 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   signal_handling_2.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/16 00:38:05 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/16 00:38:27 by riel-fas         ###   ########.fr       */
+/*   Created: 2025/07/16 00:05:03 by riel-fas          #+#    #+#             */
+/*   Updated: 2025/07/16 00:05:09 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/mini_shell.h"
 
-int	pwd_built(t_list **env)
+void	handle_heredoc_sigint(int sig)
 {
-	char	*cwd;
+	(void)sig;
+	exit(1);
+}
 
-	cwd = env_getting("PWD", *env);
-	if (cwd != NULL)
-	{
-		printf("%s\n", cwd);
-		free(cwd);
-	}
-	else
-		perror("pwd");
-	return (0);
+void	handle_signals(void)
+{
+	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, SIG_IGN);
 }

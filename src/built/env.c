@@ -3,30 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: riel-fas <riel-fas@student.42.fr>          +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/23 12:15:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/06/13 20:43:45 by riel-fas         ###   ########.fr       */
+/*   Created: 2025/07/16 00:32:30 by riel-fas          #+#    #+#             */
+/*   Updated: 2025/07/16 00:32:35 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/builtins.h"
+#include "../../includes/mini_shell.h"
 
-int	builtin_env(t_shell *shell, char **args)
+int	env_built(t_list **env, t_shell *shell)
 {
-	t_env	*current;
+	t_list	*tmp;
 
-	(void)args;
-	current = shell->env;
-	while (current)
+	tmp = *env;
+	if (!*env || !env)
 	{
-		if (current->value)
-		{
-			ft_putstr_fd(current->key, 1);
-			ft_putchar_fd('=', 1);
-			ft_putendl_fd(current->value, 1);
-		}
-		current = current->next;
+		shell->exit_status = 1;
+		return (1);
 	}
-	return (0);
+	while (tmp)
+	{
+		if (tmp->key && ft_strcmp(tmp->key, "_") == 0 && tmp->value)
+		{
+			free(tmp->value);
+			tmp->value = ft_strdup("/usr/bin/env");
+		}
+		if (tmp->key && tmp->value)
+			printf("%s=%s\n", tmp->key, tmp->value);
+		tmp = tmp->next;
+	}
+	return (1);
 }

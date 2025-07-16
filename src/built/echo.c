@@ -3,52 +3,78 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: riel-fas <riel-fas@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/23 12:15:00 by riel-fas          #+#    #+#             */
-/*   Updated: 2025/07/03 23:38:53 by codespace        ###   ########.fr       */
+/*   Created: 2025/07/16 00:32:07 by riel-fas          #+#    #+#             */
+/*   Updated: 2025/07/16 00:32:13 by riel-fas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/builtins.h"
+#include "../../includes/mini_shell.h"
 
-static int	is_n_flag(char *arg)
+static int	n_parsing(char *str)
 {
-	int	j;
+	int	i;
 
-	if (!arg || arg[0] != '-' || arg[1] != 'n')
-		return (0);
-	j = 2;
-	while (arg[j])
+	i = 2;
+	while (str[i])
 	{
-		if (arg[j] != 'n')
+		if (str[i] != 'n')
 			return (0);
-		j++;
+		i++;
 	}
 	return (1);
 }
 
-int	builtin_echo(t_shell *shell, char **args)
+static char	*join_arg(char **cmd, int i)
 {
-	int	i;
-	int	n_flag;
+	char	*tmp;
+	char	*hold;
+
+	hold = ft_strdup("");
+	while (cmd[i])
+	{
+		tmp = ft_strjoin(hold, cmd[i]);
+		free(hold);
+		hold = tmp;
+		if (cmd[i + 1])
+		{
+			tmp = ft_strjoin(hold, " ");
+			free(hold);
+			hold = tmp;
+		}
+		i++;
+	}
+	return (hold);
+}
+
+static void	ft_print_echo(char *tmp, int n_flag)
+{
+	if (!n_flag)
+		ft_putendl_fd(tmp, 1);
+	else
+		ft_putstr_fd(tmp, 1);
+}
+
+int	echo_built(char **cmd, t_cmd *shell)
+{
+	int		i;
+	int		n_flag;
+	char	*tmp;
 
 	(void)shell;
-	n_flag = 0;
 	i = 1;
-	while (args[i] && is_n_flag(args[i]))
+	n_flag = 0;
+	tmp = NULL;
+	while (cmd[i] && ft_strncmp(cmd[i], "-n", 2) == 0)
 	{
+		if (!n_parsing(cmd[i]))
+			break ;
 		n_flag = 1;
 		i++;
 	}
-	while (args[i])
-	{
-		ft_putstr_fd(args[i], 1);
-		if (args[i + 1])
-			ft_putchar_fd(' ', 1);
-		i++;
-	}
-	if (!n_flag)
-		ft_putchar_fd('\n', 1);
+	tmp = join_arg(cmd, i);
+	ft_print_echo(tmp, n_flag);
+	free(tmp);
 	return (0);
 }

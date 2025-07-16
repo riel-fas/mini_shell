@@ -16,88 +16,71 @@ LIBFT_INC		=	-I$(LIBFT_DIR)
 LIBFT_LIB		=	-L$(LIBFT_DIR) -lft
 
 # Readline support
-READLINE_PATH	=	/Users/roubelka/.brew/opt/readline
-# READLINE_PATH	=	/Users/riel-fas/.brew/opt/readline
-READLINE_FLAGS	=	-I$(READLINE_PATH)/include
-READLINE_LIBS	=	-L$(READLINE_PATH)/lib -lreadline
+USER := $(shell whoami)
+READLINE_PATH = /Users/$(USER)/.brew/opt/readline
+READLINE_FLAGS = -I$(READLINE_PATH)/include
+READLINE_LIBS = -L$(READLINE_PATH)/lib -lreadline
 
 # Directories
 SRC_DIR			=	src
 INC_DIR			=	includes
 
 # Source files
-SRCS = $(SRC_DIR)/main.c \
-		$(SRC_DIR)/env/copy_env.c \
-		$(SRC_DIR)/env/env_list.c \
-		$(SRC_DIR)/env/env_utils.c \
-		$(SRC_DIR)/mini_shell_clean.c \
-		$(SRC_DIR)/mini_shell_init.c \
-		$(SRC_DIR)/signal/signal.c \
-		$(SRC_DIR)/signal/heredoc_signal.c \
-		$(SRC_DIR)/mini_shell_loop.c \
-		$(SRC_DIR)/mini_shell_loop_utils.c \
-		$(SRC_DIR)/mini_shell_input.c \
-		$(SRC_DIR)/utils/mini_shell_utils.c \
-		$(SRC_DIR)/lexer/lexer.c \
-		$(SRC_DIR)/lexer/lexer_extraction.c \
-		$(SRC_DIR)/lexer/lexer_extraction_2.c \
-		$(SRC_DIR)/lexer/lexer_extraction_utils.c \
-		$(SRC_DIR)/lexer/lexer_utils.c \
-		$(SRC_DIR)/lexer/lexer_utils_2.c \
-		$(SRC_DIR)/lexer/expansion.c \
-		$(SRC_DIR)/lexer/expansion_utils.c \
-		$(SRC_DIR)/lexer/expansion_utils_2.c \
-		$(SRC_DIR)/parser/parser_utils.c \
-		$(SRC_DIR)/parser/syntax_error.c \
-		$(SRC_DIR)/parser/syntax_error_2.c \
-		$(SRC_DIR)/parser/parser_main.c \
-		$(SRC_DIR)/parser/parser_cmd.c \
-		$(SRC_DIR)/parser/parser_redirection.c \
-		$(SRC_DIR)/exec/executor_process.c \
-		$(SRC_DIR)/exec/execution_cleanup.c \
-		$(SRC_DIR)/exec/pipeline_exec.c \
-		$(SRC_DIR)/exec/redirections.c \
-		$(SRC_DIR)/exec/file_operations.c \
-		$(SRC_DIR)/exec/heredoc_pipe.c \
-		$(SRC_DIR)/exec/heredoc_main.c \
-		$(SRC_DIR)/exec/heredoc_list.c \
-		$(SRC_DIR)/exec/heredoc_exec.c \
-		$(SRC_DIR)/exec/exec_utils.c \
-		$(SRC_DIR)/exec/executor.c \
-		$(SRC_DIR)/exec/cmd_utils.c \
-		$(SRC_DIR)/exec/cmd_path.c \
-		$(SRC_DIR)/exec/env_converter.c \
-		$(SRC_DIR)/exec/exec_signals.c \
-		$(SRC_DIR)/exec/heredoc_signals.c \
-		$(SRC_DIR)/exec/signal_restoration.c \
-		$(SRC_DIR)/exec/single_exec.c \
-		$(SRC_DIR)/exec/single_exec_utils.c \
-		$(SRC_DIR)/exec/child_exec.c \
-		$(SRC_DIR)/exec/error_handling.c \
-		$(SRC_DIR)/exec/error_detection.c \
-		$(SRC_DIR)/exec/error_checks.c \
-		$(SRC_DIR)/exec/builtin_resolver.c \
-		$(SRC_DIR)/built/cd.c \
-		$(SRC_DIR)/built/cd_utils.c \
-		$(SRC_DIR)/built/cd_utils2.c \
-		$(SRC_DIR)/built/colon.c \
-		$(SRC_DIR)/built/echo.c \
-		$(SRC_DIR)/built/env.c \
-		$(SRC_DIR)/built/exit.c \
-		$(SRC_DIR)/built/export.c \
-		$(SRC_DIR)/built/export_utils.c \
-		$(SRC_DIR)/built/pwd.c \
-		$(SRC_DIR)/built/unset.c \
-		$(SRC_DIR)/built/unset_utils.c \
-		$(SRC_DIR)/utils/get_next_line.c \
-		$(SRC_DIR)/utils/get_next_line_utils.c \
-		$(SRC_DIR)/utils/heredoc_utils.c \
-		$(SRC_DIR)/utils/memory_management.c \
-		$(SRC_DIR)/utils/memory_management_2.c
-
+SRCS = \
+	$(SRC_DIR)/minishell.c \
+	$(SRC_DIR)/exec/cmd_path.c \
+	$(SRC_DIR)/exec/cmd_run.c \
+	$(SRC_DIR)/exec/cmd_run_2.c \
+	$(SRC_DIR)/exec/cmd_run_3.c \
+	$(SRC_DIR)/exec/exec_error.c \
+	$(SRC_DIR)/exec/exec_utils.c \
+	$(SRC_DIR)/exec/execution.c \
+	$(SRC_DIR)/exec/execution_2.c \
+	$(SRC_DIR)/exec/execution_3.c \
+	$(SRC_DIR)/built/builtin.c \
+	$(SRC_DIR)/built/cd_utils.c \
+	$(SRC_DIR)/built/cd.c \
+	$(SRC_DIR)/built/echo.c \
+	$(SRC_DIR)/built/env.c \
+	$(SRC_DIR)/built/exit.c \
+	$(SRC_DIR)/built/export_utils.c \
+	$(SRC_DIR)/built/export_utils_2.c \
+	$(SRC_DIR)/built/export.c \
+	$(SRC_DIR)/built/handle_builtin_redi_utils.c \
+	$(SRC_DIR)/built/handle_builtin_redi.c \
+	$(SRC_DIR)/built/pwd.c \
+	$(SRC_DIR)/built/unset.c \
+	$(SRC_DIR)/built/utils.c \
+	$(SRC_DIR)/env/env_init.c \
+	$(SRC_DIR)/lexer/checker_tok.c \
+	$(SRC_DIR)/lexer/cmd_split.c \
+	$(SRC_DIR)/lexer/handle_tokens.c \
+	$(SRC_DIR)/lexer/tokeniser_utils_2.c \
+	$(SRC_DIR)/lexer/tokeniser_utils.c \
+	$(SRC_DIR)/lexer/tokeniser.c \
+	$(SRC_DIR)/parser/expanding.c \
+	$(SRC_DIR)/parser/parser_split.c \
+	$(SRC_DIR)/parser/parser_utils.c \
+	$(SRC_DIR)/parser/parser.c \
+	$(SRC_DIR)/redirections/redirections.c \
+	$(SRC_DIR)/signal/signal_handling_2.c \
+	$(SRC_DIR)/signal/signal_handling.c \
+	$(SRC_DIR)/signal/signal.c \
+	$(SRC_DIR)/utils/free_utils.c \
+	$(SRC_DIR)/utils/minishell_utils_2.c \
+	$(SRC_DIR)/utils/minishell_utils_3.c \
+	$(SRC_DIR)/utils/minishell_utils.c \
+	$(SRC_DIR)/utils/nodes_utils.c \
+	$(SRC_DIR)/utils/quotes_utils.c \
+	$(SRC_DIR)/utils/get_next_line/get_next_line_utils.c \
+	$(SRC_DIR)/utils/get_next_line/get_next_line.c \
+	$(SRC_DIR)/heredoc/heredoc_exp.c \
+	$(SRC_DIR)/heredoc/heredoc_utils_2.c \
+	$(SRC_DIR)/heredoc/heredoc_utils.c \
+	$(SRC_DIR)/heredoc/heredoc.c
 
 OBJS			=	$(SRCS:.c=.o)
-HEADER			=	$(INC_DIR)/minishell.h $(INC_DIR)/lexer.h
+HEADER			=	$(INC_DIR)/minishell.h	$(INC_DIR)/get_next_line.h
 
 # Final compile flags
 ALL_INCLUDES	=	$(CFLAGS) $(READLINE_FLAGS) $(LIBFT_INC) -I$(INC_DIR)
@@ -130,6 +113,10 @@ $(NAME)	:	$(LIBFT_A) $(OBJS)
 	@$(CC) $(ALL_INCLUDES) $(OBJS) -o $(NAME) $(LIBFT_LIB) $(READLINE_LIBS)
 	@printf "${GREEN}$(NAME) successfully compiled!${NC}\n"
 
+# %.o : %.c $(HEADER)
+# 	@printf "${GREEN}Compiling $<...${NC}\n"
+# 	@$(CC) $(ALL_INCLUDES) -c $< -o $@
+
 %.o : %.c $(HEADER)
 	@printf "${GREEN}Compiling $<...${NC}\n"
 	@$(CC) $(ALL_INCLUDES) -c $< -o $@
@@ -140,9 +127,10 @@ $(OBJS): | compile_msg
 compile_msg:
 	@printf "${GREEN}Compiling source files...${NC}\n"
 
+
 $(LIBFT_A):
 	@printf "${CYAN}Compiling libft...${NC}\n"
-	@$(MAKE) -C $(LIBFT_DIR) all bonus --no-print-directory > /dev/null
+	@$(MAKE) -C $(LIBFT_DIR) all --no-print-directory > /dev/null
 
 clean	:
 	@printf "${YELLOW}Removing object files...${NC}\n"
